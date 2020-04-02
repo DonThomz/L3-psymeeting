@@ -19,7 +19,7 @@ public class Main {
 
         OracleDB database = new OracleDB();
 
-        database.connectionDatabase("thomas", "oracle");
+        database.connectionDatabase("admin", "admin");
         database.closeDatabase();
 
     }
