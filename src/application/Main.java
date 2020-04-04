@@ -1,36 +1,36 @@
 package application;
 
+
+import data.OracleDB;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import java.awt.*;
-import java.sql.*;
+public class Main extends Application {
 
-import database.OracleDB;
+    //---------------------------------
 
-public class Main {
+    public static OracleDB database;
+    public static boolean connection_active;
+
+    //---------------------------------
 
     public static void main(String[] args){
-        //launch(args);
-
-        OracleDB database = new OracleDB();
-
-        database.connectionDatabase("admin", "admin");
-        database.closeDatabase();
-
+        launch(args);
     }
 
+    @Override
+    public void start(Stage stage) throws Exception {
+        Object root = FXMLLoader.load(getClass().getResource("javafx/fxml/app.fxml"));
 
-    /*@Override
-    public void start(Stage primaryStage) {
-        primaryStage.setTitle("Hello World!");
-        Button btn = new Button();
-        StackPane root = new StackPane();
-        primaryStage.setScene(new Scene(root, 300, 250));
-        primaryStage.show();
-    }*/
+        //stage.initStyle(StageStyle.TRANSPARENT);
+        Scene scene = new Scene((Parent) root);
+        scene.setFill(Color.TRANSPARENT);
+        stage.setScene(scene);
+        stage.show();
+    }
+
 }
