@@ -29,4 +29,16 @@ public class Patient {
             e.printStackTrace();
         }
     }
+
+    public static void getPatients(){
+        try{
+            Statement stmt = App.database.getConnection().createStatement();
+            ResultSet rset = stmt.executeQuery("select * from PATIENT");
+            while(rset.next()){
+                App.patients.add(new Patient(rset.getInt(1)));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

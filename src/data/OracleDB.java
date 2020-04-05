@@ -76,17 +76,6 @@ public class OracleDB {
         }
     }
 
-    public void getPatients(){
-        try{
-            Statement stmt = connection.createStatement();
-            ResultSet rset = stmt.executeQuery("select * from PATIENT");
-            while(rset.next()){
-                App.patients.add(new Patient(rset.getInt(1)));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 
     public Connection getConnection() {
         return connection;
