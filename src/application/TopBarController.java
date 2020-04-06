@@ -53,5 +53,4 @@ public class TopBarController implements Initializable{
             App.sceneMapping(current_scene, target_scene);
     }
 
-
-}
+ }

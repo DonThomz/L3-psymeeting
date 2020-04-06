@@ -1,5 +1,6 @@
 package application;
 
+import com.jfoenix.controls.JFXButton;
 import data.OracleDB;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -23,7 +24,6 @@ public class HomeController implements Initializable{
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
     }
 
 }

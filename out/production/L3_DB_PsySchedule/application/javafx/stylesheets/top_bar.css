@@ -5,7 +5,8 @@
  */
 
 .top_bar {
-    -fx-background-color: #37474f;
+    -fx-background-color: #008ba3;
+    /*-fx-effect: dropshadow(gaussian, black, 20, 10, 5, 0);*/
 }
 
 #user_name{

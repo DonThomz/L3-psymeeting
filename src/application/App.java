@@ -1,6 +1,8 @@
 package application;
 
 
+
+import com.jfoenix.controls.JFXDecorator;
 import data.*;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -90,7 +92,6 @@ public class App extends Application {
         // load login scene
         login_scene = new Scene((Parent) root_login, login_resolution[0], login_resolution[1]);
 
-
         // init window
         window = stage;
         window.setScene(login_scene);
@@ -145,6 +146,7 @@ public class App extends Application {
                     window.setTitle("PsyMeeting - Consultation");
                     break;
                 case "login_scene":
+
                     root_login = FXMLLoader.load(App.class.getResource("javafx/fxml/login.fxml")); // launch initialize methods
                     login_scene = new Scene((Parent) root_login, login_resolution[0], login_resolution[1]);
                     window.close();
