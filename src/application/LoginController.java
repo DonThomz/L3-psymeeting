@@ -6,8 +6,10 @@ import javafx.event.ActionEvent;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.stage.Screen;
 
 import java.io.*;
 import java.net.URL;
@@ -28,7 +30,6 @@ public class LoginController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        System.out.println("test");
         App.database = new OracleDB();
         App.patients = new ArrayList<>();
         App.connection_active = false;
@@ -44,6 +45,9 @@ public class LoginController implements Initializable {
     }
 
     public void login(ActionEvent actionEvent) throws IOException {
+        // remove incorrect_text label
+        box_login.getChildren().remove(incorrect_text);
+
         // if database already open
         if (App.connection_active) {
             App.database.closeDatabase();
@@ -67,6 +71,7 @@ public class LoginController implements Initializable {
 
                     // load home scene
                     App.sceneMapping("login_scene", "home_scene");
+                    App.centerWindow();
 
                     // remove incorrect_text label
                     box_login.getChildren().remove(incorrect_text);
@@ -86,13 +91,9 @@ public class LoginController implements Initializable {
         // create file
         try {
             File save_pwd = new File("save_pwd.txt");
-            if (save_pwd.createNewFile()) {
-                System.out.println("File created: " + save_pwd.getName());
-            } else {
-                System.out.println("File already exists.");
-            }
+            save_pwd.createNewFile();
         } catch (IOException e) {
-            System.out.println("An error occurred.");
+            System.out.println("An error occurred. Creation of save_pwd.txt");
             e.printStackTrace();
         }
         // write file
@@ -101,7 +102,6 @@ public class LoginController implements Initializable {
             myWriter.write(username_field.getText()+"\n");
             myWriter.write(password_field.getText());
             myWriter.close();
-            System.out.println("Successfully wrote to the file.");
         } catch (IOException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();

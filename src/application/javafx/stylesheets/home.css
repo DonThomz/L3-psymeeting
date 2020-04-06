@@ -1,14 +1,6 @@
 /*
-    stylesheet: home
+    scene: home
     version: 1.0
     author: Thomas Guillaume
  */
 
-
-.top_bar {
-    -fx-background-color: #37474f;
-}
-
-#user_name{
-    -fx-fill: white;
-}
