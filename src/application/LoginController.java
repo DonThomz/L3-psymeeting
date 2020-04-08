@@ -71,6 +71,7 @@ public class LoginController implements Initializable {
 
                     // load home scene
                     App.sceneMapping("login_scene", "home_scene");
+                    System.out.println("Mapping");
                     App.centerWindow();
 
                     // remove incorrect_text label

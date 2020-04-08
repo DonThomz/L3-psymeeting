@@ -44,6 +44,7 @@ public class App extends Application {
         public static Scene login_scene;
         public static Scene home_scene;
         public static Scene consultation_scene;
+        public static Scene patients_scene;
 
         public static HashMap<String, Boolean> scenes;
         public static int scenes_size;
@@ -55,6 +56,7 @@ public class App extends Application {
         public static Object root_login;
         public static Object root_home;
         public static Object root_consultation;
+        public static Object root_patients;
     //
     //---------------------------------
 
@@ -98,7 +100,7 @@ public class App extends Application {
         window.setResizable(false);
         window.setTitle("PsyMeeting - Login");
         window.show();
-        centerWindow();
+        //centerWindow();
         /*final long startNanoTime = System.nanoTime();
         final int[] i = {0};
         new AnimationTimer()
@@ -120,7 +122,7 @@ public class App extends Application {
 
     }
 
-
+    // Mapping between scenes
     public static void sceneMapping(String origin_scene, String target_scene){
 
         try {
@@ -129,6 +131,8 @@ public class App extends Application {
             else // reset current resolution
                 current_resolution = app_default_resolution;
 
+            scenes.put(origin_scene, false);
+            scenes.put(target_scene, true);
             // change scene
             switch (target_scene) {
                 case "home_scene":
@@ -145,8 +149,14 @@ public class App extends Application {
                     window.setResizable(true);
                     window.setTitle("PsyMeeting - Consultation");
                     break;
+                case "patients_scene":
+                    root_patients = FXMLLoader.load(App.class.getResource("javafx/fxml/consultation.fxml")); // launch initialize methods
+                    patients_scene = new Scene((Parent) root_patients, current_resolution[0], current_resolution[1]);
+                    window.setScene(patients_scene);
+                    window.setResizable(true);
+                    window.setTitle("PsyMeeting - Patients");
+                    break;
                 case "login_scene":
-
                     root_login = FXMLLoader.load(App.class.getResource("javafx/fxml/login.fxml")); // launch initialize methods
                     login_scene = new Scene((Parent) root_login, login_resolution[0], login_resolution[1]);
                     window.close();
@@ -159,8 +169,6 @@ public class App extends Application {
                     centerWindow();
                     break;
             }
-            scenes.put(origin_scene, false);
-            scenes.put(target_scene, true);
 
         }catch (IOException ex){
             ex.printStackTrace();
@@ -175,6 +183,8 @@ public class App extends Application {
                 return home_scene;
             case "consultation_scene":
                 return consultation_scene;
+            case "patients_scene":
+                return patients_scene;
             default:
                 return null;
         }
@@ -198,6 +208,7 @@ public class App extends Application {
         }
     }
 
+    // return monitor index
     protected static int getScreenMonitorIndex(){
         int screen_index = 0;
         for (int i = 0; i < Screen.getScreens().size(); i++) {
@@ -214,5 +225,10 @@ public class App extends Application {
         window.setY((primScreenBounds.getHeight() - window.getHeight()) / 2);
     }
 
+    // reset HashMap
+    protected static void resetHashMap(){
+        scenes.put("login_scene", true);
+        scenes.put(getCurrentScene(), false);
+    }
 
 }

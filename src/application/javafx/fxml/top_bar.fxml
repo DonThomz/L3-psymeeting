@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXButton?>
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -17,57 +20,108 @@
         <URL value="@../stylesheets/top_bar.css" />
     </stylesheets>
     <HBox alignment="CENTER_LEFT" styleClass="top_bar" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" BorderPane.alignment="CENTER">
-         <Region prefHeight="100.0" prefWidth="66.0" HBox.hgrow="ALWAYS" />  <!-- MENU -->
+         <Region prefHeight="100.0" prefWidth="54.0" HBox.hgrow="NEVER" />
+      <JFXButton buttonType="RAISED" style="-fx-background-color: #56c8d8;" text="Add">
+         <graphic>
+            <FontAwesomeIconView glyphName="USER_PLUS" />
+         </graphic>
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="OPEN_HAND" />
+         </cursor>
+      </JFXButton>
+      <Region layoutX="10.0" layoutY="10.0" prefHeight="100.0" prefWidth="35.0" HBox.hgrow="ALWAYS" />  <!-- MENU -->
 
-        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="803.0" HBox.hgrow="ALWAYS">
+        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="638.0" HBox.hgrow="ALWAYS">
 
-            <HBox alignment="CENTER"> <!-- HOME LINK -->
+            <HBox alignment="CENTER" HBox.hgrow="NEVER"> <!-- HOME LINK -->
                 <HBox.margin>
-                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                 </HBox.margin>
-                <FontAwesomeIconView glyphName="HOME" />
-                <Hyperlink fx:id="home_link" onAction="#switchScene" text="Home" textFill="WHITE">
+                <FontAwesomeIconView glyphName="HOME" HBox.hgrow="NEVER" />
+                <Hyperlink fx:id="home_link" onAction="#switchScene" styleClass="link_menu" text="Home" textFill="WHITE" HBox.hgrow="NEVER">
                     <font>
                         <Font name="Roboto Medium" size="18.0" />
                     </font>
+               <HBox.margin>
+                  <Insets left="10.0" right="10.0" />
+               </HBox.margin>
                 </Hyperlink>
+            <padding>
+               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            </padding>
             </HBox> <!-- END -->
-            <HBox alignment="CENTER"> <!-- CONSULTATION LINK -->
+            <HBox alignment="CENTER" HBox.hgrow="NEVER"> <!-- CONSULTATION LINK -->
                 <HBox.margin>
-                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                 </HBox.margin>
-                <FontAwesomeIconView glyphName="BRIEFCASE" />
-                <Hyperlink fx:id="consultation_link" onAction="#switchScene" text="Consultation" textFill="WHITE">
+                <FontAwesomeIconView glyphName="BRIEFCASE" HBox.hgrow="NEVER" />
+                <Hyperlink fx:id="consultation_link" onAction="#switchScene" styleClass="link_menu" text="Consultation" textFill="WHITE" HBox.hgrow="NEVER">
                     <font>
                         <Font name="Roboto Medium" size="18.0" />
                     </font>
+               <padding>
+                  <Insets left="10.0" right="10.0" />
+               </padding>
                 </Hyperlink>
+            <padding>
+               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            </padding>
             </HBox> <!-- END -->
 
-            <HBox alignment="CENTER"> <!-- PATIENTS LINK -->
+            <HBox alignment="CENTER" HBox.hgrow="NEVER"> <!-- PATIENTS LINK -->
                 <HBox.margin>
-                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                 </HBox.margin>
-                <FontAwesomeIconView glyphName="USERS" />
-                <Hyperlink fx:id="patients_link" onAction="#switchScene" text="Patients" textFill="WHITE">
+                <FontAwesomeIconView glyphName="USERS" HBox.hgrow="NEVER" />
+                <Hyperlink fx:id="patients_link" onAction="#switchScene" styleClass="link_menu" text="Patients" textFill="WHITE" HBox.hgrow="NEVER">
                     <font>
                         <Font name="Roboto Medium" size="18.0" />
                     </font>
+               <padding>
+                  <Insets left="10.0" right="10.0" />
+               </padding>
                 </Hyperlink>
+            <padding>
+               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            </padding>
             </HBox> <!-- END -->
-        </HBox> <!-- END MENU -->
-        <MenuButton fx:id="user_menu" mnemonicParsing="false" prefWidth="152.0" text=" ">
-            <items>
-                <MenuItem mnemonicParsing="false" text="Settings">
+        </HBox>
+        <Region prefHeight="100.0" prefWidth="65.0" HBox.hgrow="ALWAYS" />
+      <MenuButton fx:id="user_menu" ellipsisString="" mnemonicParsing="false">
+        <items>
+          <MenuItem mnemonicParsing="false" text="Settings">
                <graphic>
-                  <FontAwesomeIconView glyphName="COG" />
-               </graphic></MenuItem>
-                <MenuItem mnemonicParsing="false" onAction="#logout" text="Log Out">
+                  <FontAwesomeIconView glyphName="SLIDERS" />
+               </graphic>
+            </MenuItem>
+          <MenuItem mnemonicParsing="false" onAction="#logout" text="Log out">
                <graphic>
                   <FontAwesomeIconView glyphName="SIGN_OUT" />
-               </graphic></MenuItem>
-            </items>
-        </MenuButton>
-        <Region prefHeight="100.0" prefWidth="78.0" HBox.hgrow="NEVER" />
+               </graphic>
+            </MenuItem>
+        </items>
+         <graphic>
+            <FontAwesomeIconView glyphName="USER" />
+         </graphic>
+         <effect>
+            <DropShadow color="#0f0f0fbb" spread="0.1" />
+         </effect>
+         <cursor>
+            <Cursor fx:constant="OPEN_HAND" />
+         </cursor>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
+      </MenuButton>
+      <Region prefHeight="100.0" prefWidth="72.0" HBox.hgrow="NEVER" />
+      <effect>
+         <DropShadow />
+      </effect>
     </HBox>
 </AnchorPane>
