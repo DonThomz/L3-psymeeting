@@ -2,24 +2,21 @@ package application;
 
 
 
-import com.jfoenix.controls.JFXDecorator;
 import data.*;
-import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 
-import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
+import java.sql.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 public class App extends Application {
@@ -45,6 +42,7 @@ public class App extends Application {
         public static Scene home_scene;
         public static Scene consultation_scene;
         public static Scene patients_scene;
+        public static Scene add_consultation_scene;
 
         public static HashMap<String, Boolean> scenes;
         public static int scenes_size;
@@ -57,6 +55,7 @@ public class App extends Application {
         public static Object root_home;
         public static Object root_consultation;
         public static Object root_patients;
+        public static Object root_add_consultation;
     //
     //---------------------------------
 
@@ -68,6 +67,7 @@ public class App extends Application {
     //---------------------------------
 
     public static void main(String[] args){
+
         launch(args);
 
         // close database if exit program
@@ -88,7 +88,7 @@ public class App extends Application {
 
 
         // init FXML login file
-        root_login = FXMLLoader.load(getClass().getResource("javafx/fxml/login.fxml"));
+        root_login = FXMLLoader.load(getClass().getResource("fxml/login.fxml"));
 
 
         // load login scene
@@ -136,28 +136,35 @@ public class App extends Application {
             // change scene
             switch (target_scene) {
                 case "home_scene":
-                    root_home = FXMLLoader.load(App.class.getResource("javafx/fxml/home.fxml")); // launch initialize methods
+                    root_home = FXMLLoader.load(App.class.getResource("fxml/home.fxml")); // launch initialize methods
                     home_scene = new Scene((Parent) root_home, current_resolution[0], current_resolution[1]);
                     window.setScene(home_scene);
                     window.setResizable(true);
                     window.setTitle("PsyMeeting - Home");
                     break;
                 case "consultation_scene":
-                    root_consultation = FXMLLoader.load(App.class.getResource("javafx/fxml/consultation.fxml")); // launch initialize methods
+                    root_consultation = FXMLLoader.load(App.class.getResource("fxml/consultation.fxml")); // launch initialize methods
                     consultation_scene = new Scene((Parent) root_consultation, current_resolution[0], current_resolution[1]);
                     window.setScene(consultation_scene);
                     window.setResizable(true);
                     window.setTitle("PsyMeeting - Consultation");
                     break;
                 case "patients_scene":
-                    root_patients = FXMLLoader.load(App.class.getResource("javafx/fxml/consultation.fxml")); // launch initialize methods
+                    root_patients = FXMLLoader.load(App.class.getResource("fxml/consultation.fxml")); // launch initialize methods
                     patients_scene = new Scene((Parent) root_patients, current_resolution[0], current_resolution[1]);
                     window.setScene(patients_scene);
                     window.setResizable(true);
                     window.setTitle("PsyMeeting - Patients");
                     break;
+                case "add_consultation_scene":
+                    root_add_consultation = FXMLLoader.load(App.class.getResource("fxml/add_consultation.fxml")); // launch initialize methods
+                    add_consultation_scene = new Scene((Parent) root_add_consultation, current_resolution[0], current_resolution[1]);
+                    window.setScene(add_consultation_scene);
+                    window.setResizable(true);
+                    window.setTitle("PsyMeeting - Consultations");
+                    break;
                 case "login_scene":
-                    root_login = FXMLLoader.load(App.class.getResource("javafx/fxml/login.fxml")); // launch initialize methods
+                    root_login = FXMLLoader.load(App.class.getResource("fxml/login.fxml")); // launch initialize methods
                     login_scene = new Scene((Parent) root_login, login_resolution[0], login_resolution[1]);
                     window.close();
                     // open a fresh window
@@ -185,13 +192,15 @@ public class App extends Application {
                 return consultation_scene;
             case "patients_scene":
                 return patients_scene;
+            case "add_consultation_scene":
+                return add_consultation_scene;
             default:
                 return null;
         }
     }
 
     // get current scene
-    protected static String getCurrentScene(){
+    public static String getCurrentScene(){
         for (HashMap.Entry hm: scenes.entrySet()
              ) {
             if(hm.getValue().equals(true))
@@ -201,7 +210,7 @@ public class App extends Application {
     }
 
     // get X and Y of window
-    protected static void getCurrentResolution(Scene s){
+    public static void getCurrentResolution(Scene s){
         if(s != null) {
             current_resolution[0] = s.getWidth();
             current_resolution[1] = s.getHeight();
@@ -209,7 +218,7 @@ public class App extends Application {
     }
 
     // return monitor index
-    protected static int getScreenMonitorIndex(){
+    public static int getScreenMonitorIndex(){
         int screen_index = 0;
         for (int i = 0; i < Screen.getScreens().size(); i++) {
             if ((window.getX() + window.getWidth() / 2) > Screen.getScreens().get(i).getVisualBounds().getMinX())
@@ -218,7 +227,7 @@ public class App extends Application {
         return screen_index;
     }
 
-    protected static void centerWindow(){
+    public static void centerWindow(){
         // center window
         Rectangle2D primScreenBounds = Screen.getScreens().get(getScreenMonitorIndex()).getVisualBounds();
         window.setX(primScreenBounds.getMinX() + (primScreenBounds.getWidth() - window.getWidth()) / 2);
@@ -226,7 +235,7 @@ public class App extends Application {
     }
 
     // reset HashMap
-    protected static void resetHashMap(){
+    public static void resetHashMap(){
         scenes.put("login_scene", true);
         scenes.put(getCurrentScene(), false);
     }

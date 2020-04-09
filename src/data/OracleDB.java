@@ -32,6 +32,7 @@ public class OracleDB {
         // connection to oracle database
         try {
             this.connection = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", username, password);
+            this.connection.setAutoCommit(false);
             System.out.println(" *** Connection successfully established ***");
             System.out.println("Welcome " + username);
 

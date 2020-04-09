@@ -1,0 +1,34 @@
+/*
+    scene: top_bar
+    version: 1.0
+    author: Thomas Guillaume
+ */
+
+.top_bar {
+    -fx-background-color: #008ba3;
+}
+
+#user_menu{
+    -fx-padding: 8 8 8 8;
+}
+
+.link_menu{
+    -fx-underline: false;
+}
+
+
+.menu-item .label {
+    -fx-text-fill: black;
+}
+
+.menu-item:focused {
+   -fx-background-color: rgba(224,224,244,0.8);
+}
+
+.context-menu {
+    -fx-background-color: rgba(224,224,224,0.6);
+    -fx-background-insets: 0, 1, 2;
+    -fx-background-radius: 0 6 6 6, 0 5 5 5, 0 4 4 4;
+    /*    -fx-padding: 0.666667em 0.083333em 0.666667em 0.083333em;  8 1 8 1 */
+    -fx-padding: 0.333333em 0.083333em 0.666667em 0.083333em; /* 4 1 8 1 */
+}
