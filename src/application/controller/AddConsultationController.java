@@ -175,6 +175,8 @@ public class AddConsultationController implements Initializable {
             ) {
                 info.append("\n- ").append(p.getName()).append(" ").append(p.getLast_name());
             }
+            if(validField())
+                info.append("\n- ").append(name_field.getText()).append(" ").append(last_name_field.getText());
         }else
             info.append("\n- ").append(name_field.getText()).append(" ").append(last_name_field.getText());
 
