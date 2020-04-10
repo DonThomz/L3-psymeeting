@@ -2,13 +2,21 @@ package application.controller;
 
 import application.App;
 import com.jfoenix.controls.*;
+import com.jfoenix.validation.RequiredFieldValidator;
 import data.Consultation;
 import data.Patient;
 import data.User;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 
 import java.net.URL;
 import java.sql.*;
@@ -29,6 +37,11 @@ public class AddConsultationController implements Initializable {
     public JFXTextField last_name_field;
     public JFXTextField email_field;
     public JFXCheckBox anxiety_checkbox;
+    public JFXButton submit_button;
+    RequiredFieldValidator validator_field;
+
+    // Box
+    public StackPane stackPane;
     public VBox form_box;
 
 
@@ -39,6 +52,8 @@ public class AddConsultationController implements Initializable {
     private ArrayList<User> tmp_users;
     private int max_patient_id;
     private int consultation_id;
+    private boolean confirmation;
+
 
     // --------------------
     //   Initialize method
@@ -54,51 +69,42 @@ public class AddConsultationController implements Initializable {
         // init tmp_patients ArrayList
         tmp_patients = new ArrayList<>();
 
+        // validation settings
+        validator_field = new RequiredFieldValidator();
+        validator_field.setMessage("Le champs est obligatoire");
+
+        // add validation for all fields
+        addListenerValidationField(name_field);
+        addListenerValidationField(last_name_field);
+        addListenerValidationField(email_field);
+        addListenerValidationField(date_field);
+        addListenerValidationField(hour_field);
+
     }
 
     // --------------------
     //  Action methods
     // --------------------
-
-    // button "Enregistrer"
-    public void submit(ActionEvent actionEvent) throws SQLException {
+    public void submit(ActionEvent actionEvent){ // button "Enregistrer"
         // disable during the thread
         add_patient_button.setDisable(true);
 
-        if(tmp_patients != null && date_field.getValue() != null && hour_field.getValue() != null){
-
-            // enable commit command
-            App.database.getConnection().setAutoCommit(false);
-
-            // update patient ArrayList
-            addPatient2ArrayList();
-
-            // update patient table with new patients
-            updatePatientTable();
-
-            // update consultation table
-            updateConsultationTable();
-
-            // update consultation_carryOut table
-            updateCarryOutTable();
-
-            App.database.getConnection().commit();
-            System.out.println("successful");
-
-            // reload scene
-            App.sceneMapping("add_consultation_scene", "add_consultation_scene");
-
+        // check if minimum 1 patient exist in tmp_patients or if fields are not empty
+        if(date_field.getValue() != null && hour_field.getValue() != null && (!tmp_patients.isEmpty() || validField())){
+            // open confirmation dialog
+            loadDialog(actionEvent);
+        }else{
+            validateTextFieldAction();
+            validateDateFieldAction();
         }
-
+        add_patient_button.setDisable(false);
 
     }
 
-    // button "Ajouter patient"
-    public void add(ActionEvent actionEvent) {
 
+    public void add(ActionEvent actionEvent) { // button "Ajouter patient"
         // field not empty
         if(validField()) {
-
             // create and add patient to ArrayList patients
             if(addPatient2ArrayList()) {
                 System.out.println(tmp_patients);
@@ -109,6 +115,7 @@ public class AddConsultationController implements Initializable {
                 updatePatientLabel();
             }
         }
+        else validateTextFieldAction();
     }
 
     // --------------------
@@ -116,32 +123,33 @@ public class AddConsultationController implements Initializable {
     // --------------------
     private boolean addPatient2ArrayList(){
 
-        // check if user exist ==> email exit in database
-        if(userExist()){
+        if (userExist()) { // check if user exist ==> email exit in database
             // check if name and last name is correct
             Patient tmp_patient = Patient.getPatientByEmail(email_field.getText());
             assert tmp_patient != null;
-            if(tmp_patient.getName().equals(name_field.getText()) && tmp_patient.getLast_name().equals(last_name_field.getText()))
+            if (tmp_patient.getName().equals(name_field.getText()) && tmp_patient.getLast_name().equals(last_name_field.getText())){
                 tmp_patients.add(tmp_patient);
-            else{
+                return true;
+            }
+            else {
                 // error user email already exist in database
                 // ex : ubabst1@zdnet.com
                 Label warring = new Label("L'email renseigné est déjà pris");
                 warring.getStyleClass().add("warring_label");
                 form_box.getChildren().add(2, warring);
-
                 return false;
             }
-        }else{
-            if(max_patient_id != -1){
+        } else {
+            if (max_patient_id != -1) {
                 tmp_patients.add(new Patient(max_patient_id + 1, name_field.getText(), last_name_field.getText(), true));
                 max_patient_id++;
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
-    private boolean userExist(){
+    private boolean userExist(){ // check if user exist in database with email_field
         try {
             Statement stmt = App.database.getConnection().createStatement();
             ResultSet rset = stmt.executeQuery("select email from USER_APP");
@@ -156,7 +164,53 @@ public class AddConsultationController implements Initializable {
         return false;
     }
 
-    private boolean validField(){
+    private void loadDialog(ActionEvent event){
+        JFXDialogLayout content = new JFXDialogLayout();
+        confirmation = false;
+        content.setHeading(new Text("La consultation a été enregistrée !"));
+        // show information
+        StringBuilder info = new StringBuilder();
+        if(tmp_patients.size() != 0) {
+            for (Patient p : tmp_patients
+            ) {
+                info.append("\n- ").append(p.getName()).append(" ").append(p.getLast_name());
+            }
+        }else
+            info.append("\n- ").append(name_field.getText()).append(" ").append(last_name_field.getText());
+
+        content.setBody(new Text("Date de consultation : " + date_field.getValue()
+                + " à " + hour_field.getValue() + "\n"
+                + "Les patients sont : \n"
+                + info));
+
+        JFXDialog dialog = new JFXDialog(stackPane, content, JFXDialog.DialogTransition.CENTER);
+        JFXButton submit = new JFXButton("Confimer & Envoyer");
+        JFXButton cancel = new JFXButton("Annuler");
+        submit.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                confirmation = true;
+                dialog.close();
+                updateNewConsultation();
+            }
+        });
+        cancel.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                confirmation = false;
+                dialog.close();
+            }
+        });
+        content.setActions(cancel, submit);
+
+        dialog.show();
+    }
+
+
+    // --------------------
+    //  Field methods
+    // --------------------
+    private boolean validField(){ // check if fields are not empty
         return !name_field.getText().isEmpty()
                 && !last_name_field.getText().isEmpty()
                 && !email_field.getText().isEmpty();
@@ -170,8 +224,55 @@ public class AddConsultationController implements Initializable {
         anxiety_checkbox.setSelected(false);
     }
 
+    private void validateTextFieldAction(){ // add require validation if fields are empty
+        if (name_field.getText().isEmpty())
+            name_field.validate();
+        if (last_name_field.getText().isEmpty())
+            last_name_field.validate();
+        if (email_field.getText().isEmpty())
+            email_field.validate();
+    }
+
+    private void validateDateFieldAction(){ // add require validation if date and hour fields are empty
+        if (date_field.getValue() == null)
+            date_field.validate();
+        if (hour_field.getValue() == null)
+            hour_field.validate();
+    }
+
+    private void addListenerValidationField(JFXTextField field){
+        field.getValidators().add(validator_field);
+        field.focusedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                if(newValue)
+                    field.resetValidation();
+            }
+        });
+    }
+    private void addListenerValidationField(JFXDatePicker field){
+        field.getValidators().add(validator_field);
+        field.focusedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                if(newValue)
+                    field.resetValidation();
+            }
+        });
+    }
+    private void addListenerValidationField(JFXTimePicker field){
+        field.getValidators().add(validator_field);
+        field.focusedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                if(newValue)
+                    field.resetValidation();
+            }
+        });
+    }
+
     // --------------------
-    //  Update table methods
+    //  Update methods
     // --------------------
     private void updatePatientLabel(){
         // update label and button
@@ -190,10 +291,10 @@ public class AddConsultationController implements Initializable {
                     + " values (?, ?, ?)";
             // create the insert preparedStatement
             PreparedStatement preparedStmt = App.database.getConnection().prepareStatement(query);
-            //App.database.getConnection().setAutoCommit(false);
-            for (Patient p: tmp_patients
+
+            for (Patient p: tmp_patients // for each patients saved in tmp_patients
             ) {
-                if(p.isNew_patient()){
+                if(p.isNew_patient()){ // if patient does not exist in database
 
                     // config parameters
                     preparedStmt.setInt(1, p.getPatient_id());
@@ -258,6 +359,38 @@ public class AddConsultationController implements Initializable {
         } catch (SQLException ex) {
             System.err.println("Got an exception!");
             System.err.println(ex.getMessage());
+        }
+    }
+
+    void updateNewConsultation(){
+        try {
+            if (confirmation) {
+                System.out.println("conf");
+                // enable commit command
+                App.database.getConnection().setAutoCommit(false);
+
+                // update patient ArrayList
+                if (validField())
+                    addPatient2ArrayList();
+
+                // update patient table with new patients
+                updatePatientTable();
+
+                // update consultation table
+                updateConsultationTable();
+
+                // update consultation_carryOut table
+                updateCarryOutTable();
+
+                App.database.getConnection().commit();
+                System.out.println("successful");
+
+                // reload scene
+                App.sceneMapping("add_consultation_scene", "add_consultation_scene");
+            }
+        }catch (SQLException ex){
+            System.out.println("Error creation consultation");
+            ex.printStackTrace();
         }
     }
 

@@ -41,7 +41,7 @@ public class LoginController implements Initializable {
 
 
         incorrect_text = new Label("username or password are incorrect !");
-        incorrect_text.setId("incorrect_text");
+        incorrect_text.getStyleClass().add("warring_label");
 
     }
 
