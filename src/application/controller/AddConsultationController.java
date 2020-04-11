@@ -7,7 +7,6 @@ import com.jfoenix.validation.RequiredFieldValidator;
 import data.Consultation;
 import data.Patient;
 import data.User;
-import javafx.animation.TranslateTransition;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -15,12 +14,9 @@ import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.util.Duration;
 
 import java.net.URL;
 import java.sql.*;
@@ -71,7 +67,7 @@ public class AddConsultationController implements Initializable {
 
         // init patient label
         nb_patients = 1;
-        max_patient_id = Patient.getLastPatientId();
+        max_patient_id = Patient.getLastPrimaryKeyId();
         label_patients.setText(label_patients.getText() + " " +nb_patients);
 
         // init tmp_patients ArrayList
@@ -322,7 +318,7 @@ public class AddConsultationController implements Initializable {
 
     private void updateConsultationTable() {
         try {
-            consultation_id = Consultation.getLastConsultationId();
+            consultation_id = Consultation.getLastPrimaryKeyId();
             if(consultation_id != -1) {
                 // the insert statement
                 String query = " insert into CONSULTATION (CONSULTATION_ID, CONSULTATION_DATE)"

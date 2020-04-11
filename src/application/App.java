@@ -14,10 +14,10 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
 public class App extends Application {
 
@@ -245,6 +245,23 @@ public class App extends Application {
     public static void resetHashMap(){
         scenes.put("login_scene", true);
         scenes.put(getCurrentScene(), false);
+    }
+
+    // convert Timestamp to Calendar
+    public static Calendar Timestamp2Calendar(Timestamp t){
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(t);
+        return cal;
+    }
+
+    public static void sortCalendar(ArrayList<Calendar> list_date){
+        Collections.sort(list_date, new Comparator<Calendar>() {
+
+            @Override
+            public int compare(Calendar o1, Calendar o2) {
+                return o1.compareTo(o2);
+            }
+        });
     }
 
 

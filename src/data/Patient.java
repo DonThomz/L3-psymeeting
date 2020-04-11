@@ -74,7 +74,7 @@ public class Patient {
         }
     }
 
-    public static int getLastPatientId(){
+    public static int getLastPrimaryKeyId(){
         try {
             Statement stmt = App.database.getConnection().createStatement();
             ResultSet rset = stmt.executeQuery("select max(patient_id) from PATIENT");
