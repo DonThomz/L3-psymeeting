@@ -35,6 +35,7 @@ public class App extends Application {
         public static double[] current_resolution;
         public static double[] login_resolution = {420 , 580};
         public static double[] app_default_resolution = {1200 , 800};
+        public static int time_transition = 10;
 
     //---------------------------------
     //         Scenes
@@ -122,14 +123,20 @@ public class App extends Application {
 
     }
 
+
+    //---------------------------------
+    //         App methods
+    //---------------------------------
+
     // Mapping between scenes
     public static void sceneMapping(String origin_scene, String target_scene){
 
         try {
             if(!origin_scene.equals("login_scene") && !target_scene.equals("login_scene"))
                 getCurrentResolution(getSceneByName(origin_scene));
-            else // reset current resolution
+            else { // reset current resolution
                 current_resolution = app_default_resolution;
+            }
 
             scenes.put(origin_scene, false);
             scenes.put(target_scene, true);
@@ -176,7 +183,7 @@ public class App extends Application {
                     centerWindow();
                     break;
             }
-
+            window.show();
         }catch (IOException ex){
             ex.printStackTrace();
         }
@@ -239,5 +246,8 @@ public class App extends Application {
         scenes.put("login_scene", true);
         scenes.put(getCurrentScene(), false);
     }
+
+
+
 
 }

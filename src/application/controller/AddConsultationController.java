@@ -1,22 +1,26 @@
 package application.controller;
 
 import application.App;
+import application.TransitionEffect;
 import com.jfoenix.controls.*;
 import com.jfoenix.validation.RequiredFieldValidator;
 import data.Consultation;
 import data.Patient;
 import data.User;
+import javafx.animation.TranslateTransition;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 
 import java.net.URL;
 import java.sql.*;
@@ -43,7 +47,7 @@ public class AddConsultationController implements Initializable {
     // Box
     public StackPane stackPane;
     public VBox form_box;
-
+    public ScrollPane scroll_pane;
 
     // --------------------
     //   Attributes
@@ -60,6 +64,10 @@ public class AddConsultationController implements Initializable {
     // --------------------
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
+        // add transition effects to the form
+        TransitionEffect.TranslateTransitionY(form_box, 600, 75);
+        TransitionEffect.FadeTransition(form_box, 600, 0.2f, 5);
 
         // init patient label
         nb_patients = 1;

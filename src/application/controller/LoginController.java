@@ -3,6 +3,7 @@ package application.controller;
 import application.App;
 import data.*;
 
+import javafx.animation.AnimationTimer;
 import javafx.event.ActionEvent;
 
 import javafx.fxml.FXML;
@@ -15,6 +16,7 @@ import javafx.stage.Screen;
 import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
@@ -40,52 +42,67 @@ public class LoginController implements Initializable {
         fillField(tmpSaveFile.exists());
 
 
-        incorrect_text = new Label("username or password are incorrect !");
+        incorrect_text = new Label("identifiant ou mot de passe incorrect !");
         incorrect_text.getStyleClass().add("warring_label");
 
     }
 
     public void login(ActionEvent actionEvent) throws IOException {
-        // remove incorrect_text label
-        box_login.getChildren().remove(incorrect_text);
 
-        // if database already open
-        if (App.connection_active) {
-            App.database.closeDatabase();
-            login_button.setText("Login");
-            App.connection_active = false;
-            // reset field
-            username_field.setText(null);
-            password_field.setText(null);
-        } else {
-            if (username_field.getText() != null && password_field.getText() != null) {
-                // if correct username and password --> connection to database
-                if (App.database.connectionDatabase(username_field.getText(), password_field.getText())) {
-
-                    if(save_pwd_checkbox.isSelected()) createSaveFile();
-                    else removeSaveFile();
-
-                    App.connection_active = true;
-
-                    // load user
-                    App.current_user = new User(username_field.getText());
-
-                    // load home scene
-                    App.sceneMapping("login_scene", "home_scene");
-                    App.centerWindow();
-
+        int[] i = {0};
+        new AnimationTimer()
+        {
+            public void handle(long currentNanoTime)
+            {
+                i[0]++;
+                if(i[0] % App.time_transition == 0) {
+                    this.stop();
                     // remove incorrect_text label
                     box_login.getChildren().remove(incorrect_text);
 
-                } else {
-                    // add incorrect_text label
-                    box_login.getChildren().add(incorrect_text);
+                    // if database already open
+                    if (App.connection_active) {
+                        App.database.closeDatabase();
+                        login_button.setText("Login");
+                        App.connection_active = false;
+                        // reset field
+                        username_field.setText(null);
+                        password_field.setText(null);
+                    } else {
+                        if (username_field.getText() != null && password_field.getText() != null) {
+                            // if correct username and password --> connection to database
+                            if (App.database.connectionDatabase(username_field.getText(), password_field.getText())) {
+
+                                if(save_pwd_checkbox.isSelected()) createSaveFile();
+                                else removeSaveFile();
+
+                                App.connection_active = true;
+
+                                // load user
+                                App.current_user = new User(username_field.getText());
+
+                                // load home scene
+                                App.window.close();
+
+                                // remove incorrect_text label
+                                box_login.getChildren().remove(incorrect_text);
+
+                                App.sceneMapping("login_scene", "home_scene");
+
+                                App.centerWindow();
+
+                            } else {
+                                // add incorrect_text label
+                                box_login.getChildren().add(incorrect_text);
+                            }
+                            // after press login button --> reset field
+                            username_field.setText(null);
+                            password_field.setText(null);
+                        }
+                    }
                 }
-                // after press login button --> reset field
-                username_field.setText(null);
-                password_field.setText(null);
             }
-        }
+        }.start();
     }
 
     private void createSaveFile(){

@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXTextField?>
 <?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/10.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.controller.ConsultationController">
+<AnchorPane prefHeight="800.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.controller.ConsultationController">
     <stylesheets>
         <URL value="@../stylesheets/home.css" />
         <URL value="@../stylesheets/app.css" />
@@ -15,11 +22,53 @@
             <top>
                 <fx:include source="top_bar.fxml" />
             </top>
+         <right>
+            <Region prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+         </right>
          <left>
-            <Pane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: black;" BorderPane.alignment="CENTER" />
+            <Region prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
          </left>
          <center>
-            <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+            <AnchorPane BorderPane.alignment="CENTER">
+               <children>
+                  <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" VBox.vgrow="NEVER">
+                           <children>
+                              <Label alignment="TOP_LEFT" text="Liste des consultations">
+                                 <font>
+                                    <Font name="System Bold" size="18.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" VBox.vgrow="NEVER">
+                           <children>
+                              <JFXTextField fx:id="searchField" alignment="CENTER_LEFT" promptText="Recherche ...">
+                                 <HBox.margin>
+                                    <Insets right="20.0" />
+                                 </HBox.margin></JFXTextField>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" VBox.vgrow="SOMETIMES">
+                           <children>
+                              <ScrollPane hbarPolicy="NEVER" vbarPolicy="ALWAYS" HBox.hgrow="NEVER">
+                                 <content>
+                                    <VBox fx:id="box_consultations" alignment="CENTER" minHeight="1.0" minWidth="720.0" prefWidth="720.0" />
+                                 </content>
+                                 <HBox.margin>
+                                    <Insets bottom="20.0" />
+                                 </HBox.margin>
+                              </ScrollPane>
+                           </children>
+                           <VBox.margin>
+                              <Insets top="20.0" />
+                           </VBox.margin>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+            </AnchorPane>
          </center></BorderPane>
     </children>
 </AnchorPane>

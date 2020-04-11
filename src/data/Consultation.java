@@ -2,10 +2,7 @@ package data;
 
 import application.App;
 
-import java.sql.Date;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class Consultation {
 
@@ -38,14 +35,16 @@ public class Consultation {
     public static int getLastConsultationId(){
         try {
             Statement stmt = App.database.getConnection().createStatement();
-            ResultSet rset = stmt.executeQuery("select max(CONSULTATION_ID) from CONSULTATION");
-            rset.next();
-            return rset.getInt(1);
+            ResultSet result = stmt.executeQuery("select max(CONSULTATION_ID) from CONSULTATION");
+            result.next();
+            return result.getInt(1);
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         }
         return -1;
     }
+
+
 
 
 

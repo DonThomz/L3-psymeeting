@@ -3,6 +3,7 @@ package application.controller;
 import application.App;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXNodesList;
+import javafx.animation.AnimationTimer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -72,7 +73,19 @@ public class TopBarController implements Initializable{
         }
     }
 
-    public void add_consultation(ActionEvent actionEvent) {
-        App.sceneMapping(Objects.requireNonNull(App.getCurrentScene()), "add_consultation_scene");
+    public void add_consultation(ActionEvent actionEvent) throws InterruptedException {
+        int[] i = {0};
+        new AnimationTimer()
+        {
+            public void handle(long currentNanoTime)
+            {
+                i[0]++;
+                if(i[0] % App.time_transition == 0) {
+                    this.stop();
+                    App.sceneMapping(Objects.requireNonNull(App.getCurrentScene()), "add_consultation_scene");
+                }
+            }
+        }.start();
+
     }
 }

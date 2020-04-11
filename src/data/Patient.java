@@ -2,6 +2,7 @@ package data;
 
 import application.App;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -99,6 +100,25 @@ public class Patient {
             return new Patient(rset.getInt(1), rset.getString(2), rset.getString(3), false);
         } catch (SQLException throwable) {
             throwable.printStackTrace();
+        }
+        return null;
+    }
+
+    public static ResultSet getPatientsByConsultationId(int consultation_id){
+        try{
+            // the insert statement
+            String query = "select\n" +
+                    "p.NAME, p.LAST_NAME\n" +
+                    "from PATIENT p\n" +
+                    "join CONSULTATION_CARRYOUT cc on p.PATIENT_ID = cc.PATIENT_ID\n" +
+                    "where CONSULTATION_ID = ?";
+            // create the insert preparedStatement
+            PreparedStatement preparedStmt = App.database.getConnection().prepareStatement(query);
+            preparedStmt.setInt(1, consultation_id);
+            return preparedStmt.executeQuery();
+
+        }catch(SQLException ex){
+            ex.printStackTrace();
         }
         return null;
     }
