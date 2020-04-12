@@ -96,7 +96,7 @@ public class AddConsultationController implements Initializable {
         // check if minimum 1 patient exist in tmp_patients or if fields are not empty
         if(date_field.getValue() != null && hour_field.getValue() != null && (!tmp_patients.isEmpty() || validField())){
             // open confirmation dialog
-            loadDialog(actionEvent);
+            loadDialog();
         }else{
             validateTextFieldAction();
             validateDateFieldAction();
@@ -168,7 +168,7 @@ public class AddConsultationController implements Initializable {
         return false;
     }
 
-    private void loadDialog(ActionEvent event){
+    private void loadDialog(){
         JFXDialogLayout content = new JFXDialogLayout();
         confirmation = false;
         content.setHeading(new Text("La consultation a été enregistrée !"));

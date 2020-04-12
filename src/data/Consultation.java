@@ -67,6 +67,24 @@ public class Consultation{
         }
         return null;
     }
+
+    public static ResultSet getConsultationInfoById(int consultation_id){
+        try{
+            // the insert statement
+            String query = "select price, PAY_MODE\n" +
+                    "from CONSULTATION\n" +
+                    "where CONSULTATION_ID = ?;";
+            // create the insert preparedStatement
+            PreparedStatement preparedStmt = App.database.getConnection().prepareStatement(query);
+            preparedStmt.setInt(1, consultation_id);
+            return preparedStmt.executeQuery();
+        }catch(SQLException ex){
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+
     
 
 
