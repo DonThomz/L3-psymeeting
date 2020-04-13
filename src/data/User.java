@@ -11,6 +11,7 @@ public class User {
     // --------------------
     //   Attributes
     // --------------------
+
         private int user_id;
         private String username;
         private String name;
