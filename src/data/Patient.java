@@ -1,13 +1,12 @@
 package data;
 
 import application.App;
+import oracle.jdbc.proxy.annotation.Pre;
 
 import javax.xml.transform.Result;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class Patient {
 
@@ -19,6 +18,11 @@ public class Patient {
         private String name;
         private String last_name;
         private boolean new_patient;
+        private Date birthday;
+        private String gender;
+        private String relationship;
+        private String discovery_way;
+
         private ArrayList<Job> jobs;
 
     // --------------------
@@ -44,6 +48,16 @@ public class Patient {
             this.last_name = last_name;
             this.new_patient = new_patient;
             this.jobs = jobs;
+        }
+
+        public Patient(int patient_id, String name, String last_name, Date birthday, String gender, String relationship, String discovery_way) {
+            this.patient_id = patient_id;
+            this.name = name;
+            this.last_name = last_name;
+            this.birthday = birthday;
+            this.gender = gender;
+            this.relationship = relationship;
+            this.discovery_way = discovery_way;
         }
 
     // --------------------
@@ -142,6 +156,49 @@ public class Patient {
             }
             return null;
         }
+
+        public static ArrayList<Patient> getAllPatientsProfiles(){
+
+            ArrayList<Patient> list_patients = new ArrayList<>();
+
+            try{
+                Statement stmt = App.database.getConnection().createStatement();
+                ResultSet result = stmt.executeQuery("select PATIENT_ID, NAME, LAST_NAME, BIRTHDAY, GENDER, RELATIONSHIP, DISCOVERY_WAY from PATIENT");
+                while(result.next()){
+                    list_patients.add(new Patient(result.getInt(1),
+                            result.getString(2),
+                            result.getString(3),
+                            result.getDate(4),
+                            result.getString(5),
+                            result.getString(6),
+                            result.getString(7)));
+                }
+
+            }catch (SQLException ex){
+                ex.printStackTrace();
+            }
+            for (Patient p: list_patients
+                 ) {
+                ArrayList<Job> jobs = new ArrayList<>();
+                try{
+                    PreparedStatement preparedStatement = App.database.getConnection().prepareStatement("select JOBS_ID, JOB_NAME, JOB_DATE " +
+                            "from JOBS " +
+                            "where PATIENT_ID = ?");
+                    preparedStatement.setInt(1, p.getPatient_id());
+                    ResultSet result = preparedStatement.executeQuery();
+                    while(result.next()){
+                        Calendar tmp_date_job = App.Date2Calendar(result.getDate(3));
+                        jobs.add(new Job(result.getInt(1), result.getString(2), tmp_date_job));
+                    }
+                    p.setJobs(jobs);
+                }catch (SQLException ex){
+                    ex.printStackTrace();
+                }
+            }
+
+            return list_patients;
+        }
+
 
     // --------------------
     //   Override methods

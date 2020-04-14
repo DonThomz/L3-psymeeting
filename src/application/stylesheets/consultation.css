@@ -3,6 +3,12 @@
     version: 1.0
     author: Thomas Guillaume
  */
+
+
+.content_text{
+    -fx-padding: 10,10,10,10;
+}
+
 .consultation_cell{
     -fx-max-width: 650;
     -fx-min-width: 650;
@@ -10,8 +16,4 @@
     -fx-font-size: 18;
     -jfx-button-type: RAISED;
     -fx-background-color: #fafafa;
-}
-
-.content_text{
-    -fx-padding: 10,10,10,10;
 }

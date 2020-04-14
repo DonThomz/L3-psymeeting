@@ -14,6 +14,8 @@ import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -38,19 +40,22 @@ public class AddConsultationController implements Initializable {
     public JFXTextField email_field;
     public JFXCheckBox anxiety_checkbox;
     public JFXButton submit_button;
+    public JFXButton test;
+
     RequiredFieldValidator validator_field;
 
     // Box
     public StackPane stackPane;
     public VBox form_box;
     public ScrollPane scroll_pane;
+    public VBox patients_save;
 
     // --------------------
     //   Attributes
     // --------------------
     private ArrayList<Patient> tmp_patients;
     private ArrayList<User> tmp_users;
-    private int max_patient_id;
+    private int last_patient_id;
     private int consultation_id;
     private boolean confirmation;
 
@@ -67,11 +72,12 @@ public class AddConsultationController implements Initializable {
 
         // init patient label
         nb_patients = 1;
-        max_patient_id = Patient.getLastPrimaryKeyId();
+        last_patient_id = Patient.getLastPrimaryKeyId();
         label_patients.setText(label_patients.getText() + " " +nb_patients);
 
-        // init tmp_patients ArrayList
+        // init ArrayList
         tmp_patients = new ArrayList<>();
+        tmp_users = new ArrayList<>();
 
         // validation settings
         validator_field = new RequiredFieldValidator();
@@ -86,6 +92,7 @@ public class AddConsultationController implements Initializable {
 
     }
 
+
     // --------------------
     //  Action methods
     // --------------------
@@ -96,7 +103,7 @@ public class AddConsultationController implements Initializable {
         // check if minimum 1 patient exist in tmp_patients or if fields are not empty
         if(date_field.getValue() != null && hour_field.getValue() != null && (!tmp_patients.isEmpty() || validField())){
             // open confirmation dialog
-            loadDialog();
+            confirmationDialog();
         }else{
             validateTextFieldAction();
             validateDateFieldAction();
@@ -104,7 +111,6 @@ public class AddConsultationController implements Initializable {
         add_patient_button.setDisable(false);
 
     }
-
 
     public void add(ActionEvent actionEvent) { // button "Ajouter patient"
         // field not empty
@@ -115,12 +121,16 @@ public class AddConsultationController implements Initializable {
                 // reset field
                 resetField();
 
+                // add patient to the side right bar
+                attachPatients();
                 // update patient label
                 updatePatientLabel();
+
             }
         }
         else validateTextFieldAction();
     }
+
 
     // --------------------
     //  Private methods
@@ -143,10 +153,11 @@ public class AddConsultationController implements Initializable {
                 form_box.getChildren().add(2, warring);
                 return false;
             }
-        } else {
-            if (max_patient_id != -1) {
-                tmp_patients.add(new Patient(max_patient_id + 1, name_field.getText(), last_name_field.getText(), true));
-                max_patient_id++;
+        } else { // create a patient and a user
+            if (last_patient_id != -1) {
+                tmp_patients.add(new Patient(last_patient_id + 1, name_field.getText(), last_name_field.getText(), true));
+                tmp_users.add(new User(User.getLastUserId(), email_field.getText()));
+                last_patient_id++;
                 return true;
             }
         }
@@ -168,7 +179,7 @@ public class AddConsultationController implements Initializable {
         return false;
     }
 
-    private void loadDialog(){
+    private void confirmationDialog(){
         JFXDialogLayout content = new JFXDialogLayout();
         confirmation = false;
         content.setHeading(new Text("La consultation a été enregistrée !"));
@@ -198,6 +209,8 @@ public class AddConsultationController implements Initializable {
                 confirmation = true;
                 dialog.close();
                 updateNewConsultation();
+                // reload scene
+                App.sceneMapping("add_consultation_scene", "add_consultation_scene");
             }
         });
         cancel.setOnAction(new EventHandler<ActionEvent>() {
@@ -210,6 +223,23 @@ public class AddConsultationController implements Initializable {
         content.setActions(cancel, submit);
 
         dialog.show();
+    }
+
+    private void attachPatients(){ // attach patient save to the right side
+        JFXButton patient_save = new JFXButton();
+        patient_save.getStyleClass().add("patient_cell");
+        patient_save.setMaxWidth(250);
+        patient_save.setMaxHeight(100);
+
+        String text = "Patient" + nb_patients
+                + "\n " + tmp_patients.get(nb_patients-1).getName()
+                + " " + tmp_patients.get(nb_patients-1).getName()
+                + "\n\n Email :\n" + tmp_users.get(nb_patients-1).getEmail();
+
+        patient_save.setText(text);
+        patients_save.getChildren().add(patient_save);
+        patients_save.setSpacing(20);
+
     }
 
 
@@ -276,6 +306,7 @@ public class AddConsultationController implements Initializable {
             }
         });
     }
+
 
     // --------------------
     //  Update methods
@@ -391,8 +422,6 @@ public class AddConsultationController implements Initializable {
                 App.database.getConnection().commit();
                 System.out.println("successful");
 
-                // reload scene
-                App.sceneMapping("add_consultation_scene", "add_consultation_scene");
             }
         }catch (SQLException ex){
             System.out.println("Error creation consultation");

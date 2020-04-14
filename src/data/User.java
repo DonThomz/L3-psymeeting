@@ -45,6 +45,7 @@ public class User {
             }
         }
 
+
         // guest user without password
         public User(int user_id, String email){
             this.user_id = user_id;
@@ -67,6 +68,17 @@ public class User {
         return last_name;
     }
 
+    public int getUser_id() {
+        return user_id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
 
     // --------------------
     //   Statement methods

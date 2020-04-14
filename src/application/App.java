@@ -101,26 +101,6 @@ public class App extends Application {
         window.setResizable(false);
         window.setTitle("PsyMeeting - Login");
         window.show();
-        //centerWindow();
-        /*final long startNanoTime = System.nanoTime();
-        final int[] i = {0};
-        new AnimationTimer()
-        {
-            public void handle(long currentNanoTime)
-            {
-                i[0]++;
-                if(i[0] % 60 == 0) {
-                    //System.out.println(stage.getX() + " : " + stage.getY());
-                    //System.out.println("window" + window.getWidth() + " : " + window.getHeight());
-                    //assert home_scene != null;
-                    //System.out.println(home_scene.getWidth() + " : " + home_scene.getHeight());
-                }
-                double t = (currentNanoTime - startNanoTime) / 1000000000.0;
-
-
-            }
-        }.start();*/
-
     }
 
 
@@ -137,10 +117,11 @@ public class App extends Application {
             else { // reset current resolution
                 current_resolution = app_default_resolution;
             }
-
+            // update HashMap
             scenes.put(origin_scene, false);
             scenes.put(target_scene, true);
-            // change scene
+
+            // Change scene
             switch (target_scene) {
                 case "home_scene":
                     root_home = FXMLLoader.load(App.class.getResource("fxml/home.fxml")); // launch initialize methods
@@ -157,7 +138,7 @@ public class App extends Application {
                     window.setTitle("PsyMeeting - Consultation");
                     break;
                 case "patients_scene":
-                    root_patients = FXMLLoader.load(App.class.getResource("fxml/consultation.fxml")); // launch initialize methods
+                    root_patients = FXMLLoader.load(App.class.getResource("fxml/patients.fxml")); // launch initialize methods
                     patients_scene = new Scene((Parent) root_patients, current_resolution[0], current_resolution[1]);
                     window.setScene(patients_scene);
                     window.setResizable(true);
@@ -208,7 +189,7 @@ public class App extends Application {
 
     // get current scene
     public static String getCurrentScene(){
-        for (HashMap.Entry hm: scenes.entrySet()
+        for (Map.Entry hm: scenes.entrySet()
              ) {
             if(hm.getValue().equals(true))
                 return hm.getKey().toString();
@@ -254,15 +235,13 @@ public class App extends Application {
         return cal;
     }
 
-    public static void sortCalendar(ArrayList<Calendar> list_date){
-        Collections.sort(list_date, new Comparator<Calendar>() {
-
-            @Override
-            public int compare(Calendar o1, Calendar o2) {
-                return o1.compareTo(o2);
-            }
-        });
+    // convert Date to Calendar
+    public static Calendar Date2Calendar(Date d){
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(d);
+        return cal;
     }
+
 
 
 

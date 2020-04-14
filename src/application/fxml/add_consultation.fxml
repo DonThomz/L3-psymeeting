@@ -9,15 +9,17 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.controller.AddConsultationController">
+<AnchorPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.controller.AddConsultationController">
    <stylesheets>
       <URL value="@../stylesheets/add_consultation.css" />
       <URL value="@../stylesheets/app.css" />
@@ -28,15 +30,15 @@
             <fx:include source="top_bar.fxml" />
          </top>
          <center>
-            <StackPane fx:id="stackPane" prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <StackPane fx:id="stackPane" BorderPane.alignment="CENTER">
                <children>
-                  <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                      <children>
-                        <HBox alignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                           <children>
-                              <ScrollPane fx:id="scroll_pane" maxWidth="1200.0" minWidth="1200.0" prefWidth="1200.0" vbarPolicy="NEVER">
-                                 <content>
-                                    <VBox fx:id="form_box" alignment="CENTER" maxWidth="1200.0" minWidth="1200.0">
+                        <ScrollPane hbarPolicy="NEVER">
+                          <content>
+                            <AnchorPane>
+                                 <children>
+                                    <VBox fx:id="form_box" alignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <children>
                                           <Label alignment="CENTER" text="Nouveau rendez vous" textAlignment="CENTER">
                                              <font>
@@ -46,7 +48,7 @@
                                                 <Insets bottom="50.0" top="50.0" />
                                              </VBox.margin>
                                           </Label>
-                                          <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                                          <VBox alignment="CENTER">
                                              <children>
                                                 <VBox prefHeight="200.0" prefWidth="100.0">
                                                    <children>
@@ -104,9 +106,9 @@
                                                       <Insets bottom="20.0" />
                                                    </VBox.margin>
                                                 </Label>
-                                                <HBox alignment="CENTER">
+                                                <HBox alignment="CENTER" prefWidth="719.0">
                                                    <children>
-                                                      <HBox alignment="CENTER" prefHeight="151.0" prefWidth="582.0" style="-fx-border-color: black;" HBox.hgrow="NEVER">
+                                                      <HBox alignment="CENTER" style="-fx-border-color: black;" HBox.hgrow="NEVER">
                                                          <children>
                                                             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="202.0">
                                                                <children>
@@ -178,6 +180,9 @@
                                                                </HBox.margin>
                                                             </VBox>
                                                          </children>
+                                                         <padding>
+                                                            <Insets right="30.0" />
+                                                         </padding>
                                                       </HBox>
                                                    </children>
                                                 </HBox>
@@ -208,15 +213,40 @@
                                           </HBox>
                                        </children>
                                     </VBox>
-                                 </content>
-                              </ScrollPane>
-                           </children>
-                        </HBox>
+                                 </children>
+                              </AnchorPane>
+                          </content>
+                        </ScrollPane>
                      </children>
-                  </AnchorPane>
+                  </HBox>
                </children>
             </StackPane>
          </center>
+         <left>
+            <Region prefWidth="200.0" BorderPane.alignment="CENTER" />
+         </left>
+         <right>
+            <AnchorPane BorderPane.alignment="CENTER">
+               <children>
+                  <VBox fx:id="patients_save" alignment="TOP_CENTER" prefHeight="660.0" prefWidth="271.0" style="-fx-background-color: fafafa;" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="20.0">
+                     <padding>
+                        <Insets bottom="20.0" top="20.0" />
+                     </padding>
+                     <effect>
+                        <DropShadow spread="0.06" />
+                     </effect>
+                     <children>
+                        <AnchorPane prefHeight="100.0" prefWidth="250.0">
+                           <children>
+                              <JFXButton fx:id="test" styleClass="patient_cell" text="Test" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="0.0" />
+                              <JFXButton layoutX="14.0" layoutY="-7.0" prefHeight="30.0" prefWidth="35.0" style="-fx-background-color: red;" text="C" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="0.0" />
+                           </children>
+                        </AnchorPane>
+                     </children>
+                  </VBox>
+               </children>
+            </AnchorPane>
+         </right>
       </BorderPane>
    </children>
 </AnchorPane>

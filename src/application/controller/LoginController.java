@@ -33,6 +33,8 @@ public class LoginController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
+        // init database
         App.database = new OracleDB();
         App.patients = new ArrayList<>();
         App.connection_active = false;
@@ -47,7 +49,7 @@ public class LoginController implements Initializable {
 
     }
 
-    public void login(ActionEvent actionEvent) throws IOException {
+    public void login(ActionEvent actionEvent){
 
         int[] i = {0};
         new AnimationTimer()
@@ -87,6 +89,7 @@ public class LoginController implements Initializable {
                                 // remove incorrect_text label
                                 box_login.getChildren().remove(incorrect_text);
 
+                                // load home scene
                                 App.sceneMapping("login_scene", "home_scene");
 
                                 App.centerWindow();

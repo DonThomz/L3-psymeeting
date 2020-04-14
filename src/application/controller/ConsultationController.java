@@ -28,9 +28,11 @@ public class ConsultationController implements Initializable {
     private Map<Calendar, JFXButton> consultations_map;
 
     private int consultation_size;
+
     // --------------------
     //   Initialize method
     // --------------------
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 

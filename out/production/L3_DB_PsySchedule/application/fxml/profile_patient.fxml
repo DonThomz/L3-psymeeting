@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<ScrollPane hbarPolicy="NEVER" maxHeight="-Infinity" maxWidth="600.0" minHeight="-Infinity" minWidth="600.0" prefWidth="600.0" style="-fx-background-color: fafafa;" vbarPolicy="ALWAYS" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1">
+  <content>
+    <AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0">
+         <children>
+            <Label text="Label" />
+         </children></AnchorPane>
+  </content>
+   <effect>
+      <DropShadow />
+   </effect>
+</ScrollPane>
