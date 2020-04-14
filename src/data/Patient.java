@@ -84,6 +84,22 @@ public class Patient {
             return jobs;
         }
 
+        public Date getBirthday() {
+            return birthday;
+        }
+
+        public String getGender() {
+            return gender;
+        }
+
+        public String getDiscovery_way() {
+            return discovery_way;
+        }
+
+        public String getRelationship() {
+            return relationship;
+        }
+
     // --------------------
     //   Set methods
     // --------------------

@@ -12,6 +12,7 @@
 
  */
 
+
 .button-raised{
     -fx-border: none;
     -fx-cursor: pointer;
@@ -41,4 +42,9 @@
 .warring_label{
     -fx-text-fill: red;
     -fx-padding: 20 20 20 20;
+}
+
+.label_form{
+    -fx-font-weight: bold;
+    -fx-font-style: italic;
 }

@@ -19,6 +19,7 @@ public class PatientsController implements Initializable {
 
     // Attributes
     public static ArrayList<Patient> list_patients;
+    public static int current_patient_id;
     public AnchorPane profilePane;
 
     // --------------------
@@ -49,6 +50,7 @@ public class PatientsController implements Initializable {
     private void loadPatientInfo(Patient p) {
         try {
             profilePane.getChildren().clear();
+            current_patient_id = p.getPatient_id();
             profilePane.getChildren().add(FXMLLoader.load(getClass().getResource("../fxml/profile_patient.fxml")));
         }catch (IOException ex){
             ex.printStackTrace();
