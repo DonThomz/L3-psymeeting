@@ -9,6 +9,7 @@
     button blue : #56c8d8
     button white : #fafafa
     grey : #eceff1
+    black grey : #546e7a
 
  */
 
@@ -24,20 +25,6 @@
     -fx-font-weight: bold;
     -jfx-disable-visual-focus: true;
 }
-
-.patient_cell{
-    -fx-padding: 20 20 20 20;
-    -fx-font-size: 14;
-    -jfx-button-type: RAISED;
-    -fx-background-color: #fafafa;
-}
-
-.patient_cell_list{
-    -fx-min-width: 350;
-    -fx-pref-width: 350;
-    -fx-max-width: 350;
-}
-
 
 .warring_label{
     -fx-text-fill: red;

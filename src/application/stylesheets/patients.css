@@ -1,0 +1,27 @@
+/*
+    scene: patients
+    version: 1.0
+    author: Thomas Guillaume
+ */
+
+.patient_cell{
+    -fx-padding: 20 20 20 20;
+    -fx-font-size: 14;
+    -jfx-button-type: RAISED;
+    -fx-background-color: #fafafa;
+}
+
+.patient_cell_list{
+    -fx-min-width: 350;
+    -fx-pref-width: 350;
+    -fx-max-width: 350;
+    -jfx-disable-visual-focus: true;
+}
+
+.patient_consultation_cell{
+    -fx-font-size: 14;
+    -fx-min-width: 400;
+    -fx-min-height: 100;
+    -jfx-button-type: RAISED;
+    -fx-background-color: #fafafa;
+}

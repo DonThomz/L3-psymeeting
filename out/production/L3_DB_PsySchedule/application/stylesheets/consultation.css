@@ -10,10 +10,9 @@
 }
 
 .consultation_cell{
+    -fx-font-size: 18;
     -fx-max-width: 650;
     -fx-min-width: 650;
-    -fx-padding: 20 20 20 20;
-    -fx-font-size: 18;
     -jfx-button-type: RAISED;
     -fx-background-color: #fafafa;
 }
