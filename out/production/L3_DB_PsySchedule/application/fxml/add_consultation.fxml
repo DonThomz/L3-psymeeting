@@ -2,9 +2,9 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXCheckBox?>
+<?import com.jfoenix.controls.JFXComboBox?>
 <?import com.jfoenix.controls.JFXDatePicker?>
 <?import com.jfoenix.controls.JFXTextField?>
-<?import com.jfoenix.controls.JFXTimePicker?>
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
@@ -85,7 +85,7 @@
                                                                   <Insets bottom="20.0" right="20.0" top="20.0" />
                                                                </HBox.margin>
                                                             </Label>
-                                                            <JFXTimePicker fx:id="hour_field" />
+                                                            <JFXComboBox fx:id="hour_field" prefHeight="26.0" prefWidth="132.0" />
                                                          </children>
                                                          <VBox.margin>
                                                             <Insets />
@@ -236,12 +236,7 @@
                         <DropShadow spread="0.06" />
                      </effect>
                      <children>
-                        <AnchorPane prefHeight="100.0" prefWidth="250.0">
-                           <children>
-                              <JFXButton fx:id="test" styleClass="patient_cell" text="Test" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="0.0" />
-                              <JFXButton layoutX="14.0" layoutY="-7.0" prefHeight="30.0" prefWidth="35.0" style="-fx-background-color: red;" text="C" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="0.0" />
-                           </children>
-                        </AnchorPane>
+                        <AnchorPane prefHeight="100.0" prefWidth="250.0" />
                      </children>
                   </VBox>
                </children>

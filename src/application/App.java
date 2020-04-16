@@ -15,7 +15,10 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -240,6 +243,18 @@ public class App extends Application {
         Calendar cal = Calendar.getInstance();
         cal.setTime(d);
         return cal;
+    }
+
+    // convert LocalDate to format string "yyyy-MM-dd HH:mm:ss"
+    public static String LocalDateFormat(LocalDate date){
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Timestamp.valueOf(date.atTime(LocalTime.MIDNIGHT)));
+    }
+
+    public static String[] getDatesOfDay(LocalDate date){
+        String[] dates = new String[2];
+        dates[0] = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Timestamp.valueOf(date.atTime(LocalTime.MIDNIGHT)));
+        dates[1] = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Timestamp.valueOf(date.atTime(LocalTime.MAX)));
+        return dates;
     }
 
 

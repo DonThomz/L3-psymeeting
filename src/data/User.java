@@ -13,12 +13,14 @@ public class User {
     // --------------------
 
         private int user_id;
+        private int patient_id;
         private String username;
         private String name;
         private String last_name;
-
         private String email;
         private String password;
+
+        private boolean new_user;
 
 
     // --------------------
@@ -46,10 +48,13 @@ public class User {
         }
 
 
-        // guest user without password
-        public User(int user_id, String email){
+        // guest user without password => generate a random password
+        public User(int user_id, String email, int patient_id, boolean new_user){
             this.user_id = user_id;
             this.email = email;
+            this.password = "tmp_password";
+            this.patient_id = patient_id;
+            this.new_user = new_user;
         }
 
 
@@ -78,6 +83,14 @@ public class User {
 
     public String getPassword() {
         return password;
+    }
+
+    public int getPatient_id() {
+        return patient_id;
+    }
+
+    public boolean isNew_user() {
+        return new_user;
     }
 
     // --------------------

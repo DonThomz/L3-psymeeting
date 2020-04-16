@@ -17,7 +17,7 @@ public class PatientsController implements Initializable {
 
     // JavaFX
     public VBox patient_list_box;
-    public HashMap<JFXButton, Boolean> buttons_HashMap;
+    public HashMap<JFXButton, Boolean> profilesButtonsHashMap;
 
     // Attributes
     public static ArrayList<Patient> list_patients;
@@ -29,13 +29,14 @@ public class PatientsController implements Initializable {
     // --------------------
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        buttons_HashMap = new HashMap<>();
+        profilesButtonsHashMap = new HashMap<>();
         patient_list_box.setSpacing(20);
         setupListPatients();
     }
 
     public void setupListPatients(){
         list_patients = Patient.getAllPatientsProfiles();
+        int i = 0;
         for (Patient p: list_patients
              ) {
             JFXButton patient_button = new JFXButton();
@@ -44,20 +45,22 @@ public class PatientsController implements Initializable {
 
             patient_button.setText(p.getName() + " " + p.getLast_name());
 
-            buttons_HashMap.put(patient_button, false);
+            profilesButtonsHashMap.put(patient_button, false);
+
+            int finalI = i;
             patient_button.setOnAction(event -> {
-                loadPatientInfo(p);
+                loadPatientInfo(p, finalI);
                 updateButtonStyle(patient_button);
             });
-
+            i++;
             patient_list_box.getChildren().add(patient_button);
         }
     }
 
-    private void loadPatientInfo(Patient p) {
+    private void loadPatientInfo(Patient p, int i) {
         try {
             profilePane.getChildren().clear();
-            current_patient_id = p.getPatient_id();
+            current_patient_id = i;
             profilePane.getChildren().add(FXMLLoader.load(getClass().getResource("../fxml/profile_patient.fxml")));
         }catch (IOException ex){
             ex.printStackTrace();
@@ -65,13 +68,13 @@ public class PatientsController implements Initializable {
     }
 
     private void updateButtonStyle(JFXButton b){
-        buttons_HashMap.forEach((k,v) -> {
+        profilesButtonsHashMap.forEach((k, v) -> {
             if(k.getText().equals(b.getText())) {
-                buttons_HashMap.put(k, true);
+                profilesButtonsHashMap.put(k, true);
                 k.setStyle("-fx-background-color: #546e7a");
             }
             else {
-                buttons_HashMap.put(k, false);
+                profilesButtonsHashMap.put(k, false);
                 k.setStyle("-fx-background-color: #fafafa");
             }
         });

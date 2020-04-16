@@ -7,14 +7,9 @@ import data.Consultation;
 import data.Patient;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 import java.net.URL;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class ConsultationController extends ParentController implements Initializable {
@@ -25,9 +20,6 @@ public class ConsultationController extends ParentController implements Initiali
     public JFXComboBox<Label> filter;
 
     // Attributes
-
-
-
 
 
     // --------------------

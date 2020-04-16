@@ -97,4 +97,4 @@ CREATE TABLE consultation_carryout(
 */
 
 
-
+commit;

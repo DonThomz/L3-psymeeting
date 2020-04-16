@@ -43,16 +43,14 @@ public class ProfileController extends ParentController implements Initializable
 
         super.date_today = Calendar.getInstance();
 
-        tmp_p = PatientsController.list_patients.get(PatientsController.current_patient_id-1);
+        System.out.println(PatientsController.current_patient_id);
+        tmp_p = PatientsController.list_patients.get(PatientsController.current_patient_id);
 
         name_field.setText(tmp_p.getName());
 
         last_name_field.setText(tmp_p.getLast_name());
 
-        if(tmp_p.getBirthday() == null) {
-            System.out.println("t");
-        }
-        else{
+        if(tmp_p.getBirthday() != null) {
             birthday_field.setDisable(true);
             birthday_field.setValue(tmp_p.getBirthday().toLocalDate());
         }
@@ -84,7 +82,6 @@ public class ProfileController extends ParentController implements Initializable
             while(result.next()){
                 consultation_id.add(result.getInt(1)); // add id
             }
-            consultation_id.forEach(System.out::println);
             // Build consultation button
             setupBoxConsultations();
 
