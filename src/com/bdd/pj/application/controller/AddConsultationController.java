@@ -338,7 +338,7 @@ public class AddConsultationController implements Initializable {
     private void addListenerValidationField(JFXComboBox<String> field) {
         //field.getValidators().add(validator_field);
         field.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if(date_field.getValue() != null) {
+            if (date_field.getValue() != null) {
                 if (date_field.getValue().compareTo(LocalDate.now()) >= 0)
                     initHourComboBox();
                 if (newValue)

@@ -207,7 +207,9 @@ public class Main extends Application {
         }
     }
 
-    // return monitor index
+    /**
+     * Return monitor index
+     */
     public static int getScreenMonitorIndex() {
         int screen_index = 0;
         for (int i = 0; i < Screen.getScreens().size(); i++) {
@@ -224,27 +226,35 @@ public class Main extends Application {
         window.setY((primScreenBounds.getHeight() - window.getHeight()) / 2);
     }
 
-    // reset HashMap
+    /**
+     * reset HashMap
+     */
     public static void resetHashMap() {
         scenes.put("login_scene", true);
         scenes.put(getCurrentScene(), false);
     }
 
-    // convert Timestamp to Calendar
+    /**
+     * convert Timestamp to Calendar
+     */
     public static Calendar Timestamp2Calendar(Timestamp t) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(t);
         return cal;
     }
 
-    // convert Date to Calendar
+    /**
+     * convert Date to Calendar
+     */
     public static Calendar Date2Calendar(Date d) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(d);
         return cal;
     }
 
-    // convert LocalDate to format string "yyyy-MM-dd HH:mm:ss"
+    /**
+     * convert LocalDate to format string "yyyy-MM-dd HH:mm:ss"
+     */
     public static String LocalDateFormat(LocalDate date) {
         return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Timestamp.valueOf(date.atTime(LocalTime.MIDNIGHT)));
     }
