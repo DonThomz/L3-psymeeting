@@ -36,7 +36,7 @@ public class OracleDB {
             this.connection.setAutoCommit(false);
             System.out.println(" *** Connection successfully established ***");
             System.out.println("Welcome " + username);
-
+            return true;
         } catch (SQLException ex) {
             // if docker oracle database port : 51521
             try {
@@ -64,7 +64,6 @@ public class OracleDB {
                 return false;
             }
         }
-        return false;
     }
 
     public void closeDatabase() {

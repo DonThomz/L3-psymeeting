@@ -49,7 +49,7 @@ public class LoginController implements Initializable {
         fillField(tmpSaveFile.exists());
 
 
-        incorrect_text = new Label("identifiant ou mot de passe incorrect !");
+        incorrect_text = new Label("Identifiant ou mot de passe incorrect !");
         incorrect_text.getStyleClass().add("warring_label");
 
     }
