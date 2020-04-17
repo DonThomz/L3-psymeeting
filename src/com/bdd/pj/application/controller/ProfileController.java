@@ -1,19 +1,16 @@
-package application.controller;
+package com.bdd.pj.application.controller;
 
-import application.App;
-import com.jfoenix.controls.JFXButton;
+import com.bdd.pj.application.Main;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTextField;
-import data.Consultation;
-import data.Job;
-import data.Patient;
+import com.bdd.pj.data.Consultation;
+import com.bdd.pj.data.Job;
+import com.bdd.pj.data.Patient;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.VBox;
-import oracle.jdbc.proxy.annotation.Pre;
 
 import java.net.URL;
-import java.sql.Array;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -72,7 +69,7 @@ public class ProfileController extends ParentController implements Initializable
 
         consultation_id = new ArrayList<>();
         try {
-            PreparedStatement preparedStatement = App.database.getConnection().prepareStatement("select c.CONSULTATION_ID\n" +
+            PreparedStatement preparedStatement = Main.database.getConnection().prepareStatement("select c.CONSULTATION_ID\n" +
                     "from CONSULTATION c\n" +
                     "join CONSULTATION_CARRYOUT CC on c.CONSULTATION_ID = CC.CONSULTATION_ID\n" +
                     "where PATIENT_ID = ?");

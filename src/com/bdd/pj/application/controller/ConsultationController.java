@@ -1,10 +1,8 @@
-package application.controller;
+package com.bdd.pj.application.controller;
 
-import application.App;
-import application.TransitionEffect;
+import com.bdd.pj.application.TransitionEffect;
 import com.jfoenix.controls.*;
-import data.Consultation;
-import data.Patient;
+import com.bdd.pj.data.Consultation;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;

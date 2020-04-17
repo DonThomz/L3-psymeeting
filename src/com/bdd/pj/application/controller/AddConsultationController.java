@@ -1,22 +1,16 @@
-package application.controller;
+package com.bdd.pj.application.controller;
 
-import application.App;
-import application.TransitionEffect;
+import com.bdd.pj.application.Main;
+import com.bdd.pj.application.TransitionEffect;
 import com.jfoenix.controls.*;
 import com.jfoenix.validation.RequiredFieldValidator;
-import com.sun.org.apache.xpath.internal.operations.Bool;
-import data.Consultation;
-import data.Patient;
-import data.User;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import com.bdd.pj.data.Consultation;
+import com.bdd.pj.data.Patient;
+import com.bdd.pj.data.User;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -178,7 +172,7 @@ public class AddConsultationController implements Initializable {
 
     private boolean userExist() { // check if user exist in database with email_field
         try {
-            Statement stmt = App.database.getConnection().createStatement();
+            Statement stmt = Main.database.getConnection().createStatement();
             ResultSet rset = stmt.executeQuery("select email from USER_APP");
             while (rset.next()) {
                 if (rset.getString(1).equals(email_field.getText())) {
@@ -220,7 +214,7 @@ public class AddConsultationController implements Initializable {
             dialog.close();
             updateNewConsultation();
             // reload scene
-            App.sceneMapping("add_consultation_scene", "add_consultation_scene");
+            Main.sceneMapping("add_consultation_scene", "add_consultation_scene");
         });
         cancel.setOnAction(event -> {
             confirmation = false;
@@ -354,7 +348,7 @@ public class AddConsultationController implements Initializable {
     }
 
     private void initHourComboBox() {
-        String[] dates = App.getDatesOfDay(date_field.getValue());
+        String[] dates = Main.getDatesOfDay(date_field.getValue());
         System.out.println(dates[0] + " " + dates[1]);
         try {
             String query = "select CONSULTATION_DATE\n" +
@@ -362,7 +356,7 @@ public class AddConsultationController implements Initializable {
                     "where CONSULTATION_DATE between TO_DATE('" + dates[0] + "', 'yyyy-mm-dd HH24:mi:ss') "
                     + "and TO_DATE('" + dates[1] + "', 'yyyy-mm-dd HH24:mi:ss')";
 
-            PreparedStatement preparedStatement = App.database.getConnection().prepareStatement(query);
+            PreparedStatement preparedStatement = Main.database.getConnection().prepareStatement(query);
             ResultSet result = preparedStatement.executeQuery();
 
             // Check all hours
@@ -443,7 +437,7 @@ public class AddConsultationController implements Initializable {
             String query = " insert into patient (patient_id, name, last_name)"
                     + " values (?, ?, ?)";
             // create the insert preparedStatement
-            PreparedStatement preparedStmt = App.database.getConnection().prepareStatement(query);
+            PreparedStatement preparedStmt = Main.database.getConnection().prepareStatement(query);
 
             for (Patient p : tmp_patients // for each patients saved in tmp_patients
             ) {
@@ -469,7 +463,7 @@ public class AddConsultationController implements Initializable {
             String query = " insert into USER_APP (USER_ID, EMAIL, PASSWORD, PATIENT_ID)"
                     + " values (?, ?, ?, ?)";
             // create the insert preparedStatement
-            PreparedStatement preparedStmt = App.database.getConnection().prepareStatement(query);
+            PreparedStatement preparedStmt = Main.database.getConnection().prepareStatement(query);
 
             for (User u : tmp_users // for each patients saved in tmp_patients
             ) {
@@ -498,7 +492,7 @@ public class AddConsultationController implements Initializable {
                 String query = " insert into CONSULTATION (CONSULTATION_ID, CONSULTATION_DATE)"
                         + " values (?, ?)";
                 // create the insert preparedStatement
-                PreparedStatement preparedStmt = App.database.getConnection().prepareStatement(query);
+                PreparedStatement preparedStmt = Main.database.getConnection().prepareStatement(query);
 
                 // config parameters
                 preparedStmt.setInt(1, consultation_id + 1);
@@ -507,7 +501,7 @@ public class AddConsultationController implements Initializable {
                 // execute the preparedStatement
                 preparedStmt.execute();
 
-                App.database.getConnection().commit();
+                Main.database.getConnection().commit();
             }
 
         } catch (SQLException ex) {
@@ -522,7 +516,7 @@ public class AddConsultationController implements Initializable {
             String query = " insert into CONSULTATION_CARRYOUT (PATIENT_ID, CONSULTATION_ID)"
                     + " values (?, ?)";
             // create the insert preparedStatement
-            PreparedStatement preparedStmt = App.database.getConnection().prepareStatement(query);
+            PreparedStatement preparedStmt = Main.database.getConnection().prepareStatement(query);
 
             // create each carryout for each patients
             for (Patient p : tmp_patients
@@ -534,7 +528,7 @@ public class AddConsultationController implements Initializable {
                 // execute the preparedStatement
                 preparedStmt.execute();
             }
-            App.database.getConnection().commit();
+            Main.database.getConnection().commit();
 
         } catch (SQLException ex) {
             System.err.println("Got an exception!");
@@ -547,7 +541,7 @@ public class AddConsultationController implements Initializable {
             if (confirmation) {
                 System.out.println("conf");
                 // enable commit command
-                App.database.getConnection().setAutoCommit(false);
+                Main.database.getConnection().setAutoCommit(false);
 
                 // update patient table with new patients
                 updatePatientTable();
@@ -561,7 +555,7 @@ public class AddConsultationController implements Initializable {
                 // update consultation_carryOut table
                 updateCarryOutTable();
 
-                App.database.getConnection().commit();
+                Main.database.getConnection().commit();
                 System.out.println("successful");
             }
         } catch (SQLException ex) {

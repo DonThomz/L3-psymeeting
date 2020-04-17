@@ -1,22 +1,20 @@
-package application.controller;
+package com.bdd.pj.application.controller;
 
-import application.App;
-import data.*;
+import com.bdd.pj.application.Main;
+import com.bdd.pj.data.OracleDB;
+import com.bdd.pj.data.User;
 
 import javafx.animation.AnimationTimer;
 import javafx.event.ActionEvent;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
-import javafx.stage.Screen;
 
 import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
@@ -40,9 +38,9 @@ public class LoginController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         // init database
-        App.database = new OracleDB();
-        App.patients = new ArrayList<>();
-        App.connection_active = false;
+        Main.database = new OracleDB();
+        Main.patients = new ArrayList<>();
+        Main.connection_active = false;
 
         // fill field text and checkbox
         File tmpSaveFile = new File("save_pwd.txt");
@@ -60,42 +58,42 @@ public class LoginController implements Initializable {
         new AnimationTimer() {
             public void handle(long currentNanoTime) {
                 i[0]++;
-                if (i[0] % App.time_transition == 0) {
+                if (i[0] % Main.time_transition == 0) {
                     this.stop();
                     // remove incorrect_text label
                     box_login.getChildren().remove(incorrect_text);
 
                     // if database already open
-                    if (App.connection_active) {
-                        App.database.closeDatabase();
+                    if (Main.connection_active) {
+                        Main.database.closeDatabase();
                         login_button.setText("Login");
-                        App.connection_active = false;
+                        Main.connection_active = false;
                         // reset field
                         username_field.setText(null);
                         password_field.setText(null);
                     } else {
                         if (username_field.getText() != null && password_field.getText() != null) {
                             // if correct username and password --> connection to database
-                            if (App.database.connectionDatabase(username_field.getText(), password_field.getText())) {
+                            if (Main.database.connectionDatabase(username_field.getText(), password_field.getText())) {
 
                                 if (save_pwd_checkbox.isSelected()) createSaveFile();
                                 else removeSaveFile();
 
-                                App.connection_active = true;
+                                Main.connection_active = true;
 
                                 // load user
-                                App.current_user = new User(username_field.getText());
+                                Main.current_user = new User(username_field.getText());
 
                                 // load home scene
-                                App.window.close();
+                                Main.window.close();
 
                                 // remove incorrect_text label
                                 box_login.getChildren().remove(incorrect_text);
 
                                 // load home scene
-                                App.sceneMapping("login_scene", "home_scene");
+                                Main.sceneMapping("login_scene", "home_scene");
 
-                                App.centerWindow();
+                                Main.centerWindow();
 
                             } else {
                                 // add incorrect_text label

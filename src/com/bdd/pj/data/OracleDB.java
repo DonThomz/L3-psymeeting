@@ -1,6 +1,4 @@
-package data;
-
-import application.App;
+package com.bdd.pj.data;
 
 import java.sql.*;
 

@@ -1,6 +1,6 @@
-package data;
+package com.bdd.pj.data;
 
-import application.App;
+import com.bdd.pj.application.Main;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -33,7 +33,7 @@ public class User {
 
             // admin user
             if (this.username.equals("admin")) {
-                Statement stmt = App.database.getConnection().createStatement();
+                Statement stmt = Main.database.getConnection().createStatement();
                 ResultSet rset = stmt.executeQuery("select NAME, LAST_NAME from ADMINISTRATOR");
                 rset.next();
                 this.name = rset.getString(1);
@@ -98,7 +98,7 @@ public class User {
     // --------------------
     public static int getLastUserId() {
         try {
-            Statement stmt = App.database.getConnection().createStatement();
+            Statement stmt = Main.database.getConnection().createStatement();
             ResultSet rset = stmt.executeQuery("select max(USER_ID) from USER_APP");
             rset.next();
             return rset.getInt(1);
@@ -110,7 +110,7 @@ public class User {
 
     public static int getPatientIdByEmail(String email) {
         try {
-            Statement stmt = App.database.getConnection().createStatement();
+            Statement stmt = Main.database.getConnection().createStatement();
             ResultSet rset = stmt.executeQuery("select\n" +
                     "       u.PATIENT_ID\n" +
                     "from USER_APP u\n" +

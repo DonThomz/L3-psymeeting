@@ -1,3 +1,2 @@
 Manifest-Version: 1.0
-Main-Class: application.App
-
+Main-Class: com.bdd.pj.application.Main

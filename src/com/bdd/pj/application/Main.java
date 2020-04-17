@@ -1,7 +1,9 @@
-package application;
+package com.bdd.pj.application;
 
 
-import data.*;
+import com.bdd.pj.data.OracleDB;
+import com.bdd.pj.data.Patient;
+import com.bdd.pj.data.User;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
@@ -16,12 +18,10 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-public class App extends Application {
+public class Main extends Application {
 
     //---------------------------------
     //         Database
@@ -126,35 +126,35 @@ public class App extends Application {
             // Change scene
             switch (target_scene) {
                 case "home_scene":
-                    root_home = FXMLLoader.load(App.class.getResource("fxml/home.fxml")); // launch initialize methods
+                    root_home = FXMLLoader.load(Main.class.getResource("fxml/home.fxml")); // launch initialize methods
                     home_scene = new Scene((Parent) root_home, current_resolution[0], current_resolution[1]);
                     window.setScene(home_scene);
                     window.setResizable(true);
                     window.setTitle("PsyMeeting - Home");
                     break;
                 case "consultation_scene":
-                    root_consultation = FXMLLoader.load(App.class.getResource("fxml/consultation.fxml")); // launch initialize methods
+                    root_consultation = FXMLLoader.load(Main.class.getResource("fxml/consultation.fxml")); // launch initialize methods
                     consultation_scene = new Scene((Parent) root_consultation, current_resolution[0], current_resolution[1]);
                     window.setScene(consultation_scene);
                     window.setResizable(true);
                     window.setTitle("PsyMeeting - Consultation");
                     break;
                 case "patients_scene":
-                    root_patients = FXMLLoader.load(App.class.getResource("fxml/patients.fxml")); // launch initialize methods
+                    root_patients = FXMLLoader.load(Main.class.getResource("fxml/patients.fxml")); // launch initialize methods
                     patients_scene = new Scene((Parent) root_patients, current_resolution[0], current_resolution[1]);
                     window.setScene(patients_scene);
                     window.setResizable(true);
                     window.setTitle("PsyMeeting - Patients");
                     break;
                 case "add_consultation_scene":
-                    root_add_consultation = FXMLLoader.load(App.class.getResource("fxml/add_consultation.fxml")); // launch initialize methods
+                    root_add_consultation = FXMLLoader.load(Main.class.getResource("fxml/add_consultation.fxml")); // launch initialize methods
                     add_consultation_scene = new Scene((Parent) root_add_consultation, current_resolution[0], current_resolution[1]);
                     window.setScene(add_consultation_scene);
                     window.setResizable(true);
                     window.setTitle("PsyMeeting - Consultations");
                     break;
                 case "login_scene":
-                    root_login = FXMLLoader.load(App.class.getResource("fxml/login.fxml")); // launch initialize methods
+                    root_login = FXMLLoader.load(Main.class.getResource("fxml/login.fxml")); // launch initialize methods
                     login_scene = new Scene((Parent) root_login, login_resolution[0], login_resolution[1]);
                     window.close();
                     // open a fresh window

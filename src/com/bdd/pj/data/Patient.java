@@ -1,9 +1,7 @@
-package data;
+package com.bdd.pj.data;
 
-import application.App;
-import oracle.jdbc.proxy.annotation.Pre;
+import com.bdd.pj.application.Main;
 
-import javax.xml.transform.Result;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -126,7 +124,7 @@ public class Patient {
 
     public static int getLastPrimaryKeyId() {
         try {
-            Statement stmt = App.database.getConnection().createStatement();
+            Statement stmt = Main.database.getConnection().createStatement();
             ResultSet rset = stmt.executeQuery("select max(patient_id) from PATIENT");
             rset.next();
             return rset.getInt(1);
@@ -138,7 +136,7 @@ public class Patient {
 
     public static Patient getPatientByEmail(String email) {
         try {
-            Statement stmt = App.database.getConnection().createStatement();
+            Statement stmt = Main.database.getConnection().createStatement();
             ResultSet rset = stmt.executeQuery("select\n" +
                     "       u.PATIENT_ID,\n" +
                     "       p.NAME,\n" +
@@ -163,7 +161,7 @@ public class Patient {
                     "join CONSULTATION_CARRYOUT cc on p.PATIENT_ID = cc.PATIENT_ID\n" +
                     "where CONSULTATION_ID = ?";
             // create the insert preparedStatement
-            PreparedStatement preparedStmt = App.database.getConnection().prepareStatement(query);
+            PreparedStatement preparedStmt = Main.database.getConnection().prepareStatement(query);
             preparedStmt.setInt(1, consultation_id);
             return preparedStmt.executeQuery();
 
@@ -178,7 +176,7 @@ public class Patient {
         ArrayList<Patient> list_patients = new ArrayList<>();
 
         try {
-            Statement stmt = App.database.getConnection().createStatement();
+            Statement stmt = Main.database.getConnection().createStatement();
             ResultSet result = stmt.executeQuery("select PATIENT_ID, NAME, LAST_NAME, BIRTHDAY, GENDER, RELATIONSHIP, DISCOVERY_WAY from PATIENT");
             while (result.next()) {
                 list_patients.add(new Patient(result.getInt(1),
@@ -197,13 +195,13 @@ public class Patient {
         ) {
             ArrayList<Job> jobs = new ArrayList<>();
             try {
-                PreparedStatement preparedStatement = App.database.getConnection().prepareStatement("select JOBS_ID, JOB_NAME, JOB_DATE " +
+                PreparedStatement preparedStatement = Main.database.getConnection().prepareStatement("select JOBS_ID, JOB_NAME, JOB_DATE " +
                         "from JOBS " +
                         "where PATIENT_ID = ?");
                 preparedStatement.setInt(1, p.getPatient_id());
                 ResultSet result = preparedStatement.executeQuery();
                 while (result.next()) {
-                    Calendar tmp_date_job = App.Date2Calendar(result.getDate(3));
+                    Calendar tmp_date_job = Main.Date2Calendar(result.getDate(3));
                     jobs.add(new Job(result.getInt(1), result.getString(2), tmp_date_job));
                 }
                 p.setJobs(jobs);

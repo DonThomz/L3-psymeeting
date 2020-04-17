@@ -1,10 +1,10 @@
-package application.controller;
+package com.bdd.pj.application.controller;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDialogLayout;
-import data.Consultation;
-import data.Patient;
+import com.bdd.pj.data.Consultation;
+import com.bdd.pj.data.Patient;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;

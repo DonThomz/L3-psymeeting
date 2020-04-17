@@ -1,6 +1,6 @@
-package data;
+package com.bdd.pj.data;
 
-import application.App;
+import com.bdd.pj.application.Main;
 import com.jfoenix.controls.JFXButton;
 import javafx.scene.control.TextArea;
 
@@ -151,7 +151,7 @@ public class Consultation {
 
     public static int getLastPrimaryKeyId() {
         try {
-            Statement stmt = App.database.getConnection().createStatement();
+            Statement stmt = Main.database.getConnection().createStatement();
             ResultSet result = stmt.executeQuery("select max(CONSULTATION_ID) from CONSULTATION");
             result.next();
             return result.getInt(1);
@@ -169,12 +169,12 @@ public class Consultation {
                     "from CONSULTATION c\n" +
                     "where c.CONSULTATION_ID = ?";
             // create the insert preparedStatement
-            PreparedStatement preparedStmt = App.database.getConnection().prepareStatement(query);
+            PreparedStatement preparedStmt = Main.database.getConnection().prepareStatement(query);
             preparedStmt.setInt(1, consultation_id);
             ResultSet result = preparedStmt.executeQuery();
             if (result.next()) {
 
-                return App.Timestamp2Calendar(result.getTimestamp(1));
+                return Main.Timestamp2Calendar(result.getTimestamp(1));
             }
 
         } catch (SQLException ex) {
@@ -191,7 +191,7 @@ public class Consultation {
                     "join FEEDBACK f on c.CONSULTATION_ID = f.FEEDBACK_ID\n" +
                     "where c.CONSULTATION_ID = ?";
             // create the insert preparedStatement
-            PreparedStatement preparedStmt = App.database.getConnection().prepareStatement(query);
+            PreparedStatement preparedStmt = Main.database.getConnection().prepareStatement(query);
             preparedStmt.setInt(1, consultation_id);
             return preparedStmt.executeQuery();
         } catch (SQLException ex) {

@@ -14,7 +14,7 @@
 <?import javafx.scene.text.Font?>
 
 <AnchorPane fx:id="login_pane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="application.controller.LoginController">
+            fx:controller="com.bdd.pj.application.controller.LoginController">
     <stylesheets>
         <URL value="@../stylesheets/login.css"/>
         <URL value="@../stylesheets/app.css"/>
