@@ -6,7 +6,7 @@ import java.sql.*;
 
 
 /**
- *  Database class
+ * Database class
  */
 public class OracleDB {
 
@@ -14,16 +14,17 @@ public class OracleDB {
 
     // Constructor
 
-    public OracleDB(){}
+    public OracleDB() {
+    }
 
     // Connexion methods
 
-    public boolean connectionDatabase(String username, String password){
+    public boolean connectionDatabase(String username, String password) {
 
         // load driver
-        try{
+        try {
             Class.forName("oracle.jdbc.driver.OracleDriver");
-        }catch (ClassNotFoundException ex){
+        } catch (ClassNotFoundException ex) {
             System.out.println(" *** ERROR LOADING DRIVER *** ");
             System.out.println("Message: " + ex.getMessage());
             System.out.println("Error code: " + ex.getCause());
@@ -36,9 +37,9 @@ public class OracleDB {
             System.out.println(" *** Connection successfully established ***");
             System.out.println("Welcome " + username);
 
-        }catch(SQLException ex){
+        } catch (SQLException ex) {
             // if docker oracle database port : 51521
-            try{
+            try {
                 this.connection = DriverManager.getConnection("jdbc:oracle:thin:@localhost:51521:xe", username, password);
                 System.out.println(" *** Connection successfully established ***");
                 System.out.println("Welcome " + username);
@@ -47,18 +48,18 @@ public class OracleDB {
             } catch (SQLException e) {
                 System.out.println(" *** ERROR CONNECTION TO DATABASE ***");
                 while (ex != null) {
-                    System.out.println ("SQL state: " + ex.getSQLState ());
-                    System.out.println ("Message: " + ex.getMessage ());
-                    System.out.println ("Error code: " +
-                            ex.getErrorCode ());
-                    ex = ex.getNextException ();
+                    System.out.println("SQL state: " + ex.getSQLState());
+                    System.out.println("Message: " + ex.getMessage());
+                    System.out.println("Error code: " +
+                            ex.getErrorCode());
+                    ex = ex.getNextException();
                 }
                 while (e != null) {
-                    System.out.println ("SQL state: " + e.getSQLState ());
-                    System.out.println ("Message: " + e.getMessage ());
-                    System.out.println ("Error code: " +
-                            e.getErrorCode ());
-                    e = e.getNextException ();
+                    System.out.println("SQL state: " + e.getSQLState());
+                    System.out.println("Message: " + e.getMessage());
+                    System.out.println("Error code: " +
+                            e.getErrorCode());
+                    e = e.getNextException();
                 }
                 return false;
             }
@@ -66,8 +67,8 @@ public class OracleDB {
         return false;
     }
 
-    public void closeDatabase(){
-        if(connection != null) {
+    public void closeDatabase() {
+        if (connection != null) {
             try {
                 connection.close();
                 System.out.println(" *** Connection close ***");

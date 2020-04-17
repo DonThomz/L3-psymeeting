@@ -34,11 +34,11 @@ public class PatientsController implements Initializable {
         setupListPatients();
     }
 
-    public void setupListPatients(){
+    public void setupListPatients() {
         list_patients = Patient.getAllPatientsProfiles();
         int i = 0;
-        for (Patient p: list_patients
-             ) {
+        for (Patient p : list_patients
+        ) {
             JFXButton patient_button = new JFXButton();
             patient_button.getStyleClass().add("patient_cell");
             patient_button.getStyleClass().add("patient_cell_list");
@@ -62,18 +62,17 @@ public class PatientsController implements Initializable {
             profilePane.getChildren().clear();
             current_patient_id = i;
             profilePane.getChildren().add(FXMLLoader.load(getClass().getResource("../fxml/profile_patient.fxml")));
-        }catch (IOException ex){
+        } catch (IOException ex) {
             ex.printStackTrace();
         }
     }
 
-    private void updateButtonStyle(JFXButton b){
+    private void updateButtonStyle(JFXButton b) {
         profilesButtonsHashMap.forEach((k, v) -> {
-            if(k.getText().equals(b.getText())) {
+            if (k.getText().equals(b.getText())) {
                 profilesButtonsHashMap.put(k, true);
                 k.setStyle("-fx-background-color: #546e7a");
-            }
-            else {
+            } else {
                 profilesButtonsHashMap.put(k, false);
                 k.setStyle("-fx-background-color: #fafafa");
             }

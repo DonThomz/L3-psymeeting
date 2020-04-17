@@ -14,24 +14,24 @@
  */
 
 
-.button-raised{
-    -fx-border: none;
-    -fx-cursor: pointer;
-    -fx-padding: 15px 40px;
-    -fx-border-radius: 2px;
-    -fx-font-size: 13;
-    -fx-background-color: #56c8d8;
-    -fx-text-fill: BLACK;
-    -fx-font-weight: bold;
-    -jfx-disable-visual-focus: true;
+.button-raised {
+  -fx-border: none;
+  -fx-cursor: pointer;
+  -fx-padding: 15px 40px;
+  -fx-border-radius: 2px;
+  -fx-font-size: 13;
+  -fx-background-color: #56c8d8;
+  -fx-text-fill: BLACK;
+  -fx-font-weight: bold;
+  -jfx-disable-visual-focus: true;
 }
 
-.warring_label{
-    -fx-text-fill: red;
-    -fx-padding: 20 20 20 20;
+.warring_label {
+  -fx-text-fill: red;
+  -fx-padding: 20 20 20 20;
 }
 
-.label_form{
-    -fx-font-weight: bold;
-    -fx-font-style: italic;
+.label_form {
+  -fx-font-weight: bold;
+  -fx-font-style: italic;
 }

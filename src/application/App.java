@@ -1,7 +1,6 @@
 package application;
 
 
-
 import data.*;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -26,56 +25,56 @@ public class App extends Application {
 
     //---------------------------------
     //         Database
-        public static OracleDB database;
-        public static boolean connection_active;
-        public static ArrayList<Patient> patients;
+    public static OracleDB database;
+    public static boolean connection_active;
+    public static ArrayList<Patient> patients;
     //
     //---------------------------------
 
     //---------------------------------
     //         Resolutions
-        public static Stage window;
-        public static double[] current_resolution;
-        public static double[] login_resolution = {420 , 580};
-        public static double[] app_default_resolution = {1200 , 800};
-        public static int time_transition = 10;
+    public static Stage window;
+    public static double[] current_resolution;
+    public static double[] login_resolution = {420, 580};
+    public static double[] app_default_resolution = {1200, 800};
+    public static int time_transition = 10;
 
     //---------------------------------
     //         Scenes
-        public static Scene login_scene;
-        public static Scene home_scene;
-        public static Scene consultation_scene;
-        public static Scene patients_scene;
-        public static Scene add_consultation_scene;
+    public static Scene login_scene;
+    public static Scene home_scene;
+    public static Scene consultation_scene;
+    public static Scene patients_scene;
+    public static Scene add_consultation_scene;
 
-        public static HashMap<String, Boolean> scenes;
-        public static int scenes_size;
+    public static HashMap<String, Boolean> scenes;
+    public static int scenes_size;
     //
     //---------------------------------
 
     //---------------------------------
     //         FXML Objects
-        public static Object root_login;
-        public static Object root_home;
-        public static Object root_consultation;
-        public static Object root_patients;
-        public static Object root_add_consultation;
+    public static Object root_login;
+    public static Object root_home;
+    public static Object root_consultation;
+    public static Object root_patients;
+    public static Object root_add_consultation;
     //
     //---------------------------------
 
 
     //---------------------------------
     //         Applications
-        public static User current_user;
+    public static User current_user;
     //
     //---------------------------------
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
 
         launch(args);
 
         // close database if exit program
-        if(connection_active)
+        if (connection_active)
             database.closeDatabase();
     }
 
@@ -112,10 +111,10 @@ public class App extends Application {
     //---------------------------------
 
     // Mapping between scenes
-    public static void sceneMapping(String origin_scene, String target_scene){
+    public static void sceneMapping(String origin_scene, String target_scene) {
 
         try {
-            if(!origin_scene.equals("login_scene") && !target_scene.equals("login_scene"))
+            if (!origin_scene.equals("login_scene") && !target_scene.equals("login_scene"))
                 getCurrentResolution(getSceneByName(origin_scene));
             else { // reset current resolution
                 current_resolution = app_default_resolution;
@@ -168,13 +167,13 @@ public class App extends Application {
                     break;
             }
             window.show();
-        }catch (IOException ex){
+        } catch (IOException ex) {
             ex.printStackTrace();
         }
     }
 
-    public static Scene getSceneByName(String name){
-        switch (name){
+    public static Scene getSceneByName(String name) {
+        switch (name) {
             case "login_scene":
                 return login_scene;
             case "home_scene":
@@ -191,25 +190,25 @@ public class App extends Application {
     }
 
     // get current scene
-    public static String getCurrentScene(){
-        for (Map.Entry hm: scenes.entrySet()
-             ) {
-            if(hm.getValue().equals(true))
+    public static String getCurrentScene() {
+        for (Map.Entry hm : scenes.entrySet()
+        ) {
+            if (hm.getValue().equals(true))
                 return hm.getKey().toString();
         }
         return null;
     }
 
     // get X and Y of window
-    public static void getCurrentResolution(Scene s){
-        if(s != null) {
+    public static void getCurrentResolution(Scene s) {
+        if (s != null) {
             current_resolution[0] = s.getWidth();
             current_resolution[1] = s.getHeight();
         }
     }
 
     // return monitor index
-    public static int getScreenMonitorIndex(){
+    public static int getScreenMonitorIndex() {
         int screen_index = 0;
         for (int i = 0; i < Screen.getScreens().size(); i++) {
             if ((window.getX() + window.getWidth() / 2) > Screen.getScreens().get(i).getVisualBounds().getMinX())
@@ -218,7 +217,7 @@ public class App extends Application {
         return screen_index;
     }
 
-    public static void centerWindow(){
+    public static void centerWindow() {
         // center window
         Rectangle2D primScreenBounds = Screen.getScreens().get(getScreenMonitorIndex()).getVisualBounds();
         window.setX(primScreenBounds.getMinX() + (primScreenBounds.getWidth() - window.getWidth()) / 2);
@@ -226,39 +225,36 @@ public class App extends Application {
     }
 
     // reset HashMap
-    public static void resetHashMap(){
+    public static void resetHashMap() {
         scenes.put("login_scene", true);
         scenes.put(getCurrentScene(), false);
     }
 
     // convert Timestamp to Calendar
-    public static Calendar Timestamp2Calendar(Timestamp t){
+    public static Calendar Timestamp2Calendar(Timestamp t) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(t);
         return cal;
     }
 
     // convert Date to Calendar
-    public static Calendar Date2Calendar(Date d){
+    public static Calendar Date2Calendar(Date d) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(d);
         return cal;
     }
 
     // convert LocalDate to format string "yyyy-MM-dd HH:mm:ss"
-    public static String LocalDateFormat(LocalDate date){
+    public static String LocalDateFormat(LocalDate date) {
         return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Timestamp.valueOf(date.atTime(LocalTime.MIDNIGHT)));
     }
 
-    public static String[] getDatesOfDay(LocalDate date){
+    public static String[] getDatesOfDay(LocalDate date) {
         String[] dates = new String[2];
         dates[0] = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Timestamp.valueOf(date.atTime(LocalTime.MIDNIGHT)));
         dates[1] = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Timestamp.valueOf(date.atTime(LocalTime.MAX)));
         return dates;
     }
-
-
-
 
 
 }

@@ -50,13 +50,13 @@ public class ProfileController extends ParentController implements Initializable
 
         last_name_field.setText(tmp_p.getLast_name());
 
-        if(tmp_p.getBirthday() != null) {
+        if (tmp_p.getBirthday() != null) {
             birthday_field.setDisable(true);
             birthday_field.setValue(tmp_p.getBirthday().toLocalDate());
         }
 
 
-        gender_field.getItems().addAll( "homme", "femme", "non binaire");
+        gender_field.getItems().addAll("homme", "femme", "non binaire");
         gender_field.setValue(tmp_p.getGender());
 
         relation_field.getItems().addAll("célibataire", "couple", "autre");
@@ -68,10 +68,10 @@ public class ProfileController extends ParentController implements Initializable
 
     }
 
-    public void setupConsultationHistory(){
+    public void setupConsultationHistory() {
 
         consultation_id = new ArrayList<>();
-        try{
+        try {
             PreparedStatement preparedStatement = App.database.getConnection().prepareStatement("select c.CONSULTATION_ID\n" +
                     "from CONSULTATION c\n" +
                     "join CONSULTATION_CARRYOUT CC on c.CONSULTATION_ID = CC.CONSULTATION_ID\n" +
@@ -79,13 +79,13 @@ public class ProfileController extends ParentController implements Initializable
 
             preparedStatement.setInt(1, tmp_p.getPatient_id());
             ResultSet result = preparedStatement.executeQuery();
-            while(result.next()){
+            while (result.next()) {
                 consultation_id.add(result.getInt(1)); // add id
             }
             // Build consultation button
             setupBoxConsultations();
 
-        }catch (SQLException ex){
+        } catch (SQLException ex) {
             ex.printStackTrace();
         }
 
@@ -95,15 +95,15 @@ public class ProfileController extends ParentController implements Initializable
     protected void setupBoxConsultations() {
         consultations_map = new HashMap<>();
         box_consultations.setSpacing(20);
-        for (Integer i: consultation_id
-             ) {
+        for (Integer i : consultation_id
+        ) {
             consultations_map.put(Consultation.getDateById(i), buildConsultationButton(i));
         }
         // sort in descending order
         consultations_map = new TreeMap<>(consultations_map).descendingMap();
         // add all button
-        consultations_map.forEach((k,v)->{
-            if(k.compareTo(date_today) < 0){
+        consultations_map.forEach((k, v) -> {
+            if (k.compareTo(date_today) < 0) {
                 v.setStyle("-fx-background-color: #eceff1;");
             }
             v.getStyleClass().add("patient_consultation_cell");

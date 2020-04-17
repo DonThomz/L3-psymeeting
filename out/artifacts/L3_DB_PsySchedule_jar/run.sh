@@ -1,1 +1,0 @@
-java --module-path /home/thomas/Documents/Database/Projet/L3_DB_PsySchedulelibrary/javafx-sdk-11.0.2/lib --add-modules javafx.controls,javafx.fxml,javafx.graphics,javafx.web -jar L3_DB_PsySchedule.jar

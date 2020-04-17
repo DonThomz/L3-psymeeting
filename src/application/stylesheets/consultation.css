@@ -5,14 +5,14 @@
  */
 
 
-.content_text{
-    -fx-padding: 10,10,10,10;
+.content_text {
+  -fx-padding: 10, 10, 10, 10;
 }
 
-.consultation_cell{
-    -fx-font-size: 18;
-    -fx-max-width: 650;
-    -fx-min-width: 650;
-    -jfx-button-type: RAISED;
-    -fx-background-color: #fafafa;
+.consultation_cell {
+  -fx-font-size: 18;
+  -fx-max-width: 650;
+  -fx-min-width: 650;
+  -jfx-button-type: RAISED;
+  -fx-background-color: #fafafa;
 }

@@ -23,11 +23,16 @@ import java.util.Scanner;
 
 public class LoginController implements Initializable {
 
-    @FXML private Button login_button;
-    @FXML private TextField username_field;
-    @FXML private PasswordField password_field;
-    @FXML private VBox box_login;
-    @FXML private CheckBox save_pwd_checkbox;
+    @FXML
+    private Button login_button;
+    @FXML
+    private TextField username_field;
+    @FXML
+    private PasswordField password_field;
+    @FXML
+    private VBox box_login;
+    @FXML
+    private CheckBox save_pwd_checkbox;
     private Label incorrect_text;
 
 
@@ -49,15 +54,13 @@ public class LoginController implements Initializable {
 
     }
 
-    public void login(ActionEvent actionEvent){
+    public void login(ActionEvent actionEvent) {
 
         int[] i = {0};
-        new AnimationTimer()
-        {
-            public void handle(long currentNanoTime)
-            {
+        new AnimationTimer() {
+            public void handle(long currentNanoTime) {
                 i[0]++;
-                if(i[0] % App.time_transition == 0) {
+                if (i[0] % App.time_transition == 0) {
                     this.stop();
                     // remove incorrect_text label
                     box_login.getChildren().remove(incorrect_text);
@@ -75,7 +78,7 @@ public class LoginController implements Initializable {
                             // if correct username and password --> connection to database
                             if (App.database.connectionDatabase(username_field.getText(), password_field.getText())) {
 
-                                if(save_pwd_checkbox.isSelected()) createSaveFile();
+                                if (save_pwd_checkbox.isSelected()) createSaveFile();
                                 else removeSaveFile();
 
                                 App.connection_active = true;
@@ -108,7 +111,7 @@ public class LoginController implements Initializable {
         }.start();
     }
 
-    private void createSaveFile(){
+    private void createSaveFile() {
         // create file
         try {
             File save_pwd = new File("save_pwd.txt");
@@ -120,7 +123,7 @@ public class LoginController implements Initializable {
         // write file
         try {
             FileWriter myWriter = new FileWriter("save_pwd.txt");
-            myWriter.write(username_field.getText()+"\n");
+            myWriter.write(username_field.getText() + "\n");
             myWriter.write(password_field.getText());
             myWriter.close();
         } catch (IOException e) {
@@ -129,13 +132,13 @@ public class LoginController implements Initializable {
         }
     }
 
-    private void removeSaveFile(){
+    private void removeSaveFile() {
         File tmpFile = new File("save_pwd.txt");
         tmpFile.delete();
     }
 
-    private void fillField(boolean exist){
-        if(exist){
+    private void fillField(boolean exist) {
+        if (exist) {
             Scanner scanner = null;
             try {
                 scanner = new Scanner(new File("save_pwd.txt"));
@@ -143,9 +146,9 @@ public class LoginController implements Initializable {
                 e.printStackTrace();
             }
             assert scanner != null;
-            if(scanner.hasNextLine())
+            if (scanner.hasNextLine())
                 username_field.setText(scanner.next());
-            if(scanner.hasNextLine())
+            if (scanner.hasNextLine())
                 password_field.setText(scanner.next());
             save_pwd_checkbox.setSelected(true);
         }

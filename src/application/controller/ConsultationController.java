@@ -52,8 +52,8 @@ public class ConsultationController extends ParentController implements Initiali
         // sort in descending order
         consultations_map = new TreeMap<>(consultations_map).descendingMap();
         // add all button
-        consultations_map.forEach((k,v)->{
-            if(k.compareTo(date_today) < 0){
+        consultations_map.forEach((k, v) -> {
+            if (k.compareTo(date_today) < 0) {
                 v.setStyle("-fx-background-color: #eceff1;");
             }
             v.getStyleClass().add("consultation_cell");
@@ -61,48 +61,46 @@ public class ConsultationController extends ParentController implements Initiali
         });
     }
 
-    private void setupFilterBox(){
+    private void setupFilterBox() {
         filter.getItems().add(new Label("plus récent"));
         filter.getItems().add(new Label("moins récent"));
         filter.setStyle("-fx-font-size: 14");
         filter.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue.getText().equals("plus récent")){
+            if (newValue.getText().equals("plus récent")) {
                 mostRecentFirst();
-            }
-            else{
+            } else {
                 mostOldestFirst();
             }
         });
     }
 
-    private void setupSearchBox(){
+    private void setupSearchBox() {
         searchField.textProperty().addListener((observable, oldValue, newValue) -> {
 
         });
     }
 
 
-
     // --------------------
     //  Filters methods
     // --------------------
 
-    private void mostRecentFirst(){
+    private void mostRecentFirst() {
         // sort in ascending order
         consultations_map = new TreeMap<>(consultations_map).descendingMap();
         if (consultation_size > 0) {
             box_consultations.getChildren().subList(0, consultation_size).clear();
         }
-        consultations_map.forEach((k,v)->box_consultations.getChildren().add(v));
+        consultations_map.forEach((k, v) -> box_consultations.getChildren().add(v));
     }
 
-    private void mostOldestFirst(){
+    private void mostOldestFirst() {
         // sort in descending order
         consultations_map = new TreeMap<>(consultations_map);
         if (consultation_size > 0) {
             box_consultations.getChildren().subList(0, consultation_size).clear();
         }
-        consultations_map.forEach((k,v)->box_consultations.getChildren().add(v));
+        consultations_map.forEach((k, v) -> box_consultations.getChildren().add(v));
     }
 }
 

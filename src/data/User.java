@@ -12,50 +12,50 @@ public class User {
     //   Attributes
     // --------------------
 
-        private int user_id;
-        private int patient_id;
-        private String username;
-        private String name;
-        private String last_name;
-        private String email;
-        private String password;
+    private int user_id;
+    private int patient_id;
+    private String username;
+    private String name;
+    private String last_name;
+    private String email;
+    private String password;
 
-        private boolean new_user;
+    private boolean new_user;
 
 
     // --------------------
     //   Constructors
     // --------------------
-        public User(String username){
-            // get name
-            try{
-                this.username = username;
+    public User(String username) {
+        // get name
+        try {
+            this.username = username;
 
-                // admin user
-                if(this.username.equals("admin")) {
-                    Statement stmt = App.database.getConnection().createStatement();
-                    ResultSet rset = stmt.executeQuery("select NAME, LAST_NAME from ADMINISTRATOR");
-                    rset.next();
-                    this.name = rset.getString(1);
-                    this.last_name = rset.getString(2);
-                }
-
-
-            }catch(SQLException ex){
-                System.out.println("Error add name or last name to the user");
-                System.out.println(ex.getErrorCode() + " : " + ex.getMessage());
+            // admin user
+            if (this.username.equals("admin")) {
+                Statement stmt = App.database.getConnection().createStatement();
+                ResultSet rset = stmt.executeQuery("select NAME, LAST_NAME from ADMINISTRATOR");
+                rset.next();
+                this.name = rset.getString(1);
+                this.last_name = rset.getString(2);
             }
-        }
 
 
-        // guest user without password => generate a random password
-        public User(int user_id, String email, int patient_id, boolean new_user){
-            this.user_id = user_id;
-            this.email = email;
-            this.password = "tmp_password";
-            this.patient_id = patient_id;
-            this.new_user = new_user;
+        } catch (SQLException ex) {
+            System.out.println("Error add name or last name to the user");
+            System.out.println(ex.getErrorCode() + " : " + ex.getMessage());
         }
+    }
+
+
+    // guest user without password => generate a random password
+    public User(int user_id, String email, int patient_id, boolean new_user) {
+        this.user_id = user_id;
+        this.email = email;
+        this.password = "tmp_password";
+        this.patient_id = patient_id;
+        this.new_user = new_user;
+    }
 
 
     // --------------------
@@ -96,7 +96,7 @@ public class User {
     // --------------------
     //   Statement methods
     // --------------------
-    public static int getLastUserId(){
+    public static int getLastUserId() {
         try {
             Statement stmt = App.database.getConnection().createStatement();
             ResultSet rset = stmt.executeQuery("select max(USER_ID) from USER_APP");
@@ -108,13 +108,13 @@ public class User {
         return -1;
     }
 
-    public static int getPatientIdByEmail(String email){
+    public static int getPatientIdByEmail(String email) {
         try {
             Statement stmt = App.database.getConnection().createStatement();
             ResultSet rset = stmt.executeQuery("select\n" +
                     "       u.PATIENT_ID\n" +
                     "from USER_APP u\n" +
-                    "where u.EMAIL = '"+email+"'");
+                    "where u.EMAIL = '" + email + "'");
             rset.next();
             return rset.getInt(1);
         } catch (SQLException throwable) {
@@ -122,8 +122,6 @@ public class User {
         }
         return -1;
     }
-
-
 
 
 }

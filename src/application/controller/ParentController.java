@@ -19,8 +19,10 @@ import java.util.*;
 public class ParentController {
 
     // FXML
-    @FXML public StackPane stackPane;
-    @FXML public VBox box_consultations;
+    @FXML
+    public StackPane stackPane;
+    @FXML
+    public VBox box_consultations;
 
     // Attributes
     protected Map<Calendar, JFXButton> consultations_map;
@@ -50,7 +52,7 @@ public class ParentController {
     protected void setupBoxConsultations() {
     }
 
-    protected JFXButton buildConsultationButton(int consultation_id){
+    protected JFXButton buildConsultationButton(int consultation_id) {
 
         try {
 
@@ -68,7 +70,7 @@ public class ParentController {
             String timeStamp = new SimpleDateFormat("EEEE dd MMMM, yyyy à HH:mm",
                     Locale.FRANCE).format(date_consultation.getTime());
             Label title = new Label("Consultation : "
-                    + "\n\t"+timeStamp);
+                    + "\n\t" + timeStamp);
 
             box.getChildren().add(title);
 
@@ -80,7 +82,7 @@ public class ParentController {
             Label patient_list = new Label();
             patient_list.getStyleClass().add("content_text");
             StringBuilder content = new StringBuilder();
-            while(tmp_result_patients.next()) {
+            while (tmp_result_patients.next()) {
                 content.append(" | ").append(tmp_result_patients.getString(1)).append(" ").append(tmp_result_patients.getString(2)).append(" \n");
             }
             patient_list.setText(String.valueOf(content));
@@ -96,14 +98,14 @@ public class ParentController {
             // add attributes to consultation instance
             return consultation_button;
 
-        }catch (SQLException ex){
+        } catch (SQLException ex) {
             System.out.println("SQL Error to get patients information");
             ex.printStackTrace();
         }
         return null;
     }
 
-    protected void loadConsultationInfo(int consultation_id, Calendar date, StringBuilder patients_list){
+    protected void loadConsultationInfo(int consultation_id, Calendar date, StringBuilder patients_list) {
         // create dialog layout
         JFXDialogLayout content = new JFXDialogLayout();
 
@@ -126,7 +128,7 @@ public class ParentController {
         dialog.show();
     }
 
-    protected TextArea createBody(int consultation_id, StringBuilder patients_list){
+    protected TextArea createBody(int consultation_id, StringBuilder patients_list) {
 
         // get info
         StringBuilder info = new StringBuilder();
@@ -140,12 +142,12 @@ public class ParentController {
 
             // info feedback commentary, key words, postures
             info.append("\n\nRetour de séance").append("\n\n\tCommentaire : \n").append(result.getString(3));
-            if(result.getString(4) != null)
+            if (result.getString(4) != null)
                 info.append("\n\n\tMots clés :").append(result.getString(4));
-            if(result.getString(5) != null)
+            if (result.getString(5) != null)
                 info.append("\n\n\tPosture :").append(result.getString(5));
 
-        }catch (SQLException ex){
+        } catch (SQLException ex) {
             System.out.println("Error loading information...");
             ex.printStackTrace();
         }
@@ -157,12 +159,11 @@ public class ParentController {
         return textArea;
     }
 
-    protected Label createTitle(Calendar date){
+    protected Label createTitle(Calendar date) {
         String format_date = new SimpleDateFormat("EEEE dd MMMM, yyyy à HH:mm",
                 Locale.FRANCE).format(date.getTime());
         return new Label("Consultation du " + format_date);
     }
-
 
 
 }
