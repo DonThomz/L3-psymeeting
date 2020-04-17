@@ -233,7 +233,7 @@ public class AddConsultationController implements Initializable {
         dialog.show();
     }
 
-    private void attachPatients(){ // attach patient save to the right side
+    private void attachPatients(){ // attach patient to the right side
         JFXButton patient_save = new JFXButton();
         patient_save.getStyleClass().add("patient_cell");
         patient_save.setMaxWidth(250);
