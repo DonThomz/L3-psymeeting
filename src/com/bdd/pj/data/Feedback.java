@@ -39,7 +39,7 @@ public class Feedback {
                     "from CONSULTATION c\n" +
                     "join FEEDBACK f on c.CONSULTATION_ID = f.CONSULTATION_ID\n" +
                     "where c.CONSULTATION_ID = ?";
-            PreparedStatement preparedStmt = Main.database.getConnection().prepareStatement(query);
+            PreparedStatement preparedStmt = connection.prepareStatement(query);
             preparedStmt.setInt(1, consultationID);
             ResultSet resultSet = preparedStmt.executeQuery();
             resultSet.next();
