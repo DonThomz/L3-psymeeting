@@ -4,7 +4,9 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 import java.beans.PropertyVetoException;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 
 /**
@@ -17,35 +19,7 @@ public class OracleDB {
     private ComboPooledDataSource comboPooledDataSource;
 
     public OracleDB() {
-        try {
-            this.comboPooledDataSource = new ComboPooledDataSource();
-            this.comboPooledDataSource.setDriverClass("oracle.jdbc.driver.OracleDriver");
-            this.comboPooledDataSource.setJdbcUrl("jdbc:oracle:thin:@localhost:1521:xe");
-            this.comboPooledDataSource.setUser("pj2");
-            this.comboPooledDataSource.setPassword("pass");
 
-            this.comboPooledDataSource.setMinPoolSize(5);
-            this.comboPooledDataSource.setAcquireIncrement(5);
-            this.comboPooledDataSource.setMaxPoolSize(20);
-
-            this.comboPooledDataSource.setUnreturnedConnectionTimeout(3);
-            this.comboPooledDataSource.setDebugUnreturnedConnectionStackTraces(true);
-
-            this.comboPooledDataSource.setTestConnectionOnCheckout(true);
-
-            // TODO Set connection before loading
-//            this.comboPooledDataSource.setPreferredTestQuery("SELECT 1");
-//            this.comboPooledDataSource.setCheckoutTimeout(3000);
-//            this.comboPooledDataSource.setAu
-
-//            this.comboPooledDataSource.setTestConnectionOnCheckout(true);
-//            this.comboPooledDataSource.setPreferredTestQuery("SELECT 1");
-
-            System.out.println("Connected ? Idk");
-        } catch (PropertyVetoException e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
     }
 
 //    public static final OracleDB getInstance() {
@@ -65,7 +39,54 @@ public class OracleDB {
      */
     public boolean connectionDatabase(String username, String password) throws Exception {
         System.out.println("Connecting to DB...");
-        return true;
+        try {
+            this.comboPooledDataSource = new ComboPooledDataSource();
+            this.comboPooledDataSource.setDriverClass("oracle.jdbc.driver.OracleDriver");
+            this.comboPooledDataSource.setJdbcUrl("jdbc:oracle:thin:@localhost:1521:xe");
+            this.comboPooledDataSource.setUser(username);
+            this.comboPooledDataSource.setPassword(password);
+
+            this.comboPooledDataSource.setMinPoolSize(5);
+            this.comboPooledDataSource.setAcquireIncrement(5);
+            this.comboPooledDataSource.setMaxPoolSize(20);
+
+            this.comboPooledDataSource.setAcquireRetryAttempts(3);
+
+            this.comboPooledDataSource.setUnreturnedConnectionTimeout(10);
+            this.comboPooledDataSource.setDebugUnreturnedConnectionStackTraces(true);
+
+            this.comboPooledDataSource.setTestConnectionOnCheckout(true);
+
+            // TODO Set connection before loading
+            this.comboPooledDataSource.setPreferredTestQuery("SELECT NAME FROM ADMINISTRATOR");
+            System.out.println("Maybe?");
+//            return true;
+            try(Connection connection = this.getConnection()) {
+                System.out.println("Nope?");
+                Statement stmt = connection.createStatement();
+                ResultSet rset = stmt.executeQuery("select NAME, LAST_NAME from ADMINISTRATOR");
+
+                System.out.println("Connected !!");
+                return true;
+            }
+            catch (Exception e) {
+                System.out.println("OUPSIE");
+                return false;
+            }
+            // this.comboPooledDataSource.setCheckoutTimeout(3000);
+//            this.comboPooledDataSource.setAu
+
+//            this.comboPooledDataSource.setTestConnectionOnCheckout(true);
+//            this.comboPooledDataSource.setPreferredTestQuery("SELECT 1");
+
+//            System.out.println("Connected ? Idk");
+//            return true;
+        } catch (PropertyVetoException e) {
+            e.printStackTrace();
+            // System.exit(1);
+            return false;
+        }
+        //return true;
         // load driver
 //        try {
 //            Class.forName("oracle.jdbc.driver.OracleDriver");

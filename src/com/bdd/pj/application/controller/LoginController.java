@@ -150,8 +150,6 @@ public class LoginController implements Initializable {
         Main.sceneMapping("login_scene", "home_scene");
 
         Main.window.centerOnScreen();
-
-
     }
 
     public void loginFailed() {
