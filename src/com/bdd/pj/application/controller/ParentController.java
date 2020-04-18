@@ -1,6 +1,7 @@
 package com.bdd.pj.application.controller;
 
 import com.bdd.pj.data.Consultation;
+import com.bdd.pj.data.Patient;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDialogLayout;
@@ -53,7 +54,7 @@ public class ParentController {
 
     protected JFXButton buildConsultationButton(int consultation_id) {
 
-//        try {
+        Consultation consultation = new Consultation(consultation_id);
 
         // init button
         JFXButton consultation_button = new JFXButton();
@@ -73,19 +74,14 @@ public class ParentController {
 
         box.getChildren().add(title);
 
-        // get patient and add in a javaFX TEXT
-        // TODO FIX @TODO
-        //            ResultSet tmp_result_patients = Patient.getPatientFullNameByConsultationId(consultation_id);
-        //            assert tmp_result_patients != null;
-
         // create label and add patients
         Label patient_list = new Label();
         patient_list.getStyleClass().add("content_text");
         StringBuilder content = new StringBuilder();
-        // TODO FIX @TOTO
-        //            while (tmp_result_patients.next()) {
-        //                content.append(" | ").append(tmp_result_patients.getString(1)).append(" ").append(tmp_result_patients.getString(2)).append(" \n");
-        //            }
+        for (Patient p : consultation.getPatients()
+             ) {
+            content.append(" | ").append(p.getName()).append(" ").append(p.getLast_name()).append(" \n");
+        }
         patient_list.setText(String.valueOf(content));
         box.getChildren().add(patient_list);
 
@@ -98,12 +94,6 @@ public class ParentController {
 
         // add attributes to consultation instance
         return consultation_button;
-
-//        }
-        /*catch (SQLException ex) {
-            System.out.println("SQL Error to get patients information");
-            ex.printStackTrace();
-        }*/
 
     }
 
@@ -133,8 +123,20 @@ public class ParentController {
     protected TextArea createBody(int consultation_id, StringBuilder patients_list) {
 
         // get info
-        StringBuilder info;
-        info = Consultation.getConsultationInfoById(consultation_id);
+        StringBuilder info = new StringBuilder();
+            Consultation consultation = new Consultation(consultation_id);
+
+            // info price and pay mode
+            info.append("Prix : ").append(consultation.getPrice()).append(" €, payé avec : ").append(consultation.getPayMode());
+
+            // info feedback commentary, key words, postures, indicator
+            info.append("\n\nRetour de séance").append("\n\n\tCommentaire : \n").append(consultation.getFeedback().getCommentary());
+            if (consultation.getFeedback().getKeyword() != null)
+                info.append("\n\n\tMots clés :").append(consultation.getFeedback().getKeyword());
+            if (consultation.getFeedback().getPosture() != null)
+                info.append("\n\n\tPosture :").append(consultation.getFeedback().getPosture());
+            if (consultation.getFeedback().getIndicator() != 0)
+                info.append("\n\n\tIndicateur :").append(consultation.getFeedback().getIndicator());
 
         TextArea textArea = new TextArea("Patients :\n"
                 + patients_list + "\n"
