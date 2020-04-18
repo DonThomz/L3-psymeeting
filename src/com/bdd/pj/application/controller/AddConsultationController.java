@@ -170,9 +170,10 @@ public class AddConsultationController implements Initializable {
         return false;
     }
 
+
     private boolean userExist() { // check if user exist in database with email_field
-        try {
-            Statement stmt = Main.database.getConnection().createStatement();
+        try (Statement stmt = Main.database.getConnection().createStatement()) {
+
             ResultSet rset = stmt.executeQuery("select email from USER_APP");
             while (rset.next()) {
                 if (rset.getString(1).equals(email_field.getText())) {
@@ -350,13 +351,12 @@ public class AddConsultationController implements Initializable {
     private void initHourComboBox() {
         String[] dates = Main.getDatesOfDay(date_field.getValue());
         System.out.println(dates[0] + " " + dates[1]);
-        try {
-            String query = "select CONSULTATION_DATE\n" +
-                    "from CONSULTATION\n" +
-                    "where CONSULTATION_DATE between TO_DATE('" + dates[0] + "', 'yyyy-mm-dd HH24:mi:ss') "
-                    + "and TO_DATE('" + dates[1] + "', 'yyyy-mm-dd HH24:mi:ss')";
 
-            PreparedStatement preparedStatement = Main.database.getConnection().prepareStatement(query);
+        String query = "select CONSULTATION_DATE\n" +
+                "from CONSULTATION\n" +
+                "where CONSULTATION_DATE between TO_DATE('" + dates[0] + "', 'yyyy-mm-dd HH24:mi:ss') "
+                + "and TO_DATE('" + dates[1] + "', 'yyyy-mm-dd HH24:mi:ss')";
+        try (PreparedStatement preparedStatement = Main.database.getConnection().prepareStatement(query)) {
             ResultSet result = preparedStatement.executeQuery();
 
             // Check all hours
@@ -432,13 +432,11 @@ public class AddConsultationController implements Initializable {
     }
 
     private void updatePatientTable() {
-        try {
-            // the insert statement
-            String query = " insert into patient (patient_id, name, last_name)"
-                    + " values (?, ?, ?)";
+        // the insert statement
+        String query = " insert into patient (patient_id, name, last_name)"
+                + " values (?, ?, ?)";
+        try (PreparedStatement preparedStmt = Main.database.getConnection().prepareStatement(query)) {
             // create the insert preparedStatement
-            PreparedStatement preparedStmt = Main.database.getConnection().prepareStatement(query);
-
             for (Patient p : tmp_patients // for each patients saved in tmp_patients
             ) {
                 if (p.isNew_patient()) { // if patient does not exist in database
@@ -458,12 +456,13 @@ public class AddConsultationController implements Initializable {
     }
 
     private void updateUserTable() {
-        try {
-            // the insert statement
-            String query = " insert into USER_APP (USER_ID, EMAIL, PASSWORD, PATIENT_ID)"
-                    + " values (?, ?, ?, ?)";
+        // the insert statement
+        String query = " insert into USER_APP (USER_ID, EMAIL, PASSWORD, PATIENT_ID)"
+                + " values (?, ?, ?, ?)";
+        try (PreparedStatement preparedStmt = Main.database.getConnection().prepareStatement(query)) {
+
             // create the insert preparedStatement
-            PreparedStatement preparedStmt = Main.database.getConnection().prepareStatement(query);
+
 
             for (User u : tmp_users // for each patients saved in tmp_patients
             ) {
@@ -511,13 +510,10 @@ public class AddConsultationController implements Initializable {
     }
 
     private void updateCarryOutTable() {
-        try {
-            // the insert statement
-            String query = " insert into CONSULTATION_CARRYOUT (PATIENT_ID, CONSULTATION_ID)"
-                    + " values (?, ?)";
-            // create the insert preparedStatement
-            PreparedStatement preparedStmt = Main.database.getConnection().prepareStatement(query);
-
+        // the insert statement
+        String query = " insert into CONSULTATION_CARRYOUT (PATIENT_ID, CONSULTATION_ID)"
+                + " values (?, ?)";
+        try (PreparedStatement preparedStmt = Main.database.getConnection().prepareStatement(query)) {
             // create each carryout for each patients
             for (Patient p : tmp_patients
             ) {
@@ -528,6 +524,7 @@ public class AddConsultationController implements Initializable {
                 // execute the preparedStatement
                 preparedStmt.execute();
             }
+            // TODO Multiples connections in same method?
             Main.database.getConnection().commit();
 
         } catch (SQLException ex) {

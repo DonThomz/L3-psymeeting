@@ -80,8 +80,7 @@ public class User {
     //   Statement methods
     // --------------------
     public static int getLastUserId() {
-        try {
-            Statement stmt = Main.database.getConnection().createStatement();
+        try (Statement stmt = Main.database.getConnection().createStatement()) {
             ResultSet rset = stmt.executeQuery("select max(USER_ID) from USER_APP");
             rset.next();
             return rset.getInt(1);
@@ -92,8 +91,7 @@ public class User {
     }
 
     public static int getPatientIdByEmail(String email) {
-        try {
-            Statement stmt = Main.database.getConnection().createStatement();
+        try (Statement stmt = Main.database.getConnection().createStatement()) {
             ResultSet rset = stmt.executeQuery("select\n" +
                     "       u.PATIENT_ID\n" +
                     "from USER_APP u\n" +
