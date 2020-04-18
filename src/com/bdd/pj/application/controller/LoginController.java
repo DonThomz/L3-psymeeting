@@ -5,6 +5,8 @@ import com.bdd.pj.data.OracleDB;
 import com.bdd.pj.data.User;
 
 import javafx.animation.AnimationTimer;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 
 import javafx.fxml.FXML;
@@ -17,6 +19,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
 
 
 public class LoginController implements Initializable {
@@ -32,7 +35,7 @@ public class LoginController implements Initializable {
     @FXML
     private CheckBox save_pwd_checkbox;
     private Label incorrect_text;
-
+    private ExecutorService exec;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -50,10 +53,45 @@ public class LoginController implements Initializable {
         incorrect_text = new Label("Identifiant ou mot de passe incorrect !");
         incorrect_text.getStyleClass().add("warring_label");
 
+
+        logginService.setOnSucceeded(evt -> {
+            System.out.println("Task succeeded!");
+            loginSucceeded();
+            login_button.setDisable(false);
+        });
+        logginService.setOnFailed(evt -> {
+            System.out.println("Task failed!");
+            login_button.setDisable(false);
+            loginFailed();
+            logginService.reset();
+        });
     }
 
-    public void login(ActionEvent actionEvent) {
+    /**
+     * Service that allows us to connect to DB in another Thread (≠ JavaFX UI Thread)
+     * The reusable service allows the creation of multiple Tasks.
+     * See https://fabrice-bouye.developpez.com/tutoriels/javafx/gui-service-tache-de-fond-thread-javafx/ for reference.
+     */
+    Service<Boolean> logginService = new Service<Boolean>() {
 
+        @Override
+        protected Task<Boolean> createTask() {
+            return new Task<Boolean>() {
+                @Override
+                protected Boolean call() throws Exception {
+                    System.out.println("Task starting");
+                    if (Main.database.connectionDatabase(username_field.getText(), password_field.getText()))
+                        return true;
+                    else
+                        throw new Exception("Failed");
+//                return null;
+                }
+
+            };
+        }
+    };
+
+    public void login(ActionEvent actionEvent) {
         int[] i = {0};
         new AnimationTimer() {
             public void handle(long currentNanoTime) {
@@ -73,40 +111,58 @@ public class LoginController implements Initializable {
                         password_field.setText(null);
                     } else {
                         if (username_field.getText() != null && password_field.getText() != null) {
-                            // if correct username and password --> connection to database
-                            if (Main.database.connectionDatabase(username_field.getText(), password_field.getText())) {
+                            System.out.println("Starting login thread...");
+                            if (logginService.getState() == Task.State.READY) {
+                                logginService.start();
 
-                                if (save_pwd_checkbox.isSelected()) createSaveFile();
-                                else removeSaveFile();
-
-                                Main.connection_active = true;
-
-                                // load user
-                                Main.current_user = new User(username_field.getText());
-
-                                // load home scene
-                                Main.window.close();
-
-                                // remove incorrect_text label
-                                box_login.getChildren().remove(incorrect_text);
-
-                                // load home scene
-                                Main.sceneMapping("login_scene", "home_scene");
-
-                                Main.centerWindow();
-
-                            } else {
-                                // add incorrect_text label
-                                box_login.getChildren().add(incorrect_text);
+                                // Disable button
+                                login_button.setDisable(true);
                             }
-                            // after press login button --> reset field
-                            username_field.setText(null);
-                            password_field.setText(null);
+
+                            // TODO Add loading state
+                            else {
+                                System.out.println("Service is not ready for another try!");
+                            }
+
                         }
                     }
                 }
             }
         }.start();
+    }
+
+    void loginSucceeded() {
+        // Success
+        if (save_pwd_checkbox.isSelected()) createSaveFile();
+        else removeSaveFile();
+
+        Main.connection_active = true;
+
+        // load user
+        Main.current_user = new User(username_field.getText());
+
+        // load home scene
+        Main.window.close();
+
+        // remove incorrect_text label
+        box_login.getChildren().remove(incorrect_text);
+
+        // load home scene
+        Main.sceneMapping("login_scene", "home_scene");
+
+        Main.window.centerOnScreen();
+
+
+    }
+
+    public void loginFailed() {
+        // add incorrect_text label
+        box_login.getChildren().add(incorrect_text);
+    }
+
+    private void resetFields() {// after press login button --> reset field
+        username_field.setText(null);
+        password_field.setText(null);
     }
 
     private void createSaveFile() {

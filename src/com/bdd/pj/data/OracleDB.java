@@ -1,6 +1,7 @@
 package com.bdd.pj.data;
 
 import java.sql.*;
+import java.util.concurrent.Executor;
 
 
 /**
@@ -10,15 +11,14 @@ public class OracleDB {
 
     private Connection connection;
 
-    // Constructor
-
     public OracleDB() {
     }
 
-    // Connexion methods
-
-    public boolean connectionDatabase(String username, String password) {
-
+    /**
+     * Connect to the DB.
+     */
+    public boolean connectionDatabase(String username, String password) throws Exception {
+        System.out.println("Connecting to DB...");
         // load driver
         try {
             Class.forName("oracle.jdbc.driver.OracleDriver");
@@ -48,22 +48,24 @@ public class OracleDB {
                 while (ex != null) {
                     System.out.println("SQL state: " + ex.getSQLState());
                     System.out.println("Message: " + ex.getMessage());
-                    System.out.println("Error code: " +
-                            ex.getErrorCode());
+                    System.out.println("Error code: " + ex.getErrorCode());
                     ex = ex.getNextException();
                 }
                 while (e != null) {
                     System.out.println("SQL state: " + e.getSQLState());
                     System.out.println("Message: " + e.getMessage());
-                    System.out.println("Error code: " +
-                            e.getErrorCode());
+                    System.out.println("Error code: " + e.getErrorCode());
                     e = e.getNextException();
                 }
-                return false;
+                //return false;
+                throw new Exception("Test");
             }
         }
     }
 
+    /**
+     * Close the connection to the DB properly.
+     */
     public void closeDatabase() {
         if (connection != null) {
             try {

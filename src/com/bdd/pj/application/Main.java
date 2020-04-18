@@ -1,6 +1,7 @@
 package com.bdd.pj.application;
 
 
+import com.bdd.pj.data.MyDAO;
 import com.bdd.pj.data.OracleDB;
 import com.bdd.pj.data.Patient;
 import com.bdd.pj.data.User;
@@ -25,6 +26,7 @@ public class Main extends Application {
 
     //---------------------------------
     //         Database
+    public static MyDAO myDAO;
     public static OracleDB database;
     public static boolean connection_active;
     public static ArrayList<Patient> patients;
@@ -35,9 +37,9 @@ public class Main extends Application {
     //         Resolutions
     public static Stage window;
     public static double[] current_resolution;
-    public static double[] login_resolution = {420, 580};
-    public static double[] app_default_resolution = {1200, 800};
-    public static int time_transition = 10;
+    public static final double[] login_resolution = {420, 580};
+    public static final double[] app_default_resolution = {1200, 800};
+    public static final int time_transition = 10;
 
     //---------------------------------
     //         Scenes
@@ -163,7 +165,7 @@ public class Main extends Application {
                     window.setResizable(false);
                     window.setTitle("PsyMeeting - Login");
                     window.show();
-                    centerWindow();
+                    //centerWindow();
                     break;
             }
             window.show();
@@ -219,12 +221,14 @@ public class Main extends Application {
         return screen_index;
     }
 
-    public static void centerWindow() {
-        // center window
-        Rectangle2D primScreenBounds = Screen.getScreens().get(getScreenMonitorIndex()).getVisualBounds();
-        window.setX(primScreenBounds.getMinX() + (primScreenBounds.getWidth() - window.getWidth()) / 2);
-        window.setY((primScreenBounds.getHeight() - window.getHeight()) / 2);
-    }
+// --Commented out by Inspection START (18/04/2020 00:29):
+//    public static void centerWindow() {
+//        // center window
+//        Rectangle2D primScreenBounds = Screen.getScreens().get(getScreenMonitorIndex()).getVisualBounds();
+//        window.setX(primScreenBounds.getMinX() + (primScreenBounds.getWidth() - window.getWidth()) / 2);
+//        window.setY((primScreenBounds.getHeight() - window.getHeight()) / 2);
+//    }
+// --Commented out by Inspection STOP (18/04/2020 00:29)
 
     /**
      * reset HashMap

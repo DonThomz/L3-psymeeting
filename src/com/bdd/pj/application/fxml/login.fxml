@@ -81,7 +81,7 @@
                         <Font name="Roboto Medium" size="13.0"/>
                     </font>
                 </CheckBox>
-                <JFXButton buttonType="RAISED" onAction="#login" styleClass="button-raised" text="Se connecter">
+                <JFXButton fx:id="login_button"  buttonType="RAISED" onAction="#login" styleClass="button-raised" text="Se connecter">
                     <VBox.margin>
                         <Insets top="40.0"/>
                     </VBox.margin>

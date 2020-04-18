@@ -67,7 +67,7 @@ public class ParentController {
 
             Calendar date_consultation = Consultation.getDateById(consultation_id);
             assert date_consultation != null;
-            String timeStamp = new SimpleDateFormat("EEEE dd MMMM, yyyy à HH:mm",
+            @SuppressWarnings("SpellCheckingInspection") String timeStamp = new SimpleDateFormat("EEEE dd MMMM, yyyy à HH:mm",
                     Locale.FRANCE).format(date_consultation.getTime());
             Label title = new Label("Consultation : "
                     + "\n\t" + timeStamp);
@@ -160,7 +160,7 @@ public class ParentController {
     }
 
     protected Label createTitle(Calendar date) {
-        String format_date = new SimpleDateFormat("EEEE dd MMMM, yyyy à HH:mm",
+        @SuppressWarnings("SpellCheckingInspection") String format_date = new SimpleDateFormat("EEEE dd MMMM, yyyy à HH:mm",
                 Locale.FRANCE).format(date.getTime());
         return new Label("Consultation du " + format_date);
     }
