@@ -28,7 +28,7 @@ public class OracleDB {
             this.comboPooledDataSource.setAcquireIncrement(5);
             this.comboPooledDataSource.setMaxPoolSize(20);
 
-            this.comboPooledDataSource.setUnreturnedConnectionTimeout(10);
+            this.comboPooledDataSource.setUnreturnedConnectionTimeout(3);
             this.comboPooledDataSource.setDebugUnreturnedConnectionStackTraces(true);
 
             this.comboPooledDataSource.setTestConnectionOnCheckout(true);

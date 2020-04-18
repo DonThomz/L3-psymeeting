@@ -10,8 +10,6 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -135,26 +133,9 @@ public class ParentController {
     protected TextArea createBody(int consultation_id, StringBuilder patients_list) {
 
         // get info
-        StringBuilder info = new StringBuilder();
-        try {
-            ResultSet result = Consultation.getConsultationInfoById(consultation_id);
+        StringBuilder info;
+        info = Consultation.getConsultationInfoById(consultation_id);
 
-            assert result != null;
-            result.next();
-            // info price and pay mode
-            info.append("Prix : ").append(result.getInt(1)).append(" €, payé avec : ").append(result.getString(2));
-
-            // info feedback commentary, key words, postures
-            info.append("\n\nRetour de séance").append("\n\n\tCommentaire : \n").append(result.getString(3));
-            if (result.getString(4) != null)
-                info.append("\n\n\tMots clés :").append(result.getString(4));
-            if (result.getString(5) != null)
-                info.append("\n\n\tPosture :").append(result.getString(5));
-
-        } catch (SQLException ex) {
-            System.out.println("Error loading information...");
-            ex.printStackTrace();
-        }
         TextArea textArea = new TextArea("Patients :\n"
                 + patients_list + "\n"
                 + info + "\n"
