@@ -10,7 +10,7 @@
 <?import javafx.scene.text.Font?>
 <?import java.net.URL?>
 <AnchorPane maxHeight="100.0" prefHeight="100.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bdd.pj.application.controller.TopBarController">
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bdd.psymeeting.controller.TopBarController">
     <stylesheets>
         <URL value="@../stylesheets/top_bar.css"/>
         <URL value="@../stylesheets/app.css"/>

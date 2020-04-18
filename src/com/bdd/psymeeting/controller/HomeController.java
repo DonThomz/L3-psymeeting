@@ -1,4 +1,4 @@
-package com.bdd.pj.application.controller;
+package com.bdd.psymeeting.controller;
 
 import javafx.fxml.Initializable;
 

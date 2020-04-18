@@ -1,9 +1,9 @@
-package com.bdd.pj.application.controller;
+package com.bdd.psymeeting.controller;
 
-import com.bdd.pj.application.Main;
-import com.bdd.pj.data.Consultation;
-import com.bdd.pj.data.Job;
-import com.bdd.pj.data.Patient;
+import com.bdd.psymeeting.Main;
+import com.bdd.psymeeting.model.Consultation;
+import com.bdd.psymeeting.model.Job;
+import com.bdd.psymeeting.model.Patient;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTextField;

@@ -1,6 +1,6 @@
-package com.bdd.pj.data;
+package com.bdd.psymeeting.model;
 
-import com.bdd.pj.application.Main;
+import com.bdd.psymeeting.Main;
 
 import java.sql.*;
 import java.util.ArrayList;

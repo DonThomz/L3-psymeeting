@@ -9,7 +9,7 @@
 <?import java.net.URL?>
 <StackPane fx:id="stackPane" alignment="TOP_CENTER" prefHeight="600.0" prefWidth="600.0"
            xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="com.bdd.pj.application.controller.ProfileController">
+           fx:controller="com.bdd.psymeeting.controller.ProfileController">
     <children>
         <ScrollPane hbarPolicy="NEVER" style="-fx-background-color: fafafa;" vbarPolicy="ALWAYS">
             <stylesheets>

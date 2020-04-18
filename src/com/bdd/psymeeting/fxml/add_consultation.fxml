@@ -9,7 +9,7 @@
 <?import javafx.scene.text.*?>
 <?import java.net.URL?>
 <AnchorPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.bdd.pj.application.controller.AddConsultationController">
+            fx:controller="com.bdd.psymeeting.controller.AddConsultationController">
     <stylesheets>
         <URL value="@../stylesheets/add_consultation.css"/>
         <URL value="@../stylesheets/app.css"/>

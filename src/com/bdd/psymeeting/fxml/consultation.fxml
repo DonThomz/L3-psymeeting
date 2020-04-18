@@ -10,7 +10,7 @@
 <?import javafx.scene.text.Font?>
 <?import java.net.URL?>
 <StackPane fx:id="stackPane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="com.bdd.pj.application.controller.ConsultationController">
+           fx:controller="com.bdd.psymeeting.controller.ConsultationController">
     <children>
         <AnchorPane prefHeight="800.0">
             <stylesheets>

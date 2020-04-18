@@ -1,4 +1,4 @@
-package com.bdd.pj.application;
+package com.bdd.psymeeting;
 
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;

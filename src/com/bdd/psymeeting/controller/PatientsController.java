@@ -1,6 +1,6 @@
-package com.bdd.pj.application.controller;
+package com.bdd.psymeeting.controller;
 
-import com.bdd.pj.data.Patient;
+import com.bdd.psymeeting.model.Patient;
 import com.jfoenix.controls.JFXButton;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;

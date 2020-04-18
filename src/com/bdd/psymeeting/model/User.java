@@ -1,6 +1,6 @@
-package com.bdd.pj.data;
+package com.bdd.psymeeting.model;
 
-import com.bdd.pj.application.Main;
+import com.bdd.psymeeting.Main;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -39,7 +39,7 @@ public class User {
                 System.out.println("User: " + this.name + " " + this.last_name);
 
             } catch (SQLException ex) {
-                System.out.println("Error add name or last name to the user");
+                System.out.println("Error add name or last name to the user (1)");
                 System.out.println(ex.getErrorCode() + " : " + ex.getMessage());
             }
         }
@@ -132,7 +132,7 @@ public class User {
 
 
             } catch (SQLException ex) {
-                System.out.println("Error add name or last name to the user");
+                System.out.println("Error add name or last name to the user (2)");
                 System.out.println(ex.getErrorCode() + " : " + ex.getMessage());
                 return null;
             }

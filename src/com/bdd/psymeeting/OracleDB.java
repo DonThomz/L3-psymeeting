@@ -1,4 +1,4 @@
-package com.bdd.pj.data;
+package com.bdd.psymeeting;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 

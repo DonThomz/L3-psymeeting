@@ -1,8 +1,8 @@
-package com.bdd.pj.application.controller;
+package com.bdd.psymeeting.controller;
 
-import com.bdd.pj.application.Main;
-import com.bdd.pj.data.OracleDB;
-import com.bdd.pj.data.User;
+import com.bdd.psymeeting.Main;
+import com.bdd.psymeeting.OracleDB;
+import com.bdd.psymeeting.model.User;
 import javafx.animation.AnimationTimer;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;

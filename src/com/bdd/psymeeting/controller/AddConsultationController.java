@@ -1,10 +1,10 @@
-package com.bdd.pj.application.controller;
+package com.bdd.psymeeting.controller;
 
-import com.bdd.pj.application.Main;
-import com.bdd.pj.application.TransitionEffect;
-import com.bdd.pj.data.Consultation;
-import com.bdd.pj.data.Patient;
-import com.bdd.pj.data.User;
+import com.bdd.psymeeting.Main;
+import com.bdd.psymeeting.TransitionEffect;
+import com.bdd.psymeeting.model.Consultation;
+import com.bdd.psymeeting.model.Patient;
+import com.bdd.psymeeting.model.User;
 import com.jfoenix.controls.*;
 import com.jfoenix.validation.RequiredFieldValidator;
 import javafx.event.ActionEvent;

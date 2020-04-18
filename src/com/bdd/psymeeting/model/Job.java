@@ -1,4 +1,4 @@
-package com.bdd.pj.data;
+package com.bdd.psymeeting.model;
 
 import java.util.Calendar;
 
