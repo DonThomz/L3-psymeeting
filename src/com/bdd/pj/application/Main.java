@@ -1,18 +1,15 @@
 package com.bdd.pj.application;
 
 
-import com.bdd.pj.data.MyDAO;
 import com.bdd.pj.data.OracleDB;
 import com.bdd.pj.data.Patient;
 import com.bdd.pj.data.User;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-
 
 import java.io.IOException;
 import java.sql.Date;
@@ -20,13 +17,15 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Main extends Application {
 
     //---------------------------------
     //         Database
-    public static MyDAO myDAO;
     public static OracleDB database;
     public static boolean connection_active;
     public static ArrayList<Patient> patients;
@@ -75,7 +74,7 @@ public class Main extends Application {
 
         launch(args);
 
-        // close database if exit program
+        // Close database if exit program
         if (connection_active)
             database.closeDatabase();
     }
@@ -83,7 +82,7 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-        // init static variables
+        // Init static variables
         scenes_size = 2;
         current_resolution = app_default_resolution;
 
@@ -92,14 +91,14 @@ public class Main extends Application {
         scenes.put("home_scene", false);
 
 
-        // init FXML login file
+        // Init FXML login file
         root_login = FXMLLoader.load(getClass().getResource("fxml/login.fxml"));
 
 
-        // load login scene
+        // Load login scene
         login_scene = new Scene((Parent) root_login, login_resolution[0], login_resolution[1]);
 
-        // init window
+        // Init window
         window = stage;
         window.setScene(login_scene);
         window.setResizable(false);
@@ -118,10 +117,11 @@ public class Main extends Application {
         try {
             if (!origin_scene.equals("login_scene") && !target_scene.equals("login_scene"))
                 getCurrentResolution(getSceneByName(origin_scene));
-            else { // reset current resolution
+            else {
+                // Reset current resolution
                 current_resolution = app_default_resolution;
             }
-            // update HashMap
+            // Update HashMap
             scenes.put(origin_scene, false);
             scenes.put(target_scene, true);
 
@@ -159,13 +159,13 @@ public class Main extends Application {
                     root_login = FXMLLoader.load(Main.class.getResource("fxml/login.fxml")); // launch initialize methods
                     login_scene = new Scene((Parent) root_login, login_resolution[0], login_resolution[1]);
                     window.close();
-                    // open a fresh window
+                    // Open a fresh window
                     window.setMaximized(false);
                     window.setScene(login_scene);
                     window.setResizable(false);
                     window.setTitle("PsyMeeting - Login");
                     window.show();
-                    //centerWindow();
+                    // window.centerOnScreen(); // Not sure this is a great UX move?
                     break;
             }
             window.show();
@@ -191,7 +191,9 @@ public class Main extends Application {
         }
     }
 
-    // get current scene
+    /**
+     * Get current scene
+     */
     public static String getCurrentScene() {
         for (Map.Entry hm : scenes.entrySet()
         ) {
@@ -201,7 +203,9 @@ public class Main extends Application {
         return null;
     }
 
-    // get X and Y of window
+    /**
+     * Get X and Y of window
+     */
     public static void getCurrentResolution(Scene s) {
         if (s != null) {
             current_resolution[0] = s.getWidth();
@@ -221,17 +225,8 @@ public class Main extends Application {
         return screen_index;
     }
 
-// --Commented out by Inspection START (18/04/2020 00:29):
-//    public static void centerWindow() {
-//        // center window
-//        Rectangle2D primScreenBounds = Screen.getScreens().get(getScreenMonitorIndex()).getVisualBounds();
-//        window.setX(primScreenBounds.getMinX() + (primScreenBounds.getWidth() - window.getWidth()) / 2);
-//        window.setY((primScreenBounds.getHeight() - window.getHeight()) / 2);
-//    }
-// --Commented out by Inspection STOP (18/04/2020 00:29)
-
     /**
-     * reset HashMap
+     * Reset HashMap
      */
     public static void resetHashMap() {
         scenes.put("login_scene", true);
@@ -239,7 +234,7 @@ public class Main extends Application {
     }
 
     /**
-     * convert Timestamp to Calendar
+     * Convert Timestamp to Calendar
      */
     public static Calendar Timestamp2Calendar(Timestamp t) {
         Calendar cal = Calendar.getInstance();
@@ -248,7 +243,7 @@ public class Main extends Application {
     }
 
     /**
-     * convert Date to Calendar
+     * Convert Date to Calendar
      */
     public static Calendar Date2Calendar(Date d) {
         Calendar cal = Calendar.getInstance();
@@ -257,7 +252,7 @@ public class Main extends Application {
     }
 
     /**
-     * convert LocalDate to format string "yyyy-MM-dd HH:mm:ss"
+     * Convert LocalDate to format string "yyyy-MM-dd HH:mm:ss"
      */
     public static String LocalDateFormat(LocalDate date) {
         return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Timestamp.valueOf(date.atTime(LocalTime.MIDNIGHT)));

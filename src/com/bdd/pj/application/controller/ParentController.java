@@ -1,10 +1,10 @@
 package com.bdd.pj.application.controller;
 
+import com.bdd.pj.data.Consultation;
+import com.bdd.pj.data.Patient;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDialogLayout;
-import com.bdd.pj.data.Consultation;
-import com.bdd.pj.data.Patient;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -14,7 +14,9 @@ import javafx.scene.layout.VBox;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.Map;
 
 public class ParentController {
 

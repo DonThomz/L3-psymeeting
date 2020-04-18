@@ -1,12 +1,12 @@
 package com.bdd.pj.application.controller;
 
 import com.bdd.pj.application.Main;
-import com.jfoenix.controls.JFXComboBox;
-import com.jfoenix.controls.JFXDatePicker;
-import com.jfoenix.controls.JFXTextField;
 import com.bdd.pj.data.Consultation;
 import com.bdd.pj.data.Job;
 import com.bdd.pj.data.Patient;
+import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXDatePicker;
+import com.jfoenix.controls.JFXTextField;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.VBox;
 

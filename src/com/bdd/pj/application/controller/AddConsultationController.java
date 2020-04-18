@@ -2,11 +2,11 @@ package com.bdd.pj.application.controller;
 
 import com.bdd.pj.application.Main;
 import com.bdd.pj.application.TransitionEffect;
-import com.jfoenix.controls.*;
-import com.jfoenix.validation.RequiredFieldValidator;
 import com.bdd.pj.data.Consultation;
 import com.bdd.pj.data.Patient;
 import com.bdd.pj.data.User;
+import com.jfoenix.controls.*;
+import com.jfoenix.validation.RequiredFieldValidator;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;

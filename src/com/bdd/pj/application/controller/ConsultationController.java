@@ -1,14 +1,18 @@
 package com.bdd.pj.application.controller;
 
 import com.bdd.pj.application.TransitionEffect;
-import com.jfoenix.controls.*;
 import com.bdd.pj.data.Consultation;
+import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXTextField;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
 import java.net.URL;
-import java.util.*;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.ResourceBundle;
+import java.util.TreeMap;
 
 public class ConsultationController extends ParentController implements Initializable {
 

@@ -2,17 +2,14 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
-<?import java.net.URL?>
-<?import javafx.geometry.Insets?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-
+<?import java.net.URL?>
 <AnchorPane fx:id="login_pane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.bdd.pj.application.controller.LoginController">
     <stylesheets>
@@ -81,7 +78,8 @@
                         <Font name="Roboto Medium" size="13.0"/>
                     </font>
                 </CheckBox>
-                <JFXButton fx:id="login_button"  buttonType="RAISED" onAction="#login" styleClass="button-raised" text="Se connecter">
+                <JFXButton fx:id="login_button" buttonType="RAISED" onAction="#login" styleClass="button-raised"
+                           text="Se connecter">
                     <VBox.margin>
                         <Insets top="40.0"/>
                     </VBox.margin>

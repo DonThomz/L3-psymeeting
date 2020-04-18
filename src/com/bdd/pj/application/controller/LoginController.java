@@ -3,18 +3,19 @@ package com.bdd.pj.application.controller;
 import com.bdd.pj.application.Main;
 import com.bdd.pj.data.OracleDB;
 import com.bdd.pj.data.User;
-
 import javafx.animation.AnimationTimer;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
-
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -53,17 +54,17 @@ public class LoginController implements Initializable {
         incorrect_text = new Label("Identifiant ou mot de passe incorrect !");
         incorrect_text.getStyleClass().add("warring_label");
 
-
-        logginService.setOnSucceeded(evt -> {
+        // Set actions for success and failed connection to the DB
+        loginService.setOnSucceeded(evt -> {
             System.out.println("Task succeeded!");
             loginSucceeded();
             login_button.setDisable(false);
         });
-        logginService.setOnFailed(evt -> {
+        loginService.setOnFailed(evt -> {
             System.out.println("Task failed!");
             login_button.setDisable(false);
             loginFailed();
-            logginService.reset();
+            loginService.reset();
         });
     }
 
@@ -72,8 +73,7 @@ public class LoginController implements Initializable {
      * The reusable service allows the creation of multiple Tasks.
      * See https://fabrice-bouye.developpez.com/tutoriels/javafx/gui-service-tache-de-fond-thread-javafx/ for reference.
      */
-    Service<Boolean> logginService = new Service<Boolean>() {
-
+    Service<Boolean> loginService = new Service<Boolean>() {
         @Override
         protected Task<Boolean> createTask() {
             return new Task<Boolean>() {
@@ -83,8 +83,7 @@ public class LoginController implements Initializable {
                     if (Main.database.connectionDatabase(username_field.getText(), password_field.getText()))
                         return true;
                     else
-                        throw new Exception("Failed");
-//                return null;
+                        throw new Exception("Failed to connect. (This error should be silent and caught by 'loginService.setOnFailed')");
                 }
 
             };
@@ -112,8 +111,8 @@ public class LoginController implements Initializable {
                     } else {
                         if (username_field.getText() != null && password_field.getText() != null) {
                             System.out.println("Starting login thread...");
-                            if (logginService.getState() == Task.State.READY) {
-                                logginService.start();
+                            if (loginService.getState() == Task.State.READY) {
+                                loginService.start();
 
                                 // Disable button
                                 login_button.setDisable(true);
@@ -147,7 +146,7 @@ public class LoginController implements Initializable {
         // remove incorrect_text label
         box_login.getChildren().remove(incorrect_text);
 
-        // load home scene
+        // Load home scene
         Main.sceneMapping("login_scene", "home_scene");
 
         Main.window.centerOnScreen();
@@ -156,17 +155,18 @@ public class LoginController implements Initializable {
     }
 
     public void loginFailed() {
-        // add incorrect_text label
+        // Add incorrect_text label
         box_login.getChildren().add(incorrect_text);
     }
 
-    private void resetFields() {// after press login button --> reset field
+    private void resetFields() {
+        // After press login button --> reset field
         username_field.setText(null);
         password_field.setText(null);
     }
 
     private void createSaveFile() {
-        // create file
+        // Create file
         try {
             File save_pwd = new File("save_pwd.txt");
             save_pwd.createNewFile();
@@ -174,7 +174,7 @@ public class LoginController implements Initializable {
             System.out.println("An error occurred. Creation of save_pwd.txt");
             e.printStackTrace();
         }
-        // write file
+        // Write file
         try {
             FileWriter myWriter = new FileWriter("save_pwd.txt");
             myWriter.write(username_field.getText() + "\n");
