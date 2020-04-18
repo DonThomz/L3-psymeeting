@@ -11,6 +11,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.layout.VBox;
 
 import java.net.URL;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -68,11 +69,11 @@ public class ProfileController extends ParentController implements Initializable
     public void setupConsultationHistory() {
 
         consultation_id = new ArrayList<>();
-        try (PreparedStatement preparedStatement = Main.database.getConnection().prepareStatement("select c.CONSULTATION_ID\n" +
-                "from CONSULTATION c\n" +
-                "join CONSULTATION_CARRYOUT CC on c.CONSULTATION_ID = CC.CONSULTATION_ID\n" +
-                "where PATIENT_ID = ?")) {
-
+        try (Connection connection = Main.database.getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement("select c.CONSULTATION_ID\n" +
+                    "from CONSULTATION c\n" +
+                    "join CONSULTATION_CARRYOUT CC on c.CONSULTATION_ID = CC.CONSULTATION_ID\n" +
+                    "where PATIENT_ID = ?");
 
             preparedStatement.setInt(1, tmp_p.getPatient_id());
             ResultSet result = preparedStatement.executeQuery();

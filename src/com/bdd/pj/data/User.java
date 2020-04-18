@@ -95,7 +95,8 @@ public class User {
     //   Statement methods
     // --------------------
     public static int getLastUserId() {
-        try (Statement stmt = Main.database.getConnection().createStatement()) {
+        try (Connection connection = Main.database.getConnection()) {
+            Statement stmt = connection.createStatement();
             ResultSet rset = stmt.executeQuery("select max(USER_ID) from USER_APP");
             rset.next();
             return rset.getInt(1);
@@ -106,7 +107,8 @@ public class User {
     }
 
     public static int getPatientIdByEmail(String email) {
-        try (Statement stmt = Main.database.getConnection().createStatement()) {
+        try (Connection connection = Main.database.getConnection()) {
+            Statement stmt = connection.createStatement();
             ResultSet rset = stmt.executeQuery("select\n" +
                     "       u.PATIENT_ID\n" +
                     "from USER_APP u\n" +
@@ -119,22 +121,25 @@ public class User {
         return -1;
     }
 
-    public static String getUserFullName(String username){
+    public static String getUserFullName(String username) throws SQLException {
         // get name
-        try {
-            // admin user
-            if (username.equals("admin")) {
-                Statement stmt = Main.database.getConnection().createStatement();
+        if (username.equals("admin")) {
+            try (Connection connection = Main.database.getConnection()) {
+                Statement stmt = connection.createStatement();
                 ResultSet rset = stmt.executeQuery("select NAME, LAST_NAME from ADMINISTRATOR");
                 rset.next();
                 return rset.getString(1) + " " + rset.getString(2);
-            }
 
-        } catch (SQLException ex) {
-            System.out.println("Error add name or last name to the user");
-            System.out.println(ex.getErrorCode() + " : " + ex.getMessage());
+
+            } catch (SQLException ex) {
+                System.out.println("Error add name or last name to the user");
+                System.out.println(ex.getErrorCode() + " : " + ex.getMessage());
+                return null;
+            }
+        } else {
+            return "Invité";
         }
-        return null;
+
     }
 
 

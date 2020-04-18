@@ -4,10 +4,7 @@ import com.bdd.pj.application.Main;
 import com.jfoenix.controls.JFXButton;
 import javafx.scene.control.TextArea;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -153,8 +150,8 @@ public class Consultation {
     // --------------------
 
     public static int getLastPrimaryKeyId() {
-        try (Statement stmt = Main.database.getConnection().createStatement()) {
-
+        try (Connection connection = Main.database.getConnection()) {
+            Statement stmt = connection.createStatement();
             ResultSet result = stmt.executeQuery("select max(CONSULTATION_ID) from CONSULTATION");
             result.next();
             return result.getInt(1);
@@ -170,7 +167,8 @@ public class Consultation {
                 "     c.CONSULTATION_DATE\n" +
                 "from CONSULTATION c\n" +
                 "where c.CONSULTATION_ID = ?";
-        try (PreparedStatement preparedStmt = Main.database.getConnection().prepareStatement(query)) {
+        try (Connection connection = Main.database.getConnection()) {
+            PreparedStatement preparedStmt = connection.prepareStatement(query);
             preparedStmt.setInt(1, consultation_id);
             ResultSet result = preparedStmt.executeQuery();
             if (result.next()) {
@@ -187,27 +185,38 @@ public class Consultation {
                 "from CONSULTATION c\n" +
                 "join FEEDBACK f on c.CONSULTATION_ID = f.FEEDBACK_ID\n" +
                 "where c.CONSULTATION_ID = ?";
-        try (PreparedStatement preparedStmt = Main.database.getConnection().prepareStatement(query);) {
+        try (Connection connection = Main.database.getConnection()) {
+            PreparedStatement preparedStmt = connection.prepareStatement(query);
             // the insert statement
 
             // create the insert preparedStatement
 
             preparedStmt.setInt(1, consultation_id);
 
-            ResultSet result = preparedStmt.executeQuery();
-
-            assert result != null;
-            result.next();
+            ResultSet rs = preparedStmt.executeQuery();
+            ResultSetMetaData rsmd = rs.getMetaData();
+            System.out.println("querying SELECT * FROM XXX");
+            int columnsNumber = rsmd.getColumnCount();
+            while (rs.next()) {
+                for (int i = 1; i <= columnsNumber; i++) {
+                    if (i > 1) System.out.print(",  ");
+                    String columnValue = rs.getString(i);
+                    System.out.print(columnValue + " " + rsmd.getColumnName(i));
+                }
+                System.out.println("");
+            }
+            assert rs != null;
+            rs.next();
             // info price and pay mode
             StringBuilder info = new StringBuilder();
-            info.append("Prix : ").append(result.getInt(1)).append(" €, payé avec : ").append(result.getString(2));
+            info.append("Prix : ").append(rs.getInt(1)).append(" €, payé avec : ").append(rs.getString(2));
 
             // info feedback commentary, key words, postures
-            info.append("\n\nRetour de séance").append("\n\n\tCommentaire : \n").append(result.getString(3));
-            if (result.getString(4) != null)
-                info.append("\n\n\tMots clés :").append(result.getString(4));
-            if (result.getString(5) != null)
-                info.append("\n\n\tPosture :").append(result.getString(5));
+            info.append("\n\nRetour de séance").append("\n\n\tCommentaire : \n").append(rs.getString(3));
+            if (rs.getString(4) != null)
+                info.append("\n\n\tMots clés :").append(rs.getString(4));
+            if (rs.getString(5) != null)
+                info.append("\n\n\tPosture :").append(rs.getString(5));
 
             return info;
         } catch (SQLException ex) {
