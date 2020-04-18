@@ -2,6 +2,7 @@ package com.bdd.pj.data;
 
 import com.bdd.pj.application.Main;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -28,6 +29,20 @@ public class User {
     // --------------------
     public User(String username) {
         this.username = username;
+        if (this.username.equals("admin")) {
+            try (Connection connection = Main.database.getConnection()) {
+                Statement stmt = connection.createStatement();
+                ResultSet rset = stmt.executeQuery("select NAME, LAST_NAME from ADMINISTRATOR");
+                rset.next();
+                this.name = rset.getString(1);
+                this.last_name = rset.getString(2);
+                System.out.println("User: " + this.name + " " + this.last_name);
+
+            } catch (SQLException ex) {
+                System.out.println("Error add name or last name to the user");
+                System.out.println(ex.getErrorCode() + " : " + ex.getMessage());
+            }
+        }
     }
 
 

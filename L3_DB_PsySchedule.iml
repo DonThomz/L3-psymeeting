@@ -11,5 +11,7 @@
     <orderEntry type="library" name="ojdbc8" level="project" />
     <orderEntry type="library" name="Maven: de.jensd:fontawesomefx:8.9" level="project" />
     <orderEntry type="library" name="Maven: com.jfoenix:jfoenix:8.0.8" level="project" />
+    <orderEntry type="library" name="c3p0-0.9.5.5" level="project" />
+    <orderEntry type="library" name="mchange-commons-java-0.2.19" level="project" />
   </component>
 </module>

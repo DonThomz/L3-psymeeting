@@ -182,7 +182,7 @@ public class Consultation {
         return null;
     }
 
-    public static ResultSet getConsultationInfoById(int consultation_id) {
+    public static StringBuilder getConsultationInfoById(int consultation_id) {
         String query = "select c.PRICE, c.PAY_MODE, f.COMMENTARY, f.KEYWORD, f.POSTURE\n" +
                 "from CONSULTATION c\n" +
                 "join FEEDBACK f on c.CONSULTATION_ID = f.FEEDBACK_ID\n" +
@@ -193,7 +193,23 @@ public class Consultation {
             // create the insert preparedStatement
 
             preparedStmt.setInt(1, consultation_id);
-            return preparedStmt.executeQuery();
+
+            ResultSet result = preparedStmt.executeQuery();
+
+            assert result != null;
+            result.next();
+            // info price and pay mode
+            StringBuilder info = new StringBuilder();
+            info.append("Prix : ").append(result.getInt(1)).append(" €, payé avec : ").append(result.getString(2));
+
+            // info feedback commentary, key words, postures
+            info.append("\n\nRetour de séance").append("\n\n\tCommentaire : \n").append(result.getString(3));
+            if (result.getString(4) != null)
+                info.append("\n\n\tMots clés :").append(result.getString(4));
+            if (result.getString(5) != null)
+                info.append("\n\n\tPosture :").append(result.getString(5));
+
+            return info;
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
