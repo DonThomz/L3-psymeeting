@@ -4,10 +4,7 @@ import com.bdd.pj.application.Main;
 import com.jfoenix.controls.JFXButton;
 import javafx.scene.control.TextArea;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -18,17 +15,15 @@ public class Consultation {
     // --------------------
 
     // Consultation attributes from table CONSULTATION
-    private final int consultation_id; //primary key
+    private final int consultationID; //primary key
     private Calendar date;
     private float price;
-    private String pay_mode;
-    private ArrayList<String[]> patients_full_names; // String[0] = name | String[1] = last_name
+    private String payMode;
+    private ArrayList<Patient> patients; // String[0] = name | String[1] = last_name
 
-    // Feedback attributes from table FEEDBACK
-    private String commentary;
-    private String keyword;
-    private String posture;
-    private int indicator;
+    // Feedback
+    private Feedback feedback;
+
 
     // Graphic attributes
     private TextArea full_infos;
@@ -37,31 +32,65 @@ public class Consultation {
     // --------------------
     //   Constructors
     // --------------------
-    public Consultation(int consultation_id) {
-        this.consultation_id = consultation_id;
+    public Consultation(int consultationID) {
+        this.consultationID = consultationID;
+        // get feedback
+        this.feedback = new Feedback(this.consultationID);
+
+        try(Connection connection = Main.database.getConnection()){
+
+            String query;
+            PreparedStatement preparedStatement;
+            ResultSet resultSet;
+            // get consultation info (date, price, pay mode)
+            query = "select CONSULTATION_DATE, PRICE, PAY_MODE from CONSULTATION where CONSULTATION_ID = ?";
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, this.consultationID);
+            resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+
+            // assign attributes
+            this.date = Main.Timestamp2Calendar(resultSet.getTimestamp(1));
+            this.price = resultSet.getFloat(2);
+            this.payMode = resultSet.getString(3);
+
+            // get patients list from consultations
+            query = "select P.PATIENT_ID, P.NAME, P.LAST_NAME " +
+                    "from PATIENT P " +
+                    "join CONSULTATION_CARRYOUT CC on P.PATIENT_ID = CC.PATIENT_ID " +
+                    "where CC.CONSULTATION_ID = ?";
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, this.consultationID);
+            resultSet = preparedStatement.executeQuery();
+            patients = new ArrayList<>();
+            while(resultSet.next()){
+                patients.add(new Patient(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3)));
+            }
+
+        }catch (SQLException ex){
+            ex.printStackTrace();
+        }
     }
 
-    public Consultation(int consultation_id, Calendar date, float price, String pay_mode, ArrayList<String[]> patients_full_names,
-                        String commentary, String keyword, String posture, int indicator, TextArea full_infos, JFXButton consultation_button) {
-        this.consultation_id = consultation_id;
+    public Consultation(int consultationID, Calendar date, float price, String payMode, ArrayList<Patient> patients, TextArea full_infos, JFXButton consultation_button) {
+        this.consultationID = consultationID;
         this.date = date;
         this.price = price;
-        this.pay_mode = pay_mode;
-        this.patients_full_names = patients_full_names;
-        this.commentary = commentary;
-        this.keyword = keyword;
-        this.posture = posture;
-        this.indicator = indicator;
+        this.payMode = payMode;
+        this.patients = patients;
         this.full_infos = full_infos;
         this.consultation_button = consultation_button;
     }
 
 
+
+
+
     // --------------------
     //   Get methods
     // --------------------
-    public int getConsultation_id() {
-        return consultation_id;
+    public int getConsultationID() {
+        return consultationID;
     }
 
     public Calendar getDate() {
@@ -76,32 +105,20 @@ public class Consultation {
         return price;
     }
 
-    public String getPay_mode() {
-        return pay_mode;
+    public String getPayMode() {
+        return payMode;
     }
 
     public TextArea getFull_infos() {
         return full_infos;
     }
 
-    public ArrayList<String[]> getPatients_full_names() {
-        return patients_full_names;
+    public Feedback getFeedback() {
+        return feedback;
     }
 
-    public String getCommentary() {
-        return commentary;
-    }
-
-    public String getKeyword() {
-        return keyword;
-    }
-
-    public String getPosture() {
-        return posture;
-    }
-
-    public int getIndicator() {
-        return indicator;
+    public ArrayList<Patient> getPatients() {
+        return patients;
     }
 
     // --------------------
@@ -120,32 +137,20 @@ public class Consultation {
         this.price = price;
     }
 
-    public void setPay_mode(String pay_mode) {
-        this.pay_mode = pay_mode;
+    public void setPayMode(String payMode) {
+        this.payMode = payMode;
     }
 
     public void setFull_infos(TextArea full_infos) {
         this.full_infos = full_infos;
     }
 
-    public void setCommentary(String commentary) {
-        this.commentary = commentary;
+    public void setFeedback(Feedback feedback) {
+        this.feedback = feedback;
     }
 
-    public void setKeyword(String keyword) {
-        this.keyword = keyword;
-    }
-
-    public void setPosture(String posture) {
-        this.posture = posture;
-    }
-
-    public void setIndicator(int indicator) {
-        this.indicator = indicator;
-    }
-
-    public void setPatients_full_names(ArrayList<String[]> patients_full_names) {
-        this.patients_full_names = patients_full_names;
+    public void setPatients(ArrayList<Patient> patients) {
+        this.patients = patients;
     }
 
     // --------------------
@@ -181,24 +186,5 @@ public class Consultation {
         }
         return null;
     }
-
-    public static ResultSet getConsultationInfoById(int consultation_id) {
-        String query = "select c.PRICE, c.PAY_MODE, f.COMMENTARY, f.KEYWORD, f.POSTURE\n" +
-                "from CONSULTATION c\n" +
-                "join FEEDBACK f on c.CONSULTATION_ID = f.FEEDBACK_ID\n" +
-                "where c.CONSULTATION_ID = ?";
-        try (PreparedStatement preparedStmt = Main.database.getConnection().prepareStatement(query);) {
-            // the insert statement
-
-            // create the insert preparedStatement
-
-            preparedStmt.setInt(1, consultation_id);
-            return preparedStmt.executeQuery();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return null;
-    }
-
 
 }

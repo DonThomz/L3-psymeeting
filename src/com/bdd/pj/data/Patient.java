@@ -39,6 +39,13 @@ public class Patient {
         this.new_patient = new_patient;
     }
 
+    // patient (name and last name)
+    public Patient(int patient_id, String name, String last_name) {
+        this.patient_id = patient_id;
+        this.name = name;
+        this.last_name = last_name;
+    }
+
     // patient with jobs history
     public Patient(int patient_id, String name, String last_name, boolean new_patient, ArrayList<Job> jobs) {
         this.patient_id = patient_id;
