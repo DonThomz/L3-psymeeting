@@ -85,7 +85,6 @@ public class LoginController implements Initializable {
                     else
                         throw new Exception("Failed to connect. (This error should be silent and caught by 'loginService.setOnFailed')");
                 }
-
             };
         }
     };

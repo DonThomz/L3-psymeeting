@@ -4,6 +4,9 @@ import com.bdd.pj.application.TransitionEffect;
 import com.bdd.pj.data.Consultation;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
+import javafx.concurrent.Worker;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
@@ -23,11 +26,25 @@ public class ConsultationController extends ParentController implements Initiali
 
     // Attributes
 
+    // --------------------
+    //  Services
+    // --------------------
+    Service<Boolean> loadConsultations = new Service<Boolean>() {
+        @Override
+        protected Task<Boolean> createTask() {
+            return new Task<Boolean>() {
+                @Override
+                protected Boolean call() throws Exception {
+                    return true;
+                }
+            };
+        }
+    };
+
 
     // --------------------
     //   Initialize method
     // --------------------
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -41,13 +58,27 @@ public class ConsultationController extends ParentController implements Initiali
         setupBoxConsultations();
         setupSearchBox();
 
+
+        // Setup services
+        loadConsultations.setOnSucceeded(evt -> {
+            System.out.println("Task succeeded!");
+            // run createConsultationBox
+        });
+        loadConsultations.setOnFailed(evt -> {
+            System.out.println("Task failed!");
+        });
+
+
     }
 
     @Override
     protected void setupBoxConsultations() {
         consultations_map = new HashMap<>();
         box_consultations.setSpacing(20);
+
+
         consultation_size = Consultation.getLastPrimaryKeyId();
+
         for (int i = 1; i <= consultation_size; i++) {
             consultations_map.put(Consultation.getDateById(i), buildConsultationButton(i));
         }
@@ -61,7 +92,9 @@ public class ConsultationController extends ParentController implements Initiali
             v.getStyleClass().add("consultation_cell");
             box_consultations.getChildren().add(v);
         });
+
     }
+
 
     private void setupFilterBox() {
         filter.getItems().add(new Label("plus récent"));

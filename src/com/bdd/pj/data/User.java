@@ -27,24 +27,7 @@ public class User {
     //   Constructors
     // --------------------
     public User(String username) {
-        // get name
-        try {
-            this.username = username;
-
-            // admin user
-            if (this.username.equals("admin")) {
-                Statement stmt = Main.database.getConnection().createStatement();
-                ResultSet rset = stmt.executeQuery("select NAME, LAST_NAME from ADMINISTRATOR");
-                rset.next();
-                this.name = rset.getString(1);
-                this.last_name = rset.getString(2);
-            }
-
-
-        } catch (SQLException ex) {
-            System.out.println("Error add name or last name to the user");
-            System.out.println(ex.getErrorCode() + " : " + ex.getMessage());
-        }
+        this.username = username;
     }
 
 
@@ -121,6 +104,24 @@ public class User {
             throwable.printStackTrace();
         }
         return -1;
+    }
+
+    public static String getUserFullName(String username){
+        // get name
+        try {
+            // admin user
+            if (username.equals("admin")) {
+                Statement stmt = Main.database.getConnection().createStatement();
+                ResultSet rset = stmt.executeQuery("select NAME, LAST_NAME from ADMINISTRATOR");
+                rset.next();
+                return rset.getString(1) + " " + rset.getString(2);
+            }
+
+        } catch (SQLException ex) {
+            System.out.println("Error add name or last name to the user");
+            System.out.println(ex.getErrorCode() + " : " + ex.getMessage());
+        }
+        return null;
     }
 
 

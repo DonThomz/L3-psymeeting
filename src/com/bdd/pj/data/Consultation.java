@@ -176,10 +176,8 @@ public class Consultation {
             preparedStmt.setInt(1, consultation_id);
             ResultSet result = preparedStmt.executeQuery();
             if (result.next()) {
-
                 return Main.Timestamp2Calendar(result.getTimestamp(1));
             }
-
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
