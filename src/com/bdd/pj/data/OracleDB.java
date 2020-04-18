@@ -4,7 +4,6 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 import java.beans.PropertyVetoException;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -50,38 +49,32 @@ public class OracleDB {
             this.comboPooledDataSource.setAcquireIncrement(5);
             this.comboPooledDataSource.setMaxPoolSize(20);
 
-            this.comboPooledDataSource.setAcquireRetryAttempts(3);
+            this.comboPooledDataSource.setAcquireRetryAttempts(0);
 
             this.comboPooledDataSource.setUnreturnedConnectionTimeout(10);
             this.comboPooledDataSource.setDebugUnreturnedConnectionStackTraces(true);
 
             this.comboPooledDataSource.setTestConnectionOnCheckout(true);
 
-            // TODO Set connection before loading
-            this.comboPooledDataSource.setPreferredTestQuery("SELECT NAME FROM ADMINISTRATOR");
-            System.out.println("Maybe?");
-//            return true;
-            try(Connection connection = this.getConnection()) {
-                System.out.println("Nope?");
-                Statement stmt = connection.createStatement();
-                ResultSet rset = stmt.executeQuery("select NAME, LAST_NAME from ADMINISTRATOR");
+            System.out.println("Pooled data source set up: done!");
 
-                System.out.println("Connected !!");
+            try(Connection connection = this.getConnection()) {
+                System.out.println("Checking connection....");
+                Statement stmt = connection.createStatement();
+                stmt.executeQuery("select NAME, LAST_NAME from ADMINISTRATOR");
+
+                System.out.println("Connection succeeded!");
                 return true;
             }
             catch (Exception e) {
-                System.out.println("OUPSIE");
+                System.out.println("Connection failed! Maybe wrong password?");
+                this.comboPooledDataSource.close();
+                e.printStackTrace();
                 return false;
             }
-            // this.comboPooledDataSource.setCheckoutTimeout(3000);
-//            this.comboPooledDataSource.setAu
 
-//            this.comboPooledDataSource.setTestConnectionOnCheckout(true);
-//            this.comboPooledDataSource.setPreferredTestQuery("SELECT 1");
-
-//            System.out.println("Connected ? Idk");
-//            return true;
         } catch (PropertyVetoException e) {
+            System.out.println("Unable to set up connection pool!");
             e.printStackTrace();
             // System.exit(1);
             return false;
