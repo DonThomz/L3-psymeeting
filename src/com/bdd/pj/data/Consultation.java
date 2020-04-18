@@ -153,8 +153,8 @@ public class Consultation {
     // --------------------
 
     public static int getLastPrimaryKeyId() {
-        try {
-            Statement stmt = Main.database.getConnection().createStatement();
+        try (Statement stmt = Main.database.getConnection().createStatement()) {
+
             ResultSet result = stmt.executeQuery("select max(CONSULTATION_ID) from CONSULTATION");
             result.next();
             return result.getInt(1);
@@ -165,18 +165,15 @@ public class Consultation {
     }
 
     public static Calendar getDateById(int consultation_id) {
-        try {
-            // the insert statement
-            String query = "select\n" +
-                    "     c.CONSULTATION_DATE\n" +
-                    "from CONSULTATION c\n" +
-                    "where c.CONSULTATION_ID = ?";
-            // create the insert preparedStatement
-            PreparedStatement preparedStmt = Main.database.getConnection().prepareStatement(query);
+        // TODO Fix this, as the connection can't be checked out
+        String query = "select\n" +
+                "     c.CONSULTATION_DATE\n" +
+                "from CONSULTATION c\n" +
+                "where c.CONSULTATION_ID = ?";
+        try (PreparedStatement preparedStmt = Main.database.getConnection().prepareStatement(query)) {
             preparedStmt.setInt(1, consultation_id);
             ResultSet result = preparedStmt.executeQuery();
             if (result.next()) {
-
                 return Main.Timestamp2Calendar(result.getTimestamp(1));
             }
 
@@ -187,14 +184,15 @@ public class Consultation {
     }
 
     public static ResultSet getConsultationInfoById(int consultation_id) {
-        try {
+        String query = "select c.PRICE, c.PAY_MODE, f.COMMENTARY, f.KEYWORD, f.POSTURE\n" +
+                "from CONSULTATION c\n" +
+                "join FEEDBACK f on c.CONSULTATION_ID = f.FEEDBACK_ID\n" +
+                "where c.CONSULTATION_ID = ?";
+        try (PreparedStatement preparedStmt = Main.database.getConnection().prepareStatement(query);) {
             // the insert statement
-            String query = "select c.PRICE, c.PAY_MODE, f.COMMENTARY, f.KEYWORD, f.POSTURE\n" +
-                    "from CONSULTATION c\n" +
-                    "join FEEDBACK f on c.CONSULTATION_ID = f.FEEDBACK_ID\n" +
-                    "where c.CONSULTATION_ID = ?";
+
             // create the insert preparedStatement
-            PreparedStatement preparedStmt = Main.database.getConnection().prepareStatement(query);
+
             preparedStmt.setInt(1, consultation_id);
             return preparedStmt.executeQuery();
         } catch (SQLException ex) {

@@ -1,7 +1,6 @@
 package com.bdd.pj.application.controller;
 
 import com.bdd.pj.data.Consultation;
-import com.bdd.pj.data.Patient;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDialogLayout;
@@ -56,55 +55,58 @@ public class ParentController {
 
     protected JFXButton buildConsultationButton(int consultation_id) {
 
-        try {
+//        try {
 
-            // init button
-            JFXButton consultation_button = new JFXButton();
-            // setting button
-            consultation_button.setId("consultation-button-id-" + consultation_id);
-
-
-            // Setup content
-            VBox box = new VBox();
-
-            Calendar date_consultation = Consultation.getDateById(consultation_id);
-            assert date_consultation != null;
-            @SuppressWarnings("SpellCheckingInspection") String timeStamp = new SimpleDateFormat("EEEE dd MMMM, yyyy à HH:mm",
-                    Locale.FRANCE).format(date_consultation.getTime());
-            Label title = new Label("Consultation : "
-                    + "\n\t" + timeStamp);
-
-            box.getChildren().add(title);
-
-            // get patient and add in a javaFX TEXT
-            ResultSet tmp_result_patients = Patient.getPatientFullNameByConsultationId(consultation_id);
-            assert tmp_result_patients != null;
-
-            // create label and add patients
-            Label patient_list = new Label();
-            patient_list.getStyleClass().add("content_text");
-            StringBuilder content = new StringBuilder();
-            while (tmp_result_patients.next()) {
-                content.append(" | ").append(tmp_result_patients.getString(1)).append(" ").append(tmp_result_patients.getString(2)).append(" \n");
-            }
-            patient_list.setText(String.valueOf(content));
-            box.getChildren().add(patient_list);
+        // init button
+        JFXButton consultation_button = new JFXButton();
+        // setting button
+        consultation_button.setId("consultation-button-id-" + consultation_id);
 
 
-            // add action on button
-            consultation_button.setOnAction(event -> loadConsultationInfo(consultation_id, date_consultation, content));
+        // Setup content
+        VBox box = new VBox();
 
-            // add to the button
-            consultation_button.setGraphic(box);
+        Calendar date_consultation = Consultation.getDateById(consultation_id);
+        assert date_consultation != null;
+        @SuppressWarnings("SpellCheckingInspection") String timeStamp = new SimpleDateFormat("EEEE dd MMMM, yyyy à HH:mm",
+                Locale.FRANCE).format(date_consultation.getTime());
+        Label title = new Label("Consultation : "
+                + "\n\t" + timeStamp);
 
-            // add attributes to consultation instance
-            return consultation_button;
+        box.getChildren().add(title);
 
-        } catch (SQLException ex) {
+        // get patient and add in a javaFX TEXT
+        // TODO FIX @TODO
+        //            ResultSet tmp_result_patients = Patient.getPatientFullNameByConsultationId(consultation_id);
+        //            assert tmp_result_patients != null;
+
+        // create label and add patients
+        Label patient_list = new Label();
+        patient_list.getStyleClass().add("content_text");
+        StringBuilder content = new StringBuilder();
+        // TODO FIX @TOTO
+        //            while (tmp_result_patients.next()) {
+        //                content.append(" | ").append(tmp_result_patients.getString(1)).append(" ").append(tmp_result_patients.getString(2)).append(" \n");
+        //            }
+        patient_list.setText(String.valueOf(content));
+        box.getChildren().add(patient_list);
+
+
+        // add action on button
+        consultation_button.setOnAction(event -> loadConsultationInfo(consultation_id, date_consultation, content));
+
+        // add to the button
+        consultation_button.setGraphic(box);
+
+        // add attributes to consultation instance
+        return consultation_button;
+
+//        }
+        /*catch (SQLException ex) {
             System.out.println("SQL Error to get patients information");
             ex.printStackTrace();
-        }
-        return null;
+        }*/
+
     }
 
     protected void loadConsultationInfo(int consultation_id, Calendar date, StringBuilder patients_list) {

@@ -28,22 +28,18 @@ public class User {
     // --------------------
     public User(String username) {
         // get name
-        try {
-            this.username = username;
 
-            // admin user
-            if (this.username.equals("admin")) {
-                Statement stmt = Main.database.getConnection().createStatement();
+        this.username = username;
+        if (this.username.equals("admin")) {
+            try (Statement stmt = Main.database.getConnection().createStatement()) {
                 ResultSet rset = stmt.executeQuery("select NAME, LAST_NAME from ADMINISTRATOR");
                 rset.next();
                 this.name = rset.getString(1);
                 this.last_name = rset.getString(2);
+            } catch (SQLException ex) {
+                System.out.println("Error add name or last name to the user");
+                System.out.println(ex.getErrorCode() + " : " + ex.getMessage());
             }
-
-
-        } catch (SQLException ex) {
-            System.out.println("Error add name or last name to the user");
-            System.out.println(ex.getErrorCode() + " : " + ex.getMessage());
         }
     }
 
@@ -97,8 +93,7 @@ public class User {
     //   Statement methods
     // --------------------
     public static int getLastUserId() {
-        try {
-            Statement stmt = Main.database.getConnection().createStatement();
+        try (Statement stmt = Main.database.getConnection().createStatement()) {
             ResultSet rset = stmt.executeQuery("select max(USER_ID) from USER_APP");
             rset.next();
             return rset.getInt(1);
@@ -109,8 +104,7 @@ public class User {
     }
 
     public static int getPatientIdByEmail(String email) {
-        try {
-            Statement stmt = Main.database.getConnection().createStatement();
+        try (Statement stmt = Main.database.getConnection().createStatement()) {
             ResultSet rset = stmt.executeQuery("select\n" +
                     "       u.PATIENT_ID\n" +
                     "from USER_APP u\n" +

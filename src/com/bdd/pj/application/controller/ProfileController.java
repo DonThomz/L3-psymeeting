@@ -68,11 +68,11 @@ public class ProfileController extends ParentController implements Initializable
     public void setupConsultationHistory() {
 
         consultation_id = new ArrayList<>();
-        try {
-            PreparedStatement preparedStatement = Main.database.getConnection().prepareStatement("select c.CONSULTATION_ID\n" +
-                    "from CONSULTATION c\n" +
-                    "join CONSULTATION_CARRYOUT CC on c.CONSULTATION_ID = CC.CONSULTATION_ID\n" +
-                    "where PATIENT_ID = ?");
+        try (PreparedStatement preparedStatement = Main.database.getConnection().prepareStatement("select c.CONSULTATION_ID\n" +
+                "from CONSULTATION c\n" +
+                "join CONSULTATION_CARRYOUT CC on c.CONSULTATION_ID = CC.CONSULTATION_ID\n" +
+                "where PATIENT_ID = ?")) {
+
 
             preparedStatement.setInt(1, tmp_p.getPatient_id());
             ResultSet result = preparedStatement.executeQuery();

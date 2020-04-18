@@ -123,8 +123,8 @@ public class Patient {
     // --------------------
 
     public static int getLastPrimaryKeyId() {
-        try {
-            Statement stmt = Main.database.getConnection().createStatement();
+        try (Statement stmt = Main.database.getConnection().createStatement()) {
+
             ResultSet rset = stmt.executeQuery("select max(patient_id) from PATIENT");
             rset.next();
             return rset.getInt(1);
@@ -135,8 +135,7 @@ public class Patient {
     }
 
     public static Patient getPatientByEmail(String email) {
-        try {
-            Statement stmt = Main.database.getConnection().createStatement();
+        try (Statement stmt = Main.database.getConnection().createStatement()) {
             ResultSet rset = stmt.executeQuery("select\n" +
                     "       u.PATIENT_ID,\n" +
                     "       p.NAME,\n" +
@@ -152,18 +151,19 @@ public class Patient {
         return null;
     }
 
-    public static ResultSet getPatientFullNameByConsultationId(int consultation_id) {
-        try {
+    public static Patient getPatientFullNameByConsultationId(int consultation_id) {
+        String query = "select\n" +
+                "p.NAME, p.LAST_NAME\n" +
+                "from PATIENT p\n" +
+                "join CONSULTATION_CARRYOUT cc on p.PATIENT_ID = cc.PATIENT_ID\n" +
+                "where CONSULTATION_ID = ?";
+        try (PreparedStatement preparedStmt = Main.database.getConnection().prepareStatement(query)) {
             // the insert statement
-            String query = "select\n" +
-                    "p.NAME, p.LAST_NAME\n" +
-                    "from PATIENT p\n" +
-                    "join CONSULTATION_CARRYOUT cc on p.PATIENT_ID = cc.PATIENT_ID\n" +
-                    "where CONSULTATION_ID = ?";
+
             // create the insert preparedStatement
-            PreparedStatement preparedStmt = Main.database.getConnection().prepareStatement(query);
+            //PreparedStatement preparedStmt = Main.database.getConnection().prepareStatement(query);
             preparedStmt.setInt(1, consultation_id);
-            return preparedStmt.executeQuery();
+            return (Patient) preparedStmt.executeQuery();
 
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -175,8 +175,7 @@ public class Patient {
 
         ArrayList<Patient> list_patients = new ArrayList<>();
 
-        try {
-            Statement stmt = Main.database.getConnection().createStatement();
+        try (Statement stmt = Main.database.getConnection().createStatement()) {
             ResultSet result = stmt.executeQuery("select PATIENT_ID, NAME, LAST_NAME, BIRTHDAY, GENDER, RELATIONSHIP, DISCOVERY_WAY from PATIENT");
             while (result.next()) {
                 list_patients.add(new Patient(result.getInt(1),
@@ -190,14 +189,15 @@ public class Patient {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+            // return null;
         }
         for (Patient p : list_patients
         ) {
             ArrayList<Job> jobs = new ArrayList<>();
-            try {
-                PreparedStatement preparedStatement = Main.database.getConnection().prepareStatement("select JOBS_ID, JOB_NAME, JOB_DATE " +
-                        "from JOBS " +
-                        "where PATIENT_ID = ?");
+            try (PreparedStatement preparedStatement = Main.database.getConnection().prepareStatement("select JOBS_ID, JOB_NAME, JOB_DATE " +
+                    "from JOBS " +
+                    "where PATIENT_ID = ?")) {
+
                 preparedStatement.setInt(1, p.getPatient_id());
                 ResultSet result = preparedStatement.executeQuery();
                 while (result.next()) {
@@ -207,6 +207,7 @@ public class Patient {
                 p.setJobs(jobs);
             } catch (SQLException ex) {
                 ex.printStackTrace();
+                // return null;
             }
         }
 
