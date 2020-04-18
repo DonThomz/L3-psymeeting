@@ -113,16 +113,10 @@ public class LoginController implements Initializable {
                             System.out.println("Starting login thread...");
                             if (loginService.getState() == Task.State.READY) {
                                 loginService.start();
-
-                                // Disable button
                                 login_button.setDisable(true);
-                            }
-
-                            // TODO Add loading state
-                            else {
+                            } else { // TODO Add loading state
                                 System.out.println("Service is not ready for another try!");
                             }
-
                         }
                     }
                 }
@@ -130,7 +124,7 @@ public class LoginController implements Initializable {
         }.start();
     }
 
-    void loginSucceeded() {
+    public void loginSucceeded() {
         // Success
         if (save_pwd_checkbox.isSelected()) createSaveFile();
         else removeSaveFile();
@@ -150,8 +144,6 @@ public class LoginController implements Initializable {
         Main.sceneMapping("login_scene", "home_scene");
 
         Main.window.centerOnScreen();
-
-
     }
 
     public void loginFailed() {
@@ -169,7 +161,9 @@ public class LoginController implements Initializable {
         // Create file
         try {
             File save_pwd = new File("save_pwd.txt");
-            save_pwd.createNewFile();
+            if (save_pwd.createNewFile()) {
+                System.out.println("Successfully save_pwd.txt create !");
+            } else System.out.println("save_pwd.txt already exist !");
         } catch (IOException e) {
             System.out.println("An error occurred. Creation of save_pwd.txt");
             e.printStackTrace();
@@ -188,7 +182,8 @@ public class LoginController implements Initializable {
 
     private void removeSaveFile() {
         File tmpFile = new File("save_pwd.txt");
-        tmpFile.delete();
+        if (tmpFile.delete()) System.out.println("Successfully remove save_pwd.txt");
+        else System.out.println("Error remove save_pwd.txt");
     }
 
     private void fillField(boolean exist) {

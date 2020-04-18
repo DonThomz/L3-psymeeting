@@ -1,7 +1,9 @@
 package com.bdd.pj.application.controller;
 
 import com.bdd.pj.application.Main;
+import com.bdd.pj.data.User;
 import javafx.animation.AnimationTimer;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -11,6 +13,8 @@ import javafx.scene.control.MenuButton;
 import java.net.URL;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class TopBarController implements Initializable {
 
@@ -23,13 +27,50 @@ public class TopBarController implements Initializable {
     @FXML
     private MenuButton user_menu;
 
+    // Threads
+    private Executor exec;
+
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         user_menu.setText(Main.current_user.getName() + " " + Main.current_user.getLast_name());
 
+        // Initialize new Thread
+        exec = Executors.newCachedThreadPool(runnable -> {
+            Thread t = new Thread(runnable);
+            t.setName("Thread-TopBar");
+            t.setDaemon(true);
+            return t;
+        });
+
+        addFullName();
         boldLink();
     }
 
+    @FXML
+    public void addFullName(){
+        final String username = Main.current_user.getUsername();
+        // create new task
+        Task<String> fullNameTask = new Task<String>(){
+            @Override
+            protected String call() throws Exception {
+                System.out.println(Thread.currentThread().getName());
+                return User.getUserFullName(username);
+            }
+        };
+
+        fullNameTask.setOnFailed(e -> {
+            fullNameTask.getException().printStackTrace();
+        });
+        fullNameTask.setOnSucceeded(e -> {
+            // update user_menu field
+            user_menu.setText(fullNameTask.getValue());
+        });
+
+        // execute tasks in the tread exec
+        exec.execute(fullNameTask);
+
+    }
 
     public void logout(ActionEvent actionEvent) {
 
