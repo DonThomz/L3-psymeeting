@@ -22,21 +22,6 @@ public class ConsultationController extends ConsultationHistoric implements Init
 
     // Attributes
 
-    // --------------------
-    //  Services
-    // --------------------
-    Service<Boolean> loadConsultations = new Service<Boolean>() {
-        @Override
-        protected Task<Boolean> createTask() {
-            return new Task<Boolean>() {
-                @Override
-                protected Boolean call() throws Exception {
-                    return setupBoxConsultations(); // init consultation
-                }
-            };
-        }
-    };
-
 
     // --------------------
     //   Initialize method
@@ -53,17 +38,17 @@ public class ConsultationController extends ConsultationHistoric implements Init
         TransitionEffect.FadeTransition(box_consultations, 600, 0.2f, 5);
 
         // start loadConsultations service
-        if (loadConsultations.getState() == Task.State.READY) {
-            loadConsultations.start();
+        if (super.loadConsultations.getState() == Task.State.READY) {
+            super.loadConsultations.start();
         }
 
         // Setup services
-        loadConsultations.setOnSucceeded(evt -> {
+        super.loadConsultations.setOnSucceeded(evt -> {
             System.out.println("Task succeeded!");
             // run createBoxConsultations
             super.createBoxConsultations("consultation_cell");
         });
-        loadConsultations.setOnFailed(evt -> {
+        super.loadConsultations.setOnFailed(evt -> {
             System.out.println("Task failed!");
         });
 
