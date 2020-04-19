@@ -99,7 +99,7 @@ public class PatientsController implements Initializable {
             System.out.println("load patient " + ID);
             profilePane.getChildren().clear();
             current_patient_id = ID;
-            profilePane.getChildren().add(FXMLLoader.load(getClass().getResource("../fxml/profile_patient.fxml")));
+            profilePane.getChildren().add(FXMLLoader.load(getClass().getResource("../views/profile_patient.fxml")));
         } catch (IOException ex) {
             ex.printStackTrace();
         }
