@@ -62,11 +62,11 @@ public class ProfileController extends ParentController implements Initializable
 
         discovery_field.setText(tmp_p.getDiscovery_way());
 
-        setupConsultationHistory();
+        //setupConsultationHistory();
 
     }
 
-    public void setupConsultationHistory() {
+    /*public void setupConsultationHistory() {
 
         consultation_id = new ArrayList<>();
         try (Connection connection = Main.database.getConnection()) {
@@ -107,7 +107,7 @@ public class ProfileController extends ParentController implements Initializable
             v.getStyleClass().add("patient_consultation_cell");
             box_consultations.getChildren().add(v);
         });
-    }
+    }*/
 
 
 }

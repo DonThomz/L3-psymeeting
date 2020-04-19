@@ -49,11 +49,13 @@ public class ParentController {
     //  Consultation methods
     // --------------------
 
-    protected void setupBoxConsultations() {
+    protected boolean setupBoxConsultations() {
+        return true;
     }
 
-    protected JFXButton buildConsultationButton(int consultation_id) {
+    protected Consultation buildConsultationButton(int consultation_id) {
 
+        // request SQL
         Consultation consultation = new Consultation(consultation_id);
 
         // init button
@@ -65,10 +67,9 @@ public class ParentController {
         // Setup content
         VBox box = new VBox();
 
-        Calendar date_consultation = Consultation.getDateById(consultation_id);
-        assert date_consultation != null;
+        assert consultation.getDate() != null;
         @SuppressWarnings("SpellCheckingInspection") String timeStamp = new SimpleDateFormat("EEEE dd MMMM, yyyy à HH:mm",
-                Locale.FRANCE).format(date_consultation.getTime());
+                Locale.FRANCE).format(consultation.getDate().getTime());
         Label title = new Label("Consultation : "
                 + "\n\t" + timeStamp);
 
@@ -87,25 +88,26 @@ public class ParentController {
 
 
         // add action on button
-        consultation_button.setOnAction(event -> loadConsultationInfo(consultation_id, date_consultation, content));
+        consultation_button.setOnAction(event -> loadConsultationInfo(consultation));
 
         // add to the button
         consultation_button.setGraphic(box);
 
-        // add attributes to consultation instance
-        return consultation_button;
+        // add JFXButton to consultation
+        consultation.setConsultation_button(consultation_button);
 
+        return consultation;
     }
 
-    protected void loadConsultationInfo(int consultation_id, Calendar date, StringBuilder patients_list) {
+    protected void loadConsultationInfo(Consultation consultation) {
         // create dialog layout
         JFXDialogLayout content = new JFXDialogLayout();
 
         // add heading
-        content.setHeading(createTitle(date));
+        content.setHeading(createTitle(consultation.getDate()));
 
         // add body
-        content.setBody(createBody(consultation_id, patients_list));
+        content.setBody(createBody(consultation));
 
         JFXDialog dialog = new JFXDialog(stackPane, content, JFXDialog.DialogTransition.CENTER);
         JFXButton done = new JFXButton("Fermer");
@@ -120,27 +122,33 @@ public class ParentController {
         dialog.show();
     }
 
-    protected TextArea createBody(int consultation_id, StringBuilder patients_list) {
+    protected TextArea createBody(Consultation consultation) {
 
-        // get info
-        StringBuilder info = new StringBuilder();
-            Consultation consultation = new Consultation(consultation_id);
+        // get Patients Info
+        StringBuilder patientsInfo = new StringBuilder();
+        for (Patient p: consultation.getPatients()
+             ) {
+            patientsInfo.append("| ").append(p.getName()).append(" ").append(p.getLast_name());
+        }
 
-            // info price and pay mode
-            info.append("Prix : ").append(consultation.getPrice()).append(" €, payé avec : ").append(consultation.getPayMode());
+        // get Feedback Info
+        StringBuilder feedbackInfo = new StringBuilder();
 
-            // info feedback commentary, key words, postures, indicator
-            info.append("\n\nRetour de séance").append("\n\n\tCommentaire : \n").append(consultation.getFeedback().getCommentary());
-            if (consultation.getFeedback().getKeyword() != null)
-                info.append("\n\n\tMots clés :").append(consultation.getFeedback().getKeyword());
-            if (consultation.getFeedback().getPosture() != null)
-                info.append("\n\n\tPosture :").append(consultation.getFeedback().getPosture());
-            if (consultation.getFeedback().getIndicator() != 0)
-                info.append("\n\n\tIndicateur :").append(consultation.getFeedback().getIndicator());
+        // info price and pay mode
+        feedbackInfo.append("Prix : ").append(consultation.getPrice()).append(" €, payé avec : ").append(consultation.getPayMode());
+
+        // info feedback commentary, key words, postures, indicator
+        feedbackInfo.append("\n\nRetour de séance").append("\n\n\tCommentaire : \n").append(consultation.getFeedback().getCommentary());
+        if (consultation.getFeedback().getKeyword() != null)
+            feedbackInfo.append("\n\n\tMots clés :").append(consultation.getFeedback().getKeyword());
+        if (consultation.getFeedback().getPosture() != null)
+            feedbackInfo.append("\n\n\tPosture :").append(consultation.getFeedback().getPosture());
+        if (consultation.getFeedback().getIndicator() != 0)
+            feedbackInfo.append("\n\n\tIndicateur :").append(consultation.getFeedback().getIndicator());
 
         TextArea textArea = new TextArea("Patients :\n"
-                + patients_list + "\n"
-                + info + "\n"
+                + patientsInfo + "\n"
+                + feedbackInfo + "\n"
         );
         textArea.setWrapText(true);
         return textArea;
