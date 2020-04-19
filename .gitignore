@@ -104,7 +104,7 @@ fabric.properties
 .mtj.tmp/
 
 # Package Files #
-*.jar
+# *.jar # Ignore to include the libraries.... Not Maven but it works
 *.war
 *.nar
 *.ear
