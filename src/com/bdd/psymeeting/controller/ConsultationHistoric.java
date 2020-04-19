@@ -5,6 +5,8 @@ import com.bdd.psymeeting.model.Patient;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDialogLayout;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -29,6 +31,17 @@ public class ConsultationHistoric {
     protected ArrayList<Consultation> consultationArrayList;
 
 
+    Service<Boolean> loadConsultations = new Service<Boolean>() {
+        @Override
+        protected Task<Boolean> createTask() {
+            return new Task<Boolean>() {
+                @Override
+                protected Boolean call() throws Exception {
+                    return setupBoxConsultations(); // init consultation
+                }
+            };
+        }
+    };
 
     // --------------------
     //  Consultation methods
