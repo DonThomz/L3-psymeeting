@@ -6,7 +6,6 @@ import com.bdd.psymeeting.model.Patient;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTextField;
-import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.VBox;

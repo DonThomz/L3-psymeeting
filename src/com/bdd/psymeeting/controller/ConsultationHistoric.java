@@ -1,7 +1,6 @@
 package com.bdd.psymeeting.controller;
 
 import com.bdd.psymeeting.model.Consultation;
-import com.bdd.psymeeting.model.Patient;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDialogLayout;

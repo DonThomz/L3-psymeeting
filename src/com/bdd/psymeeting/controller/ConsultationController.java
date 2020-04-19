@@ -4,7 +4,6 @@ import com.bdd.psymeeting.TransitionEffect;
 import com.bdd.psymeeting.model.Consultation;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
-import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
