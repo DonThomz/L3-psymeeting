@@ -66,7 +66,7 @@ public class ProfileController extends ParentController implements Initializable
 
     }
 
-    /*public void setupConsultationHistory() {
+    public void setupConsultationHistory() {
 
         consultation_id = new ArrayList<>();
         try (Connection connection = Main.database.getConnection()) {
@@ -81,7 +81,7 @@ public class ProfileController extends ParentController implements Initializable
                 consultation_id.add(result.getInt(1)); // add id
             }
             // Build consultation button
-            setupBoxConsultations();
+            //setupBoxConsultations();
 
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -89,7 +89,7 @@ public class ProfileController extends ParentController implements Initializable
 
     }
 
-    @Override
+    /*@Override
     protected void setupBoxConsultations() {
         consultations_map = new HashMap<>();
         box_consultations.setSpacing(20);
