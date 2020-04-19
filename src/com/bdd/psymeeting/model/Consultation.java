@@ -9,6 +9,10 @@ import com.jfoenix.controls.JFXButton;
 import javafx.scene.control.TextArea;
 
 import java.sql.*;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.*;
 import java.util.Calendar;
 import java.util.HashMap;
 
@@ -182,6 +186,89 @@ public class Consultation {
             ex.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * PreparedStatement to get all time slots free
+     *
+     * @param dateField date selected
+     * @return HashMap with all time slots free ( key = TimeStamp, value = true / free or false / block )
+     */
+    public static Map<Timestamp, Boolean> getTimeSlots(LocalDate dateField) {
+
+        try (Connection connection = Main.database.getConnection()) {
+
+            Map<Timestamp, Boolean> timeSlots = initTimeSlotsByDateSelected(dateField);
+            ArrayList<Timestamp> timeSlotsBlocked = new ArrayList<>();
+
+            String[] dates = Main.getDatesOfDay(dateField);
+            System.out.println(dates[0] + " " + dates[1]);
+
+            String query = "select CONSULTATION_DATE\n" +
+                    "from CONSULTATION\n" +
+                    "where CONSULTATION_DATE between TO_DATE('" + dates[0] + "', 'yyyy-mm-dd HH24:mi:ss') "
+                    + "and TO_DATE('" + dates[1] + "', 'yyyy-mm-dd HH24:mi:ss')";
+
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            ResultSet result = preparedStatement.executeQuery();
+
+            // Check all time slots
+            while (result.next()) {
+                timeSlotsBlocked.add(result.getTimestamp(1));
+            }
+
+            // 20 appointment by day
+            for (Timestamp tmp : timeSlotsBlocked
+            ) {
+                timeSlots.put(tmp, true);
+            }
+
+            return timeSlots;
+            /*timeSlots.forEach((k, v) -> {
+                Timestamp tmp = new Timestamp(System.currentTimeMillis());
+                if (!v && k.compareTo(tmp) >= 0) {
+                    String hours_date = new SimpleDateFormat("HH:mm").format(k.getTime());
+                    //System.out.println(hours_date);
+                    hour_field.getItems().add(hours_date);
+                }
+            });*/
+        } catch (SQLException ex) {
+            System.out.println("Error loading date");
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * get all time slots during a day
+     */
+    private static Map<Timestamp, Boolean> initTimeSlotsByDateSelected(LocalDate date) {
+        Map<Timestamp, Boolean> timeSlots = new HashMap<>();
+        String selectDate = new SimpleDateFormat("yyyy-MM-dd").format(Timestamp.valueOf(date.atTime(LocalTime.MIDNIGHT)));
+        timeSlots.put(java.sql.Timestamp.valueOf(selectDate + " 08:00:00"), false);
+        timeSlots.put(java.sql.Timestamp.valueOf(selectDate + " 08:30:00"), false);
+        timeSlots.put(java.sql.Timestamp.valueOf(selectDate + " 09:00:00"), false);
+        timeSlots.put(java.sql.Timestamp.valueOf(selectDate + " 09:30:00"), false);
+        timeSlots.put(java.sql.Timestamp.valueOf(selectDate + " 10:00:00"), false);
+        timeSlots.put(java.sql.Timestamp.valueOf(selectDate + " 10:30:00"), false);
+        timeSlots.put(java.sql.Timestamp.valueOf(selectDate + " 11:00:00"), false);
+        timeSlots.put(java.sql.Timestamp.valueOf(selectDate + " 11:30:00"), false);
+        timeSlots.put(java.sql.Timestamp.valueOf(selectDate + " 14:00:00"), false);
+        timeSlots.put(java.sql.Timestamp.valueOf(selectDate + " 14:30:00"), false);
+        timeSlots.put(java.sql.Timestamp.valueOf(selectDate + " 15:00:00"), false);
+        timeSlots.put(java.sql.Timestamp.valueOf(selectDate + " 15:30:00"), false);
+        timeSlots.put(java.sql.Timestamp.valueOf(selectDate + " 16:00:00"), false);
+        timeSlots.put(java.sql.Timestamp.valueOf(selectDate + " 16:30:00"), false);
+        timeSlots.put(java.sql.Timestamp.valueOf(selectDate + " 17:00:00"), false);
+        timeSlots.put(java.sql.Timestamp.valueOf(selectDate + " 17:30:00"), false);
+        timeSlots.put(java.sql.Timestamp.valueOf(selectDate + " 18:00:00"), false);
+        timeSlots.put(java.sql.Timestamp.valueOf(selectDate + " 18:30:00"), false);
+        timeSlots.put(java.sql.Timestamp.valueOf(selectDate + " 19:00:00"), false);
+        timeSlots.put(java.sql.Timestamp.valueOf(selectDate + " 19:30:00"), false);
+
+        // order HashMap
+        timeSlots = new TreeMap<>(timeSlots);
+        return timeSlots;
     }
 
     @Override
