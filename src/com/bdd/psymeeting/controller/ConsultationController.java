@@ -6,16 +6,14 @@ import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
-import javafx.concurrent.Worker;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
-import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.*;
 
-public class ConsultationController extends ParentController implements Initializable {
+public class ConsultationController extends ConsultationHistoric implements Initializable {
 
     // Fields
     public JFXTextField searchField;
@@ -23,7 +21,6 @@ public class ConsultationController extends ParentController implements Initiali
     public JFXComboBox<Label> filter;
 
     // Attributes
-    private ArrayList<Consultation> consultationArrayList;
 
     // --------------------
     //  Services
@@ -50,7 +47,7 @@ public class ConsultationController extends ParentController implements Initiali
         // get current date
         super.date_today = Calendar.getInstance();
 
-        consultationArrayList = new ArrayList<>();
+        super.consultationArrayList = new ArrayList<>();
 
         TransitionEffect.TranslateTransitionY(box_consultations, 600, 75);
         TransitionEffect.FadeTransition(box_consultations, 600, 0.2f, 5);
@@ -64,7 +61,7 @@ public class ConsultationController extends ParentController implements Initiali
         loadConsultations.setOnSucceeded(evt -> {
             System.out.println("Task succeeded!");
             // run createBoxConsultations
-            createBoxConsultations();
+            super.createBoxConsultations("consultation_cell");
         });
         loadConsultations.setOnFailed(evt -> {
             System.out.println("Task failed!");
@@ -76,14 +73,14 @@ public class ConsultationController extends ParentController implements Initiali
 
     @Override
     protected boolean setupBoxConsultations() {
-        consultations_map = new HashMap<>();
         box_consultations.setSpacing(20);
 
         // request SQL
         consultation_size = Consultation.getLastPrimaryKeyId();
         if (consultation_size != 0) {
             for (int i = 1; i <= consultation_size; i++) {
-                consultationArrayList.add(buildConsultationButton(i));
+                // request SQL
+                consultationArrayList.add(buildConsultationButton(new Consultation(i)));
                 if (consultationArrayList.get(i - 1) == null) return false; // if error
             }
         } else return false; // no consultation in DB
@@ -95,17 +92,6 @@ public class ConsultationController extends ParentController implements Initiali
         Collections.reverse(consultationArrayList);
 
         return true;
-    }
-
-    private void createBoxConsultations() {
-        for (Consultation c : consultationArrayList
-        ) {
-            if (c.getDate().compareTo(date_today) < 0) {
-                c.getConsultation_button().setStyle("-fx-background-color:  #eceff1;");
-            }
-            c.getConsultation_button().getStyleClass().add("consultation_cell");
-            box_consultations.getChildren().add(c.getConsultation_button());
-        }
     }
 
 
@@ -124,13 +110,16 @@ public class ConsultationController extends ParentController implements Initiali
 
     private void dateFilter() {
         // sort consultation ArrayList compared to the previous order
-        Collections.reverse(consultationArrayList);
+        Collections.reverse(super.consultationArrayList);
         box_consultations.getChildren().clear();
-        for (Consultation c : consultationArrayList
+        for (Consultation c : super.consultationArrayList
         ) {
             box_consultations.getChildren().add(c.getConsultation_button());
         }
     }
+
+
+
 
 }
 
