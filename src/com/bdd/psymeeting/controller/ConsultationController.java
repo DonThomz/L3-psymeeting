@@ -56,7 +56,7 @@ public class ConsultationController extends ParentController implements Initiali
         TransitionEffect.FadeTransition(box_consultations, 600, 0.2f, 5);
 
         // start loadConsultations service
-        if(loadConsultations.getState() == Task.State.READY){
+        if (loadConsultations.getState() == Task.State.READY) {
             loadConsultations.start();
         }
 
@@ -81,12 +81,12 @@ public class ConsultationController extends ParentController implements Initiali
 
         // request SQL
         consultation_size = Consultation.getLastPrimaryKeyId();
-        if(consultation_size != 0) {
+        if (consultation_size != 0) {
             for (int i = 1; i <= consultation_size; i++) {
                 consultationArrayList.add(buildConsultationButton(i));
                 if (consultationArrayList.get(i - 1) == null) return false; // if error
             }
-        }else return false; // no consultation in DB
+        } else return false; // no consultation in DB
 
         // setup comparator
         consultationArrayList.sort(Comparator.comparing(Consultation::getDate));
@@ -97,10 +97,10 @@ public class ConsultationController extends ParentController implements Initiali
         return true;
     }
 
-    private void createBoxConsultations(){
-        for (Consultation c: consultationArrayList
-             ) {
-            if(c.getDate().compareTo(date_today) < 0) {
+    private void createBoxConsultations() {
+        for (Consultation c : consultationArrayList
+        ) {
+            if (c.getDate().compareTo(date_today) < 0) {
                 c.getConsultation_button().setStyle("-fx-background-color:  #eceff1;");
             }
             c.getConsultation_button().getStyleClass().add("consultation_cell");
@@ -126,8 +126,8 @@ public class ConsultationController extends ParentController implements Initiali
         // sort consultation ArrayList compared to the previous order
         Collections.reverse(consultationArrayList);
         box_consultations.getChildren().clear();
-        for (Consultation c: consultationArrayList
-             ) {
+        for (Consultation c : consultationArrayList
+        ) {
             box_consultations.getChildren().add(c.getConsultation_button());
         }
     }

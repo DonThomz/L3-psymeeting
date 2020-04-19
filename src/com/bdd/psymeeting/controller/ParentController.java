@@ -80,7 +80,7 @@ public class ParentController {
         patient_list.getStyleClass().add("content_text");
         StringBuilder content = new StringBuilder();
         for (Patient p : consultation.getPatients()
-             ) {
+        ) {
             content.append(" | ").append(p.getName()).append(" ").append(p.getLast_name()).append(" \n");
         }
         patient_list.setText(String.valueOf(content));
@@ -126,8 +126,8 @@ public class ParentController {
 
         // get Patients Info
         StringBuilder patientsInfo = new StringBuilder();
-        for (Patient p: consultation.getPatients()
-             ) {
+        for (Patient p : consultation.getPatients()
+        ) {
             patientsInfo.append("| ").append(p.getName()).append(" ").append(p.getLast_name());
         }
 
