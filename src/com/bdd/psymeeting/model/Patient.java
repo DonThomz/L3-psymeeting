@@ -7,6 +7,7 @@ package com.bdd.psymeeting.model;
 import com.bdd.psymeeting.Main;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -20,6 +21,9 @@ public class Patient {
     private String name;
     private String last_name;
     private boolean new_patient;
+
+
+
     private Date birthday;
     private String gender;
     private String relationship;
@@ -33,9 +37,7 @@ public class Patient {
     // --------------------
 
     public Patient(int patient_id) {
-
         try (Connection connection = Main.database.getConnection()) {
-
             this.patient_id = patient_id;
 
             String query;
@@ -124,39 +126,30 @@ public class Patient {
     public int getPatient_id() {
         return patient_id;
     }
-
     public String getName() {
         return name;
     }
-
     public String getLast_name() {
         return last_name;
     }
-
     public boolean isNew_patient() {
         return new_patient;
     }
-
     public ArrayList<Job> getJobs() {
         return jobs;
     }
-
     public Date getBirthday() {
-        return birthday;
+        return this.birthday;
     }
-
     public String getGender() {
-        return gender;
+        return this.gender;
     }
-
     public String getDiscovery_way() {
-        return discovery_way;
+        return this.discovery_way;
     }
-
     public String getRelationship() {
-        return relationship;
+        return this.relationship;
     }
-
     public ArrayList<Consultation> getConsultationHistoric() {
         return consultationHistoric;
     }
@@ -181,9 +174,56 @@ public class Patient {
         this.jobs = jobs;
     }
 
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+    public void setBirthday(Date birthday) {
+        this.birthday = birthday;
+    }
+    public void setBirthday(LocalDate birthday) {
+        this.birthday = Date.valueOf(birthday);
+    }
+
+
+    public void setRelationship(String relationshipStatus) {
+        this.relationship = relationshipStatus;
+    }
+
     public void setConsultationHistoric(ArrayList<Consultation> consultationHistoric) {
         this.consultationHistoric = consultationHistoric;
     }
+    public void setDiscovery_way(String discovery_way) {
+        this.discovery_way = discovery_way;
+    }
+
+    /**
+     * Update the Patient in DB with local state.
+     * @return
+     */
+    public boolean updatePatient() {
+        try (Connection connection = Main.database.getConnection()) {
+            String request = "UPDATE PATIENT SET NAME = ?, LAST_NAME = ?, BIRTHDAY = ?, GENDER = ?, RELATIONSHIP = ?, DISCOVERY_WAY= ? WHERE PATIENT_ID = ?";
+
+            PreparedStatement preparedStatement = connection.prepareStatement(request);
+            preparedStatement.setString(1, this.getName());
+            preparedStatement.setString(2, this.getLast_name());
+            preparedStatement.setDate(3, new java.sql.Date(this.getBirthday().getTime()));
+            preparedStatement.setString(4, this.getGender());
+            preparedStatement.setString(5, this.getRelationship());
+            preparedStatement.setString(6, this.getDiscovery_way());
+            preparedStatement.setInt(7, this.getPatient_id());
+
+            preparedStatement.executeUpdate();
+
+            preparedStatement.close();
+            return true;
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
 
     // --------------------
     //   Statement methods

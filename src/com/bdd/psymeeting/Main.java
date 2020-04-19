@@ -8,11 +8,17 @@ package com.bdd.psymeeting;
 import com.bdd.psymeeting.model.Patient;
 import com.bdd.psymeeting.model.User;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 import java.sql.Date;
@@ -20,10 +26,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Main extends Application {
 
@@ -101,6 +104,9 @@ public class Main extends Application {
         // Load login scene
         login_scene = new Scene((Parent) root_login, login_resolution[0], login_resolution[1]);
 
+        // Add a closing button (as requested)
+        stage.setOnCloseRequest(confirmCloseEventHandler);
+
         // Init window
         window = stage;
         window.setScene(login_scene);
@@ -109,7 +115,27 @@ public class Main extends Application {
         window.show();
     }
 
+    /**
+     * Displays an alert modal before quitting the app.
+     */
+    private final EventHandler<WindowEvent> confirmCloseEventHandler = event -> {
+        Alert closeConfirmation = new Alert(
+                Alert.AlertType.CONFIRMATION,
+                "Êtes-vous sûr de vouloir quitter ?"
+        );
+        Button exitButton = (Button) closeConfirmation.getDialogPane().lookupButton(
+                ButtonType.OK
+        );
+        exitButton.setText("Quitter");
+        closeConfirmation.setHeaderText("Confirmer la fermeture");
+        closeConfirmation.initModality(Modality.APPLICATION_MODAL);
+        closeConfirmation.initOwner(window);
 
+        Optional<ButtonType> closeResponse = closeConfirmation.showAndWait();
+        if (!ButtonType.OK.equals(closeResponse.get())) {
+            event.consume();
+        }
+    };
     //---------------------------------
     //         App methods
     //---------------------------------

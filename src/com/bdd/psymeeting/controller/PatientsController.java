@@ -52,7 +52,7 @@ public class PatientsController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         profilesButtonsHashMap = new HashMap<>();
-        patient_list_box.setSpacing(20);
+        patient_list_box.setSpacing(10);
 
         // execute sql request in another thread
         if (loadPatients.getState() == Task.State.READY)
@@ -69,7 +69,6 @@ public class PatientsController implements Initializable {
     }
 
     public void setupListPatients(ArrayList<Patient> patientArrayList) {
-
         int ID = 0;
         list_patients = patientArrayList;
         for (Patient p : list_patients

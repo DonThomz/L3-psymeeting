@@ -1,203 +1,149 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.effect.DropShadow?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Font?>
-<?import java.net.URL?>
 <!--
   ~ Copyright (c) 2020. Thomas GUILLAUME & Gabriel DUGNY
   -->
 
-<StackPane fx:id="stackPane" alignment="TOP_CENTER" prefHeight="600.0" prefWidth="600.0"
-           xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="com.bdd.psymeeting.controller.ProfileController">
-    <children>
-        <ScrollPane hbarPolicy="NEVER" style="-fx-background-color: fafafa;" vbarPolicy="ALWAYS">
-            <stylesheets>
-                <URL value="@../stylesheets/patients.css"/>
-                <URL value="@../stylesheets/app.css"/>
-            </stylesheets>
-            <effect>
-                <DropShadow/>
-            </effect>
-            <content>
-                <AnchorPane prefHeight="200.0" prefWidth="200.0">
-                    <children>
-                        <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefWidth="600.0">
-                            <items>
-                                <AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
-                                            prefWidth="600.0">
-                                    <children>
-                                        <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                                              AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                            <children>
-                                                <HBox prefWidth="600.0">
-                                                    <children>
-                                                        <VBox alignment="CENTER_LEFT" prefHeight="362.0"
-                                                              prefWidth="525.0">
-                                                            <children>
-                                                                <HBox prefHeight="100.0" prefWidth="200.0"/>
-                                                                <HBox alignment="CENTER_LEFT" prefHeight="26.0"
-                                                                      prefWidth="407.0">
-                                                                    <children>
-                                                                        <Label alignment="CENTER" prefHeight="16.0"
-                                                                               prefWidth="86.0" styleClass="label_form"
-                                                                               text="Prénom">
-                                                                            <HBox.margin>
-                                                                                <Insets bottom="20.0" left="20.0"
-                                                                                        right="20.0" top="20.0"/>
-                                                                            </HBox.margin>
-                                                                        </Label>
-                                                                        <Region prefHeight="56.0" prefWidth="63.0"
-                                                                                HBox.hgrow="NEVER"/>
-                                                                        <JFXTextField fx:id="name_field"
-                                                                                      editable="false"/>
-                                                                    </children>
-                                                                    <VBox.margin>
-                                                                        <Insets bottom="10.0" left="10.0" right="10.0"
-                                                                                top="10.0"/>
-                                                                    </VBox.margin>
-                                                                </HBox>
-                                                                <HBox alignment="CENTER_LEFT">
-                                                                    <children>
-                                                                        <Region prefHeight="36.0" prefWidth="36.0"
-                                                                                HBox.hgrow="NEVER"/>
-                                                                        <Label styleClass="label_form" text="Nom">
-                                                                            <HBox.margin>
-                                                                                <Insets/>
-                                                                            </HBox.margin>
-                                                                        </Label>
-                                                                        <Region prefHeight="31.0" prefWidth="118.0"
-                                                                                HBox.hgrow="NEVER"/>
-                                                                        <JFXTextField fx:id="last_name_field"
-                                                                                      editable="false"/>
-                                                                    </children>
-                                                                    <VBox.margin>
-                                                                        <Insets bottom="10.0" left="10.0" right="10.0"
-                                                                                top="10.0"/>
-                                                                    </VBox.margin>
-                                                                </HBox>
-                                                                <HBox alignment="CENTER_LEFT">
-                                                                    <children>
-                                                                        <Region prefHeight="26.0" prefWidth="34.0"
-                                                                                HBox.hgrow="NEVER"/>
-                                                                        <Label styleClass="label_form"
-                                                                               text="Date de naissance"/>
-                                                                        <Region prefHeight="26.0" prefWidth="19.0"
-                                                                                HBox.hgrow="NEVER"/>
-                                                                        <JFXDatePicker fx:id="birthday_field"
-                                                                                       editable="false"/>
-                                                                    </children>
-                                                                    <VBox.margin>
-                                                                        <Insets bottom="10.0" left="10.0" right="10.0"
-                                                                                top="10.0"/>
-                                                                    </VBox.margin>
-                                                                </HBox>
-                                                                <HBox alignment="CENTER_LEFT">
-                                                                    <children>
-                                                                        <Region prefHeight="26.0" prefWidth="33.0"
-                                                                                HBox.hgrow="NEVER"/>
-                                                                        <Label styleClass="label_form" text="Genre"/>
-                                                                        <Region prefHeight="26.0" prefWidth="110.0"
-                                                                                HBox.hgrow="NEVER"/>
-                                                                        <JFXComboBox fx:id="gender_field"
-                                                                                     prefHeight="26.0"
-                                                                                     prefWidth="159.0"/>
-                                                                    </children>
-                                                                    <VBox.margin>
-                                                                        <Insets bottom="10.0" left="10.0" right="10.0"
-                                                                                top="10.0"/>
-                                                                    </VBox.margin>
-                                                                </HBox>
-                                                                <HBox alignment="CENTER_LEFT">
-                                                                    <children>
-                                                                        <Region prefHeight="26.0" prefWidth="26.0"
-                                                                                HBox.hgrow="NEVER"/>
-                                                                        <Label styleClass="label_form"
-                                                                               text="Situation"/>
-                                                                        <Region prefHeight="26.0" prefWidth="84.0"
-                                                                                HBox.hgrow="NEVER"/>
-                                                                        <JFXComboBox fx:id="relation_field"
-                                                                                     prefHeight="26.0"
-                                                                                     prefWidth="159.0"/>
-                                                                    </children>
-                                                                    <VBox.margin>
-                                                                        <Insets bottom="20.0" left="20.0" right="20.0"
-                                                                                top="20.0"/>
-                                                                    </VBox.margin>
-                                                                </HBox>
-                                                                <HBox alignment="CENTER_LEFT">
-                                                                    <children>
-                                                                        <Region prefHeight="26.0" prefWidth="32.0"
-                                                                                HBox.hgrow="NEVER"/>
-                                                                        <Label styleClass="label_form"
-                                                                               text="Moyen de découverte"/>
-                                                                        <Region prefHeight="26.0" prefWidth="20.0"
-                                                                                HBox.hgrow="NEVER"/>
-                                                                        <JFXTextField fx:id="discovery_field"/>
-                                                                    </children>
-                                                                    <VBox.margin>
-                                                                        <Insets bottom="10.0" left="10.0" right="10.0"
-                                                                                top="10.0"/>
-                                                                    </VBox.margin>
-                                                                </HBox>
-                                                                <HBox alignment="CENTER_LEFT">
-                                                                    <children>
-                                                                        <Region prefHeight="16.0" prefWidth="20.0"
-                                                                                HBox.hgrow="NEVER"/>
-                                                                        <Label styleClass="label_form" text="Métiers"/>
-                                                                        <Region prefHeight="26.0" prefWidth="99.0"/>
-                                                                        <JFXComboBox fx:id="jobs_list_field"
-                                                                                     prefHeight="26.0"
-                                                                                     prefWidth="188.0"/>
-                                                                    </children>
-                                                                    <VBox.margin>
-                                                                        <Insets bottom="20.0" left="20.0" right="20.0"
-                                                                                top="20.0"/>
-                                                                    </VBox.margin>
-                                                                </HBox>
-                                                            </children>
-                                                        </VBox>
-                                                    </children>
-                                                </HBox>
-                                            </children>
-                                        </VBox>
-                                    </children>
-                                </AnchorPane>
-                                <AnchorPane>
-                                    <children>
-                                        <VBox alignment="CENTER" AnchorPane.bottomAnchor="0.0"
-                                              AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                                              AnchorPane.topAnchor="0.0">
-                                            <children>
-                                                <Label text="Historique des consultations">
-                                                    <font>
-                                                        <Font name="System Bold" size="18.0"/>
-                                                    </font>
-                                                    <VBox.margin>
-                                                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
-                                                    </VBox.margin>
-                                                </Label>
-                                                <VBox fx:id="box_consultations" alignment="CENTER">
-                                                    <padding>
-                                                        <Insets bottom="40.0" top="40.0"/>
-                                                    </padding>
-                                                    <VBox.margin>
-                                                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
-                                                    </VBox.margin>
-                                                </VBox>
-                                            </children>
-                                        </VBox>
-                                    </children>
-                                </AnchorPane>
-                            </items>
-                        </SplitPane>
-                    </children>
-                </AnchorPane>
-            </content>
-        </ScrollPane>
-    </children>
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXDatePicker?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<StackPane fx:id="stackPane" alignment="TOP_CENTER" prefHeight="714.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bdd.psymeeting.controller.PatientDetailsController">
+    <SplitPane dividerPositions="0.6797752808988764" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" orientation="VERTICAL" prefHeight="701.0" prefWidth="527.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+        <items>
+            <AnchorPane minHeight="200.0" minWidth="300.0" prefHeight="522.0" prefWidth="598.0">
+                <children>
+                    <VBox alignment="CENTER" maxHeight="1.7976931348623157E308">
+                        <children>
+                            <HBox alignment="CENTER_LEFT" prefHeight="29.0" prefWidth="505.0">
+                                <children>
+                                    <Label maxWidth="160.0" prefHeight="21.0" prefWidth="160.0" styleClass="label_form" text="Prénom">
+                                        <HBox.margin>
+                                            <Insets bottom="5.0" left="20.0" right="20.0" top="5.0" />
+                                        </HBox.margin>
+                                    </Label>
+                                    <JFXTextField fx:id="name_field" editable="false" maxWidth="1.7976931348623157E308" prefWidth="180.0" />
+                                </children>
+                                <VBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                </VBox.margin>
+                            </HBox>
+                            <HBox alignment="CENTER_LEFT" prefWidth="160.0">
+                                <children>
+                                    <Label prefHeight="21.0" prefWidth="160.0" styleClass="label_form" text="Nom">
+                                        <HBox.margin>
+                                            <Insets bottom="5.0" left="20.0" right="20.0" top="5.0" />
+                                        </HBox.margin>
+                                    </Label>
+                                    <JFXTextField fx:id="last_name_field" editable="false" maxWidth="1.7976931348623157E308" prefWidth="180.0" />
+                                </children>
+                                <VBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                </VBox.margin>
+                            </HBox>
+                            <HBox alignment="CENTER_LEFT" prefWidth="160.0">
+                                <children>
+                                    <Label prefHeight="21.0" prefWidth="160.0" styleClass="label_form" text="Date de naissance">
+                                        <HBox.margin>
+                                            <Insets bottom="5.0" left="20.0" right="20.0" top="5.0" />
+                                        </HBox.margin>
+                                    </Label>
+                                    <JFXDatePicker fx:id="birthday_field" editable="false" maxWidth="1.7976931348623157E308" prefHeight="31.0" prefWidth="213.0" />
+                                </children>
+                                      <VBox.margin>
+                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                      </VBox.margin>
+                                  </HBox>
+                                  <HBox alignment="CENTER_LEFT" prefWidth="160.0">
+                                      <children>
+                                          <Label prefHeight="21.0" prefWidth="160.0" styleClass="label_form" text="Genre">
+                           <HBox.margin>
+                              <Insets bottom="5.0" left="20.0" right="20.0" top="5.0" />
+                           </HBox.margin>
+                        </Label>
+                                          <JFXComboBox fx:id="gender_field" maxWidth="1.7976931348623157E308" prefHeight="31.0" prefWidth="180.0" />
+                                      </children>
+                                      <VBox.margin>
+                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                      </VBox.margin>
+                                  </HBox>
+                                  <HBox alignment="CENTER_LEFT" prefWidth="160.0">
+                                      <children>
+                                          <Label prefHeight="21.0" prefWidth="160.0" styleClass="label_form" text="Situation">
+                           <HBox.margin>
+                              <Insets bottom="5.0" left="20.0" right="20.0" top="5.0" />
+                           </HBox.margin>
+                        </Label>
+                                          <JFXComboBox fx:id="relation_field" maxWidth="1.7976931348623157E308" prefHeight="26.0" prefWidth="180.0" />
+                                      </children>
+                                      <VBox.margin>
+                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                      </VBox.margin>
+                                  </HBox>
+                                  <HBox alignment="CENTER_LEFT" prefWidth="160.0">
+                                      <children>
+                                          <Label prefHeight="21.0" prefWidth="160.0" styleClass="label_form" text="Moyen de découverte">
+                           <HBox.margin>
+                              <Insets bottom="5.0" left="20.0" right="20.0" top="5.0" />
+                           </HBox.margin>
+                        </Label>
+                                          <JFXTextField fx:id="discovery_field" maxWidth="1.7976931348623157E308" prefWidth="180.0" />
+                                      </children>
+                                      <VBox.margin>
+                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                      </VBox.margin>
+                                  </HBox>
+                                  <HBox alignment="CENTER_LEFT" prefWidth="160.0">
+                                      <children>
+                                          <Label prefHeight="21.0" prefWidth="160.0" styleClass="label_form" text="Métiers">
+                                              <HBox.margin>
+                                                  <Insets bottom="5.0" left="20.0" right="20.0" top="5.0" />
+                                              </HBox.margin>
+                                          </Label>
+                                          <JFXComboBox fx:id="jobs_list_field" maxWidth="1.7976931348623157E308" prefHeight="26.0" prefWidth="180.0" />
+                                      </children>
+                                      <VBox.margin>
+                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                      </VBox.margin>
+                                  </HBox>
+                        </children>
+                    </VBox>
+                    <JFXButton fx:id="edit_button" buttonType="RAISED" layoutX="230.0" layoutY="390.0" styleClass="button-raised" text="Éditer" />
+                </children>
+              </AnchorPane>
+              <AnchorPane>
+                  <children>
+                      <VBox alignment="CENTER" minHeight="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                          <children>
+                              <Label alignment="TOP_CENTER" text="Historique des consultations">
+                                  <font>
+                                      <Font name="System Bold" size="18.0" />
+                                  </font>
+                                  <VBox.margin>
+                                      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                  </VBox.margin>
+                              </Label>
+                              <VBox fx:id="box_consultations" alignment="CENTER" prefWidth="485.0">
+                                  <padding>
+                                      <Insets bottom="40.0" top="40.0" />
+                                  </padding>
+                                  <VBox.margin>
+                                      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                  </VBox.margin>
+                              </VBox>
+                          </children>
+                      </VBox>
+                  </children>
+              </AnchorPane>
+        </items>
+    </SplitPane>
 </StackPane>
