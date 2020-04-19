@@ -103,7 +103,5 @@ public class ConsultationController extends ConsultationHistoric implements Init
     }
 
 
-
-
 }
 
