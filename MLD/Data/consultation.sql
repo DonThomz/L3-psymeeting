@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2020. Thomas GUILLAUME & Gabriel DUGNY
+ */
+
 insert into consultation (consultation_id, consultation_date, price, pay_mode)
 values (1, TO_DATE('2020-03-25 17:00:00', 'yyyy-mm-dd HH24:MI:ss'), 50, 'carte bleue');
 insert into consultation (consultation_id, consultation_date, price, pay_mode)

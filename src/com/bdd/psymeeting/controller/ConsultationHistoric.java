@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2020. Thomas GUILLAUME & Gabriel DUGNY
+ */
+
 package com.bdd.psymeeting.controller;
 
 import com.bdd.psymeeting.model.Consultation;
@@ -13,7 +17,10 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.Map;
 
 public class ConsultationHistoric {
 
@@ -30,7 +37,7 @@ public class ConsultationHistoric {
     protected ArrayList<Consultation> consultationArrayList;
 
 
-    Service<Boolean> loadConsultations = new Service<Boolean>() {
+    final Service<Boolean> loadConsultations = new Service<Boolean>() {
         @Override
         protected Task<Boolean> createTask() {
             return new Task<Boolean>() {

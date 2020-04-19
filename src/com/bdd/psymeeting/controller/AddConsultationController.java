@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2020. Thomas GUILLAUME & Gabriel DUGNY
+ */
+
 package com.bdd.psymeeting.controller;
 
 import com.bdd.psymeeting.Main;
@@ -17,11 +21,14 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
 import java.net.URL;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.ResourceBundle;
 
 public class AddConsultationController implements Initializable {
 
@@ -271,19 +278,7 @@ public class AddConsultationController implements Initializable {
     }
     // @TODO Fix userExist
     private boolean userExist() { // check if user exist in database with email_field
-        try (Connection connection = Main.database.getConnection()) {
-            Statement stmt = connection.createStatement();
-
-            ResultSet rset = stmt.executeQuery("select email from USER_APP");
-            while (rset.next()) {
-                if (rset.getString(1).equals(email_field.getText())) {
-                    return true;
-                }
-            }
-        } catch (SQLException throwable) {
-            throwable.printStackTrace();
-        }
-        return false;
+        return User.userExist(email_field.getText());
     }
 
     private void attachPatients() { // attach patient to the right side

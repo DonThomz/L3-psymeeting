@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2020. Thomas GUILLAUME & Gabriel DUGNY
+ */
+
 insert into consultation_carryOut (patient_id, consultation_id)
 values (2, 8);
 insert into consultation_carryOut (patient_id, consultation_id)

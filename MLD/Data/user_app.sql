@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2020. Thomas GUILLAUME & Gabriel DUGNY
+ */
+
 insert into USER_APP (user_id, email, password, patient_id)
 values (1, 'ltireman0@lulu.com', 'gpT5TwF34P', 1);
 insert into USER_APP (user_id, email, password, patient_id)

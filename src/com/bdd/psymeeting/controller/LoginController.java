@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2020. Thomas GUILLAUME & Gabriel DUGNY
+ */
+
 package com.bdd.psymeeting.controller;
 
 import com.bdd.psymeeting.Main;
@@ -10,6 +14,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 
 import java.io.File;
@@ -25,6 +30,8 @@ import java.util.concurrent.ExecutorService;
 
 public class LoginController implements Initializable {
 
+    @FXML
+    private AnchorPane login_pane;
     @FXML
     private Button login_button;
     @FXML
@@ -73,7 +80,7 @@ public class LoginController implements Initializable {
      * The reusable service allows the creation of multiple Tasks.
      * See https://fabrice-bouye.developpez.com/tutoriels/javafx/gui-service-tache-de-fond-thread-javafx/ for reference.
      */
-    Service<Boolean> loginService = new Service<Boolean>() {
+    final Service<Boolean> loginService = new Service<Boolean>() {
         @Override
         protected Task<Boolean> createTask() {
             return new Task<Boolean>() {

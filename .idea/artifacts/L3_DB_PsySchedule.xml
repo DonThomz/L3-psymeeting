@@ -3,11 +3,11 @@
     <output-path>$PROJECT_DIR$/out/artifacts/L3_DB_PsySchedule_FX</output-path>
     <properties id="javafx-properties">
       <options>
-        <option name="appClass" value="com.bdd.pj.application.Main" />
+        <option name="appClass" value="com.bdd.psymeeting.Main" />
         <option name="description" value="" />
         <option name="htmlPlaceholderId" value="" />
-        <option name="title" value="" />
-        <option name="vendor" value="" />
+        <option name="title" value="PsyMeeting" />
+        <option name="vendor" value="Thomas Guillaume and Gabriel Dugny" />
         <option name="version" value="" />
       </options>
     </properties>
@@ -17,6 +17,8 @@
         <element id="extracted-dir" path="$PROJECT_DIR$/library/fontawesomefx-8.9.jar" path-in-jar="/" />
         <element id="extracted-dir" path="$PROJECT_DIR$/library/jfoenix-8.0.8.jar" path-in-jar="/" />
         <element id="extracted-dir" path="$PROJECT_DIR$/library/ojdbc8.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/library/c3p0-0.9.5.5.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/library/mchange-commons-java-0.2.19.jar" path-in-jar="/" />
       </element>
     </root>
   </artifact>

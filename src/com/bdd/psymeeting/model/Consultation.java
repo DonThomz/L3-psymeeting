@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2020. Thomas GUILLAUME & Gabriel DUGNY
+ */
+
 package com.bdd.psymeeting.model;
 
 import com.bdd.psymeeting.Main;
@@ -9,6 +13,8 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.Calendar;
+import java.util.HashMap;
 
 public class Consultation {
 
@@ -147,7 +153,7 @@ public class Consultation {
         this.patients = patients;
     }
 
-// --------------------
+    // --------------------
     //   Statement methods
     // --------------------
 
@@ -165,11 +171,11 @@ public class Consultation {
 
     public static Calendar getDateById(int consultation_id) {
         // TODO Fix this, as the connection can't be checked out
-        String query = "select\n" +
-                "     c.CONSULTATION_DATE\n" +
-                "from CONSULTATION c\n" +
-                "where c.CONSULTATION_ID = ?";
         try (Connection connection = Main.database.getConnection()) {
+            String query = "select\n" +
+                    "     c.CONSULTATION_DATE\n" +
+                    "from CONSULTATION c\n" +
+                    "where c.CONSULTATION_ID = ?";
             PreparedStatement preparedStmt = connection.prepareStatement(query);
             preparedStmt.setInt(1, consultation_id);
             ResultSet result = preparedStmt.executeQuery();
