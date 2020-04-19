@@ -7,6 +7,7 @@ import javafx.scene.control.TextArea;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 
 public class Consultation {
 
@@ -19,7 +20,7 @@ public class Consultation {
     private Calendar date;
     private float price;
     private String payMode;
-    private ArrayList<Patient> patients; // String[0] = name | String[1] = last_name
+    private HashMap<Integer, String[]> patients;
 
     // Feedback
     private Feedback feedback;
@@ -33,15 +34,18 @@ public class Consultation {
     //   Constructors
     // --------------------
     public Consultation(int consultationID) {
+
         this.consultationID = consultationID;
+
         // get feedback
         this.feedback = new Feedback(this.consultationID);
 
-        try(Connection connection = Main.database.getConnection()){
+        try (Connection connection = Main.database.getConnection()) {
 
             String query;
             PreparedStatement preparedStatement;
             ResultSet resultSet;
+
             // get consultation info (date, price, pay mode)
             query = "select CONSULTATION_DATE, PRICE, PAY_MODE from CONSULTATION where CONSULTATION_ID = ?";
             preparedStatement = connection.prepareStatement(query);
@@ -62,28 +66,17 @@ public class Consultation {
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, this.consultationID);
             resultSet = preparedStatement.executeQuery();
-            patients = new ArrayList<>();
-            while(resultSet.next()){
-                patients.add(new Patient(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3)));
+
+            patients = new HashMap<>();
+            while (resultSet.next()) {
+                String[] fullName = {resultSet.getString(2), resultSet.getString(3)};
+                patients.put(resultSet.getInt(1), fullName);
             }
 
-        }catch (SQLException ex){
+        } catch (SQLException ex) {
             ex.printStackTrace();
         }
     }
-
-    public Consultation(int consultationID, Calendar date, float price, String payMode, ArrayList<Patient> patients, TextArea full_infos, JFXButton consultation_button) {
-        this.consultationID = consultationID;
-        this.date = date;
-        this.price = price;
-        this.payMode = payMode;
-        this.patients = patients;
-        this.full_infos = full_infos;
-        this.consultation_button = consultation_button;
-    }
-
-
-
 
 
     // --------------------
@@ -117,7 +110,7 @@ public class Consultation {
         return feedback;
     }
 
-    public ArrayList<Patient> getPatients() {
+    public HashMap<Integer, String[]> getPatients() {
         return patients;
     }
 
@@ -149,11 +142,11 @@ public class Consultation {
         this.feedback = feedback;
     }
 
-    public void setPatients(ArrayList<Patient> patients) {
+    public void setPatients(HashMap<Integer, String[]> patients) {
         this.patients = patients;
     }
 
-    // --------------------
+// --------------------
     //   Statement methods
     // --------------------
 
@@ -188,4 +181,17 @@ public class Consultation {
         return null;
     }
 
+    @Override
+    public String toString() {
+        return "Consultation{" +
+                "consultationID=" + consultationID +
+                ", date=" + date +
+                ", price=" + price +
+                ", payMode='" + payMode + '\'' +
+                ", patients=" + patients +
+                ", feedback=" + feedback +
+                ", full_infos=" + full_infos +
+                ", consultation_button=" + consultation_button +
+                '}';
+    }
 }

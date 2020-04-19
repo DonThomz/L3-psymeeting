@@ -1,6 +1,7 @@
 package com.bdd.psymeeting.model;
 
 import com.bdd.psymeeting.Main;
+import oracle.jdbc.proxy.annotation.Pre;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ public class Patient {
     //   Attributes
     // --------------------
 
-    private final int patient_id;
+    private int patient_id;
     private String name;
     private String last_name;
     private boolean new_patient;
@@ -22,13 +23,67 @@ public class Patient {
     private String discovery_way;
 
     private ArrayList<Job> jobs;
+    private ArrayList<Consultation> consultationHistoric;
 
     // --------------------
     //   Constructors
     // --------------------
 
     public Patient(int patient_id) {
-        this.patient_id = patient_id;
+
+        try (Connection connection = Main.database.getConnection()) {
+
+            this.patient_id = patient_id;
+
+            String query;
+            PreparedStatement preparedStatement;
+            ResultSet resultSet;
+
+            // PATIENT INFO
+            query = "select NAME, LAST_NAME, BIRTHDAY, GENDER, RELATIONSHIP, DISCOVERY_WAY from PATIENT " +
+                    "where PATIENT_ID = ?";
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, this.patient_id);
+            resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+
+            this.name = resultSet.getString(1);
+            this.last_name = resultSet.getString(2);
+            this.birthday = resultSet.getDate(3);
+            this.gender = resultSet.getString(4);
+            this.relationship = resultSet.getString(5);
+            this.discovery_way = resultSet.getString(6);
+
+            // CONSULTATIONS HISTORIC
+            this.consultationHistoric = new ArrayList<>();
+            query = "select CC.CONSULTATION_ID from CONSULTATION\n" +
+                    "join CONSULTATION_CARRYOUT CC on CONSULTATION.CONSULTATION_ID = CC.CONSULTATION_ID\n" +
+                    "where PATIENT_ID = ?";
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, patient_id);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                this.consultationHistoric.add(new Consultation(resultSet.getInt(1)));
+            }
+
+            // JOBS
+            this.jobs = new ArrayList<>();
+            query = "select JOBS_ID, JOB_NAME, JOB_DATE " +
+                    "from JOBS " +
+                    "where PATIENT_ID = ?";
+            preparedStatement = connection.prepareStatement(query);
+
+            preparedStatement.setInt(1, this.patient_id);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                Calendar tmp_date_job = Main.Date2Calendar(resultSet.getDate(3));
+                this.jobs.add(new Job(resultSet.getInt(1), resultSet.getString(2), tmp_date_job));
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
     }
 
     // patient without jobs
@@ -46,15 +101,6 @@ public class Patient {
         this.last_name = last_name;
     }
 
-    // patient with jobs history
-    public Patient(int patient_id, String name, String last_name, boolean new_patient, ArrayList<Job> jobs) {
-        this.patient_id = patient_id;
-        this.name = name;
-        this.last_name = last_name;
-        this.new_patient = new_patient;
-        this.jobs = jobs;
-    }
-
     public Patient(int patient_id, String name, String last_name, Date birthday, String gender, String relationship, String discovery_way) {
         this.patient_id = patient_id;
         this.name = name;
@@ -63,6 +109,9 @@ public class Patient {
         this.gender = gender;
         this.relationship = relationship;
         this.discovery_way = discovery_way;
+
+        this.jobs = new ArrayList<>();
+        this.consultationHistoric = new ArrayList<>();
     }
 
     // --------------------
@@ -105,6 +154,10 @@ public class Patient {
         return relationship;
     }
 
+    public ArrayList<Consultation> getConsultationHistoric() {
+        return consultationHistoric;
+    }
+
     // --------------------
     //   Set methods
     // --------------------
@@ -123,6 +176,10 @@ public class Patient {
 
     public void setJobs(ArrayList<Job> jobs) {
         this.jobs = jobs;
+    }
+
+    public void setConsultationHistoric(ArrayList<Consultation> consultationHistoric) {
+        this.consultationHistoric = consultationHistoric;
     }
 
     // --------------------
@@ -160,31 +217,12 @@ public class Patient {
         return null;
     }
 
-    public static Patient getPatientFullNameByConsultationId(int consultation_id) {
-        try (Connection connection = Main.database.getConnection()) {
-            String query = "select\n" +
-                    "p.NAME, p.LAST_NAME\n" +
-                    "from PATIENT p\n" +
-                    "join CONSULTATION_CARRYOUT cc on p.PATIENT_ID = cc.PATIENT_ID\n" +
-                    "where CONSULTATION_ID = ?";
-            PreparedStatement preparedStmt = connection.prepareStatement(query);
-            // the insert statement
-
-            // create the insert preparedStatement
-            //PreparedStatement preparedStmt = Main.database.getConnection().prepareStatement(query);
-            preparedStmt.setInt(1, consultation_id);
-            return (Patient) preparedStmt.executeQuery();
-
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return null;
-    }
 
     public static ArrayList<Patient> getAllPatientsProfiles() {
 
         ArrayList<Patient> list_patients = new ArrayList<>();
 
+        // adding patients to list_patients
         try (Connection connection = Main.database.getConnection()) {
             Statement stmt = connection.createStatement();
             ResultSet result = stmt.executeQuery("select PATIENT_ID, NAME, LAST_NAME, BIRTHDAY, GENDER, RELATIONSHIP, DISCOVERY_WAY from PATIENT");
@@ -200,32 +238,50 @@ public class Patient {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
-            // return null;
         }
+
+        // adding jobs & consultations to each patients
         for (Patient p : list_patients
         ) {
-            ArrayList<Job> jobs = new ArrayList<>();
+
             try (Connection connection = Main.database.getConnection()) {
-                String query = "select JOBS_ID, JOB_NAME, JOB_DATE " +
+
+                String query;
+                PreparedStatement preparedStatement;
+                ResultSet resultSet;
+
+                // JOBS
+                query = "select JOBS_ID, JOB_NAME, JOB_DATE " +
                         "from JOBS " +
                         "where PATIENT_ID = ?";
-                PreparedStatement preparedStatement = connection.prepareStatement(query);
+                preparedStatement = connection.prepareStatement(query);
 
                 preparedStatement.setInt(1, p.getPatient_id());
-                ResultSet result = preparedStatement.executeQuery();
-                while (result.next()) {
-                    Calendar tmp_date_job = Main.Date2Calendar(result.getDate(3));
-                    jobs.add(new Job(result.getInt(1), result.getString(2), tmp_date_job));
+                resultSet = preparedStatement.executeQuery();
+                while (resultSet.next()) {
+                    Calendar tmp_date_job = Main.Date2Calendar(resultSet.getDate(3));
+                    p.getJobs().add(new Job(resultSet.getInt(1), resultSet.getString(2), tmp_date_job));
                 }
-                p.setJobs(jobs);
+
+                // CONSULTATIONS HISTORIC
+                query = "select CC.CONSULTATION_ID from CONSULTATION\n" +
+                        "join CONSULTATION_CARRYOUT CC on CONSULTATION.CONSULTATION_ID = CC.CONSULTATION_ID\n" +
+                        "where PATIENT_ID = ?";
+                preparedStatement = connection.prepareStatement(query);
+                preparedStatement.setInt(1, p.getPatient_id());
+                resultSet = preparedStatement.executeQuery();
+                while (resultSet.next()) {
+                    p.getConsultationHistoric().add(new Consultation(resultSet.getInt(1)));
+                }
+
             } catch (SQLException ex) {
                 ex.printStackTrace();
-                // return null;
             }
         }
 
         return list_patients;
     }
+
 
 
     // --------------------

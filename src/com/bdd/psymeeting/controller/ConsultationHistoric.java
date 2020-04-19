@@ -12,11 +12,9 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
-public class ParentController {
+public class ConsultationHistoric {
 
     // FXML
     @FXML
@@ -28,21 +26,8 @@ public class ParentController {
     protected Map<Calendar, JFXButton> consultations_map;
     protected int consultation_size;
     protected Calendar date_today;
+    protected ArrayList<Consultation> consultationArrayList;
 
-    // --------------------
-    //  Get methods
-    // --------------------
-    public StackPane getStackPane() {
-        return stackPane;
-    }
-
-
-    // --------------------
-    //  Set methods
-    // --------------------
-    public void setStackPane(StackPane stackPane) {
-        this.stackPane = stackPane;
-    }
 
 
     // --------------------
@@ -53,15 +38,23 @@ public class ParentController {
         return true;
     }
 
-    protected Consultation buildConsultationButton(int consultation_id) {
+    protected void createBoxConsultations(String styleClass) {
+        for (Consultation c : consultationArrayList
+        ) {
+            if (c.getDate().compareTo(date_today) < 0) {
+                c.getConsultation_button().setStyle("-fx-background-color:  #eceff1;");
+            }
+            c.getConsultation_button().getStyleClass().add(styleClass);
+            box_consultations.getChildren().add(c.getConsultation_button());
+        }
+    }
 
-        // request SQL
-        Consultation consultation = new Consultation(consultation_id);
+    protected Consultation buildConsultationButton(Consultation consultation) {
 
         // init button
         JFXButton consultation_button = new JFXButton();
         // setting button
-        consultation_button.setId("consultation-button-id-" + consultation_id);
+        consultation_button.setId("consultation-button-id-" + consultation.getConsultationID());
 
 
         // Setup content
@@ -79,10 +72,7 @@ public class ParentController {
         Label patient_list = new Label();
         patient_list.getStyleClass().add("content_text");
         StringBuilder content = new StringBuilder();
-        for (Patient p : consultation.getPatients()
-        ) {
-            content.append(" | ").append(p.getName()).append(" ").append(p.getLast_name()).append(" \n");
-        }
+        consultation.getPatients().forEach((id, fullName) -> content.append("| ").append(fullName[0]).append(" ").append(fullName[1]).append("\n"));
         patient_list.setText(String.valueOf(content));
         box.getChildren().add(patient_list);
 
@@ -126,10 +116,8 @@ public class ParentController {
 
         // get Patients Info
         StringBuilder patientsInfo = new StringBuilder();
-        for (Patient p : consultation.getPatients()
-        ) {
-            patientsInfo.append("| ").append(p.getName()).append(" ").append(p.getLast_name());
-        }
+
+        consultation.getPatients().forEach((id, fullName) -> patientsInfo.append("| ").append(fullName[0]).append(" ").append(fullName[1]));
 
         // get Feedback Info
         StringBuilder feedbackInfo = new StringBuilder();

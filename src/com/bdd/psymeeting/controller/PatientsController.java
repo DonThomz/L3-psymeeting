@@ -2,6 +2,9 @@ package com.bdd.psymeeting.controller;
 
 import com.bdd.psymeeting.model.Patient;
 import com.jfoenix.controls.JFXButton;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
+import javafx.concurrent.Worker;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.AnchorPane;
@@ -18,11 +21,27 @@ public class PatientsController implements Initializable {
     // JavaFX
     public VBox patient_list_box;
     public HashMap<JFXButton, Boolean> profilesButtonsHashMap;
+    public AnchorPane profilePane;
 
     // Attributes
     public static ArrayList<Patient> list_patients;
     public static int current_patient_id;
-    public AnchorPane profilePane;
+
+
+    // --------------------
+    //  Services
+    // --------------------
+    Service<ArrayList<Patient>> loadPatients = new Service<ArrayList<Patient>>() {
+        @Override
+        protected Task<ArrayList<Patient>> createTask() {
+            return new Task<ArrayList<Patient>>() {
+                @Override
+                protected ArrayList<Patient> call() throws Exception {
+                    return Patient.getAllPatientsProfiles(); // init patients
+                }
+            };
+        }
+    };
 
     // --------------------
     //   Initialize method
@@ -31,36 +50,53 @@ public class PatientsController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         profilesButtonsHashMap = new HashMap<>();
         patient_list_box.setSpacing(20);
-        setupListPatients();
+
+        // execute sql request in another thread
+        if(loadPatients.getState() == Task.State.READY)
+            loadPatients.start();
+
+        loadPatients.setOnSucceeded(event -> {
+            System.out.println("Task succeeded -> loading patients informations\nCreation patients box...");
+            setupListPatients(loadPatients.getValue());
+        });
+
+        loadPatients.setOnFailed(event -> System.out.println("Task failed -> error loading patients informations"));
+
+        loadPatients.setOnRunning(event -> System.out.println("Loading..."));
     }
 
-    public void setupListPatients() {
-        list_patients = Patient.getAllPatientsProfiles();
-        int i = 0;
+    public void setupListPatients(ArrayList<Patient> patientArrayList) {
+
+        int ID = 0;
+        list_patients = patientArrayList;
         for (Patient p : list_patients
         ) {
-            JFXButton patient_button = new JFXButton();
-            patient_button.getStyleClass().add("patient_cell");
-            patient_button.getStyleClass().add("patient_cell_list");
+            if(p != null) {
+                JFXButton patient_button = new JFXButton();
+                patient_button.getStyleClass().add("patient_cell");
+                patient_button.getStyleClass().add("patient_cell_list");
 
-            patient_button.setText(p.getName() + " " + p.getLast_name());
+                patient_button.setText(p.getName() + " " + p.getLast_name());
 
-            profilesButtonsHashMap.put(patient_button, false);
+                profilesButtonsHashMap.put(patient_button, false);
 
-            int finalI = i;
-            patient_button.setOnAction(event -> {
-                loadPatientInfo(p, finalI);
-                updateButtonStyle(patient_button);
-            });
-            i++;
-            patient_list_box.getChildren().add(patient_button);
+                int finalID = ID;
+                patient_button.setOnAction(event -> {
+                    loadPatientInfo(finalID);
+                    updateButtonStyle(patient_button);
+                });
+                ID++;
+                patient_list_box.getChildren().add(patient_button);
+            }
         }
+
     }
 
-    private void loadPatientInfo(Patient p, int i) {
+    private void loadPatientInfo(int ID) {
         try {
+            System.out.println("load patient " + ID);
             profilePane.getChildren().clear();
-            current_patient_id = i;
+            current_patient_id = ID;
             profilePane.getChildren().add(FXMLLoader.load(getClass().getResource("../fxml/profile_patient.fxml")));
         } catch (IOException ex) {
             ex.printStackTrace();

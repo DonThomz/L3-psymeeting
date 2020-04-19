@@ -1,23 +1,20 @@
 package com.bdd.psymeeting.controller;
 
-import com.bdd.psymeeting.Main;
 import com.bdd.psymeeting.model.Consultation;
 import com.bdd.psymeeting.model.Job;
 import com.bdd.psymeeting.model.Patient;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTextField;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.VBox;
 
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.*;
 
-public class ProfileController extends ParentController implements Initializable {
+public class ProfileController extends ConsultationHistoric implements Initializable {
 
     // Fields
     public JFXTextField name_field;
@@ -30,8 +27,23 @@ public class ProfileController extends ParentController implements Initializable
     public VBox box_consultations;
 
     // Attributes
-    Patient tmp_p;
-    ArrayList<Integer> consultation_id;
+    Patient patient;
+
+    // --------------------
+    //  Services
+    // --------------------
+    Service<Boolean> loadConsultations = new Service<Boolean>() {
+        @Override
+        protected Task<Boolean> createTask() {
+            return new Task<Boolean>() {
+                @Override
+                protected Boolean call() throws Exception {
+                    return setupBoxConsultations(); // init consultation
+                }
+            };
+        }
+    };
+
 
     // --------------------
     //   Initialize method
@@ -40,74 +52,61 @@ public class ProfileController extends ParentController implements Initializable
     public void initialize(URL location, ResourceBundle resources) {
 
         super.date_today = Calendar.getInstance();
+        super.consultationArrayList = new ArrayList<>();
 
-        System.out.println(PatientsController.current_patient_id);
-        tmp_p = PatientsController.list_patients.get(PatientsController.current_patient_id);
+        patient = PatientsController.list_patients.get(PatientsController.current_patient_id);
 
-        name_field.setText(tmp_p.getName());
+        name_field.setText(patient.getName());
 
-        last_name_field.setText(tmp_p.getLast_name());
+        last_name_field.setText(patient.getLast_name());
 
-        if (tmp_p.getBirthday() != null) {
+        if (patient.getBirthday() != null) {
             birthday_field.setDisable(true);
-            birthday_field.setValue(tmp_p.getBirthday().toLocalDate());
+            birthday_field.setValue(patient.getBirthday().toLocalDate());
         }
-
 
         gender_field.getItems().addAll("homme", "femme", "non binaire");
-        gender_field.setValue(tmp_p.getGender());
+        gender_field.setValue(patient.getGender());
 
         relation_field.getItems().addAll("célibataire", "couple", "autre");
-        relation_field.setValue(tmp_p.getRelationship());
+        relation_field.setValue(patient.getRelationship());
 
-        discovery_field.setText(tmp_p.getDiscovery_way());
+        discovery_field.setText(patient.getDiscovery_way());
 
-        //setupConsultationHistory();
-
-    }
-
-    public void setupConsultationHistory() {
-
-        consultation_id = new ArrayList<>();
-        try (Connection connection = Main.database.getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement("select c.CONSULTATION_ID\n" +
-                    "from CONSULTATION c\n" +
-                    "join CONSULTATION_CARRYOUT CC on c.CONSULTATION_ID = CC.CONSULTATION_ID\n" +
-                    "where PATIENT_ID = ?");
-
-            preparedStatement.setInt(1, tmp_p.getPatient_id());
-            ResultSet result = preparedStatement.executeQuery();
-            while (result.next()) {
-                consultation_id.add(result.getInt(1)); // add id
-            }
-            // Build consultation button
-            //setupBoxConsultations();
-
-        } catch (SQLException ex) {
-            ex.printStackTrace();
+        // start loadConsultations service
+        if (loadConsultations.getState() == Task.State.READY) {
+            loadConsultations.start();
         }
 
-    }
-
-    /*@Override
-    protected void setupBoxConsultations() {
-        consultations_map = new HashMap<>();
-        box_consultations.setSpacing(20);
-        for (Integer i : consultation_id
-        ) {
-            consultations_map.put(Consultation.getDateById(i), buildConsultationButton(i));
-        }
-        // sort in descending order
-        consultations_map = new TreeMap<>(consultations_map).descendingMap();
-        // add all button
-        consultations_map.forEach((k, v) -> {
-            if (k.compareTo(date_today) < 0) {
-                v.setStyle("-fx-background-color: #eceff1;");
-            }
-            v.getStyleClass().add("patient_consultation_cell");
-            box_consultations.getChildren().add(v);
+        // Setup services
+        loadConsultations.setOnSucceeded(evt -> {
+            System.out.println("Task succeeded!");
+            // run createBoxConsultations
+            super.createBoxConsultations("patient_consultation_cell");
         });
-    }*/
+        loadConsultations.setOnFailed(evt -> {
+            evt.getSource();
+            System.out.println("Task failed!");
+        });
+
+    }
+
+    protected boolean setupBoxConsultations() {
+        box_consultations.setSpacing(20);
+        for (int i = 0; i < patient.getConsultationHistoric().size(); i++) {
+            super.consultationArrayList.add(buildConsultationButton(patient.getConsultationHistoric().get(i)));
+            if (consultationArrayList.get(i) == null) return false; // if error
+        }
+
+        // setup comparator
+        super.consultationArrayList.sort(Comparator.comparing(Consultation::getDate));
+
+        // order descending by default
+        Collections.reverse(super.consultationArrayList);
+
+        return true;
+    }
+
 
 
 }
