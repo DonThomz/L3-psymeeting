@@ -5,7 +5,6 @@ import com.jfoenix.controls.JFXButton;
 import javafx.scene.control.TextArea;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 

@@ -48,10 +48,10 @@ public class TopBarController implements Initializable {
     }
 
     @FXML
-    public void addFullName(){
+    public void addFullName() {
         final String username = Main.current_user.getUsername();
         // create new task
-        Task<String> fullNameTask = new Task<String>(){
+        Task<String> fullNameTask = new Task<String>() {
             @Override
             protected String call() throws Exception {
                 System.out.println(Thread.currentThread().getName());

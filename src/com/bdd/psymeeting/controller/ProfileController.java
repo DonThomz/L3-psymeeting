@@ -92,5 +92,4 @@ public class ProfileController extends ConsultationHistoric implements Initializ
     }
 
 
-
 }

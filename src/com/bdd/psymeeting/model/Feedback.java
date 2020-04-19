@@ -32,7 +32,7 @@ public class Feedback {
     }
 
     // Feedback from DB
-    public Feedback(int consultationID){
+    public Feedback(int consultationID) {
         try (Connection connection = Main.database.getConnection()) {
 
             String query = "select f.FEEDBACK_ID, f.COMMENTARY, f.KEYWORD, f.POSTURE, f.INDICATOR, f.CONSULTATION_ID\n" +

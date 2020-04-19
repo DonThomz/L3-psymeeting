@@ -58,15 +58,14 @@ public class OracleDB {
 
             System.out.println("Pooled data source set up: done!");
 
-            try(Connection connection = this.getConnection()) {
+            try (Connection connection = this.getConnection()) {
                 System.out.println("Checking connection....");
                 Statement stmt = connection.createStatement();
                 stmt.executeQuery("select NAME, LAST_NAME from ADMINISTRATOR");
 
                 System.out.println("Connection succeeded!");
                 return true;
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 System.out.println("Connection failed! Maybe wrong password?");
                 this.comboPooledDataSource.close();
                 e.printStackTrace();

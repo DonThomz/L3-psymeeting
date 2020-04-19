@@ -1,7 +1,6 @@
 package com.bdd.psymeeting.model;
 
 import com.bdd.psymeeting.Main;
-import oracle.jdbc.proxy.annotation.Pre;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -281,7 +280,6 @@ public class Patient {
 
         return list_patients;
     }
-
 
 
     // --------------------

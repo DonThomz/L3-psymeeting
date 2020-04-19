@@ -13,7 +13,10 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.Map;
 
 public class ConsultationHistoric {
 

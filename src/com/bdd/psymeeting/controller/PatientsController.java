@@ -4,7 +4,6 @@ import com.bdd.psymeeting.model.Patient;
 import com.jfoenix.controls.JFXButton;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
-import javafx.concurrent.Worker;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.AnchorPane;
@@ -52,7 +51,7 @@ public class PatientsController implements Initializable {
         patient_list_box.setSpacing(20);
 
         // execute sql request in another thread
-        if(loadPatients.getState() == Task.State.READY)
+        if (loadPatients.getState() == Task.State.READY)
             loadPatients.start();
 
         loadPatients.setOnSucceeded(event -> {
@@ -71,7 +70,7 @@ public class PatientsController implements Initializable {
         list_patients = patientArrayList;
         for (Patient p : list_patients
         ) {
-            if(p != null) {
+            if (p != null) {
                 JFXButton patient_button = new JFXButton();
                 patient_button.getStyleClass().add("patient_cell");
                 patient_button.getStyleClass().add("patient_cell_list");
