@@ -10,6 +10,10 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <?import java.net.URL?>
+<!--
+  ~ Copyright (c) 2020. Thomas GUILLAUME & Gabriel DUGNY
+  -->
+
 <AnchorPane fx:id="login_pane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.bdd.psymeeting.controller.LoginController">
     <stylesheets>

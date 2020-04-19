@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2020. Thomas GUILLAUME & Gabriel DUGNY
+ */
+
 package com.bdd.psymeeting;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;

@@ -9,6 +9,10 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <?import java.net.URL?>
+<!--
+  ~ Copyright (c) 2020. Thomas GUILLAUME & Gabriel DUGNY
+  -->
+
 <AnchorPane maxHeight="100.0" prefHeight="100.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bdd.psymeeting.controller.TopBarController">
     <stylesheets>
@@ -92,7 +96,7 @@
                         <FontAwesomeIconView glyphName="SLIDERS"/>
                     </graphic>
                 </MenuItem>
-                <MenuItem mnemonicParsing="false" onAction="#logout" text="Deconnexion">
+                <MenuItem mnemonicParsing="false" onAction="#logout" text="Déconnexion">
                     <graphic>
                         <FontAwesomeIconView glyphName="SIGN_OUT"/>
                     </graphic>

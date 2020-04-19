@@ -13,5 +13,14 @@
     <orderEntry type="library" name="Maven: com.jfoenix:jfoenix:8.0.8" level="project" />
     <orderEntry type="library" name="c3p0-0.9.5.5" level="project" />
     <orderEntry type="library" name="mchange-commons-java-0.2.19" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MAVEN_REPOSITORY$/org/jetbrains/annotations/19.0.0/annotations-19.0.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>

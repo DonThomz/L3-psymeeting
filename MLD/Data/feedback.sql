@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2020. Thomas GUILLAUME & Gabriel DUGNY
+ */
+
 insert into feedback (feedback_id, consultation_id, indicator, commentary, keyword, posture)
 values (1, 1, null,
         'Donec vitae nisi. Nam ultrices, libero non mattis pulvinar, nulla pede ullamcorper augue, a suscipit nulla elit ac nulla. Sed vel enim sit amet nunc viverra dapibus.',

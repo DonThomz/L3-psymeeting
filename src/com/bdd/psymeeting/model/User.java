@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2020. Thomas GUILLAUME & Gabriel DUGNY
+ */
+
 package com.bdd.psymeeting.model;
 
 import com.bdd.psymeeting.Main;
@@ -139,7 +143,27 @@ public class User {
         } else {
             return "Invité";
         }
+    }
 
+    /**
+     * Check if a user exists with its email.
+     * @param email: the mail for which you want to check if a user exist
+     * @return
+     */
+    public static boolean userExist(String email) {
+        try (Connection connection = Main.database.getConnection()) {
+            Statement stmt = connection.createStatement();
+
+            ResultSet resultSet = stmt.executeQuery("select email from USER_APP");
+            while (resultSet.next()) {
+                if (resultSet.getString(1).equals(email)) {
+                    return true;
+                }
+            }
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }
+        return false;
     }
 
 

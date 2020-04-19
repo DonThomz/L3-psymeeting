@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2020. Thomas GUILLAUME & Gabriel DUGNY
+ */
+
 package com.bdd.psymeeting.controller;
 
 import com.bdd.psymeeting.Main;
@@ -172,19 +176,7 @@ public class AddConsultationController implements Initializable {
 
 
     private boolean userExist() { // check if user exist in database with email_field
-        try (Connection connection = Main.database.getConnection()) {
-            Statement stmt = connection.createStatement();
-
-            ResultSet resultSet = stmt.executeQuery("select email from USER_APP");
-            while (resultSet.next()) {
-                if (resultSet.getString(1).equals(email_field.getText())) {
-                    return true;
-                }
-            }
-        } catch (SQLException throwable) {
-            throwable.printStackTrace();
-        }
-        return false;
+        return User.userExist(email_field.getText());
     }
 
     private void confirmationDialog() {

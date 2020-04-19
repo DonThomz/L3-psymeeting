@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2020. Thomas GUILLAUME & Gabriel DUGNY
+ */
+
 insert into jobs (jobs_id, patient_id, job_name, job_date)
 values (1, 10, 'Quality Control Specialist', TO_DATE('2002-04-19', 'yyyy-mm-dd'));
 insert into jobs (jobs_id, patient_id, job_name, job_date)

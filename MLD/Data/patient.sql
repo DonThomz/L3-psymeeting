@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2020. Thomas GUILLAUME & Gabriel DUGNY
+ */
+
 insert into patient (patient_id, name, last_name, gender, relationship, discovery_way, birthday)
 values (1, 'Estele', 'Ivy', 'femme', 'célibataire', 'autre patient', TO_DATE('2000-05-10', 'yyyy-mm-dd'));
 insert into patient (patient_id, name, last_name, gender, relationship, discovery_way, birthday)
