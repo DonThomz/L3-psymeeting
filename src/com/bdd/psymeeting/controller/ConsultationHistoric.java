@@ -97,7 +97,7 @@ public class ConsultationHistoric {
 
 
         // add action on button
-        consultation_button.setOnAction(event -> loadConsultationInfo(consultation));
+        consultation_button.setOnAction(event -> clickConsultation(consultation));
 
         // add to the button
         consultation_button.setGraphic(box);
@@ -106,6 +106,10 @@ public class ConsultationHistoric {
         consultation.setConsultation_button(consultation_button);
 
         return consultation;
+    }
+    public void clickConsultation(Consultation consultation) {
+        loadConsultationInfo(consultation);
+
     }
 
     protected void loadConsultationInfo(Consultation consultation) {
@@ -132,7 +136,6 @@ public class ConsultationHistoric {
     }
 
     protected TextArea createBody(Consultation consultation) {
-
         // get Patients Info
         StringBuilder patientsInfo = new StringBuilder();
 

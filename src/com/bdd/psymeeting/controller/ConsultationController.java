@@ -64,7 +64,7 @@ public class ConsultationController extends ConsultationHistoric implements Init
         box_consultations.setSpacing(20);
 
         // request SQL
-        consultation_size = Consultation.getLastPrimaryKeyId();
+        consultation_size = Consultation.getConsultationSize();
         if (consultation_size != 0) {
             for (int i = 1; i <= consultation_size; i++) {
                 // request SQL
@@ -82,14 +82,18 @@ public class ConsultationController extends ConsultationHistoric implements Init
         return true;
     }
 
+    @Override
+    public void clickConsultation(Consultation consultation) {
+        // TODO: Show the new pane on the right
+        System.out.println(consultation);
+    }
 
     // --------------------
     //  Filters methods
     // --------------------
-
     private void setupFilterBox() {
-        filter.getItems().add(new Label("plus récent"));
-        filter.getItems().add(new Label("moins récent"));
+        filter.getItems().add(new Label("Plus récent"));
+        filter.getItems().add(new Label("Moins récent"));
         filter.setStyle("-fx-font-size: 14");
         filter.valueProperty().addListener((observable, oldValue, newValue) -> {
             dateFilter();

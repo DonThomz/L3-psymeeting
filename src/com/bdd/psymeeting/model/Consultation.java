@@ -13,8 +13,6 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
-import java.util.Calendar;
-import java.util.HashMap;
 
 public class Consultation {
 
@@ -48,7 +46,6 @@ public class Consultation {
         this.feedback = new Feedback(this.consultationID);
 
         try (Connection connection = Main.database.getConnection()) {
-
             String query;
             PreparedStatement preparedStatement;
             ResultSet resultSet;
@@ -161,6 +158,18 @@ public class Consultation {
         try (Connection connection = Main.database.getConnection()) {
             Statement stmt = connection.createStatement();
             ResultSet result = stmt.executeQuery("select max(CONSULTATION_ID) from CONSULTATION");
+            result.next();
+            return result.getInt(1);
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }
+        return -1;
+    }
+
+    public static int getConsultationSize() {
+        try (Connection connection = Main.database.getConnection()) {
+            Statement stmt = connection.createStatement();
+            ResultSet result = stmt.executeQuery("select count(CONSULTATION_ID) from CONSULTATION");
             result.next();
             return result.getInt(1);
         } catch (SQLException throwable) {

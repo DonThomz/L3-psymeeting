@@ -1,97 +1,95 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
 <?import com.jfoenix.controls.JFXComboBox?>
 <?import com.jfoenix.controls.JFXTextField?>
-<?import javafx.geometry.*?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<?import java.net.URL?>
+
 <!--
   ~ Copyright (c) 2020. Thomas GUILLAUME & Gabriel DUGNY
   -->
 
-<StackPane fx:id="stackPane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="com.bdd.psymeeting.controller.ConsultationController">
+<StackPane fx:id="stackPane" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bdd.psymeeting.controller.ConsultationController">
     <children>
         <AnchorPane prefHeight="800.0">
             <stylesheets>
-                <URL value="@stylesheets/consultation.css"/>
-                <URL value="@stylesheets/app.css"/>
+                <URL value="@stylesheets/consultation.css" />
+                <URL value="@stylesheets/app.css" />
             </stylesheets>
             <children>
-                <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                            AnchorPane.topAnchor="0.0">
+                <BorderPane prefHeight="800.0" prefWidth="1200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <top>
-                        <fx:include source="top_bar.fxml"/>
+                        <fx:include source="top_bar.fxml" />
                     </top>
                     <right>
-                        <Region prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER"/>
+                        <Region prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
                     </right>
-                    <left>
-                        <Region prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER"/>
-                    </left>
-                    <center>
-                        <AnchorPane BorderPane.alignment="CENTER">
+               <left>
+                        <AnchorPane prefHeight="700.0" prefWidth="486.0" BorderPane.alignment="CENTER">
                             <children>
-                                <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0"
-                                      AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                                      AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                     <children>
-                                        <HBox alignment="CENTER">
+                                        <HBox alignment="CENTER" prefHeight="56.0" prefWidth="466.0">
                                             <children>
                                                 <Label alignment="TOP_LEFT" text="Liste des consultations">
                                                     <font>
-                                                        <Font name="System Bold" size="18.0"/>
+                                                        <Font name="System Bold" size="18.0" />
                                                     </font>
                                                 </Label>
                                             </children>
                                             <VBox.margin>
-                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                             </VBox.margin>
                                             <padding>
-                                                <Insets bottom="30.0" left="10.0" right="10.0" top="30.0"/>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                             </padding>
                                         </HBox>
-                                        <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0"
-                                              VBox.vgrow="NEVER">
+                                        <HBox alignment="CENTER_RIGHT" prefHeight="44.0" prefWidth="476.0" VBox.vgrow="NEVER">
                                             <children>
-                                                <JFXTextField fx:id="searchField" alignment="CENTER_LEFT"
-                                                              promptText="Recherche ...">
+                                                <JFXTextField fx:id="searchField" alignment="CENTER_LEFT" promptText="Recherche ...">
                                                     <HBox.margin>
-                                                        <Insets right="20.0"/>
+                                                        <Insets right="20.0" />
                                                     </HBox.margin>
                                                 </JFXTextField>
-                                                <JFXComboBox fx:id="filter" promptText="Trié par"/>
+                                                <JFXComboBox fx:id="filter" promptText="Trié par" />
                                             </children>
+                                 <VBox.margin>
+                                    <Insets right="10.0" />
+                                 </VBox.margin>
                                         </HBox>
                                         <HBox alignment="CENTER" VBox.vgrow="SOMETIMES">
                                             <children>
-                                                <ScrollPane hbarPolicy="NEVER" vbarPolicy="ALWAYS" HBox.hgrow="NEVER">
+                                                <ScrollPane hbarPolicy="NEVER" prefHeight="567.0" prefWidth="486.0" vbarPolicy="ALWAYS" HBox.hgrow="NEVER">
                                                     <content>
-                                                        <VBox fx:id="box_consultations" alignment="CENTER"
-                                                              minHeight="1.0" minWidth="720.0" prefWidth="720.0">
+                                                        <VBox fx:id="box_consultations" alignment="CENTER" minWidth="374.0" prefHeight="481.0" prefWidth="470.0">
                                                             <padding>
-                                                                <Insets bottom="40.0" top="40.0"/>
+                                                                <Insets bottom="40.0" top="40.0" />
                                                             </padding>
                                                         </VBox>
                                                     </content>
                                                     <HBox.margin>
-                                                        <Insets bottom="20.0"/>
+                                                        <Insets />
                                                     </HBox.margin>
                                                 </ScrollPane>
                                             </children>
                                             <VBox.margin>
-                                                <Insets top="20.0"/>
+                                                <Insets top="20.0" />
                                             </VBox.margin>
                                         </HBox>
                                     </children>
                                 </VBox>
                             </children>
                         </AnchorPane>
-                    </center>
+               </left>
                 </BorderPane>
             </children>
         </AnchorPane>
