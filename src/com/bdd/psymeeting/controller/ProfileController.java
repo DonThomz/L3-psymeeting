@@ -29,21 +29,6 @@ public class ProfileController extends ConsultationHistoric implements Initializ
     // Attributes
     Patient patient;
 
-    // --------------------
-    //  Services
-    // --------------------
-    Service<Boolean> loadConsultations = new Service<Boolean>() {
-        @Override
-        protected Task<Boolean> createTask() {
-            return new Task<Boolean>() {
-                @Override
-                protected Boolean call() throws Exception {
-                    return setupBoxConsultations(); // init consultation
-                }
-            };
-        }
-    };
-
 
     // --------------------
     //   Initialize method
@@ -74,17 +59,17 @@ public class ProfileController extends ConsultationHistoric implements Initializ
         discovery_field.setText(patient.getDiscovery_way());
 
         // start loadConsultations service
-        if (loadConsultations.getState() == Task.State.READY) {
-            loadConsultations.start();
+        if (super.loadConsultations.getState() == Task.State.READY) {
+            super.loadConsultations.start();
         }
 
         // Setup services
-        loadConsultations.setOnSucceeded(evt -> {
+        super.loadConsultations.setOnSucceeded(evt -> {
             System.out.println("Task succeeded!");
             // run createBoxConsultations
             super.createBoxConsultations("patient_consultation_cell");
         });
-        loadConsultations.setOnFailed(evt -> {
+        super.loadConsultations.setOnFailed(evt -> {
             evt.getSource();
             System.out.println("Task failed!");
         });
