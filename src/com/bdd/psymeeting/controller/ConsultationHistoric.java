@@ -33,7 +33,7 @@ public class ConsultationHistoric {
     protected ArrayList<Consultation> consultationArrayList;
 
 
-    Service<Boolean> loadConsultations = new Service<Boolean>() {
+    final Service<Boolean> loadConsultations = new Service<Boolean>() {
         @Override
         protected Task<Boolean> createTask() {
             return new Task<Boolean>() {

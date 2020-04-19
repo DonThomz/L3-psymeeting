@@ -30,7 +30,7 @@ public class PatientsController implements Initializable {
     // --------------------
     //  Services
     // --------------------
-    Service<ArrayList<Patient>> loadPatients = new Service<ArrayList<Patient>>() {
+    final Service<ArrayList<Patient>> loadPatients = new Service<ArrayList<Patient>>() {
         @Override
         protected Task<ArrayList<Patient>> createTask() {
             return new Task<ArrayList<Patient>>() {

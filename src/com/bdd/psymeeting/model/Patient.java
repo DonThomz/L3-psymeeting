@@ -189,9 +189,9 @@ public class Patient {
         try (Connection connection = Main.database.getConnection()) {
             Statement stmt = connection.createStatement();
 
-            ResultSet rset = stmt.executeQuery("select max(patient_id) from PATIENT");
-            rset.next();
-            return rset.getInt(1);
+            ResultSet resultSet = stmt.executeQuery("select max(patient_id) from PATIENT");
+            resultSet.next();
+            return resultSet.getInt(1);
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         }
@@ -201,15 +201,15 @@ public class Patient {
     public static Patient getPatientByEmail(String email) {
         try (Connection connection = Main.database.getConnection()) {
             Statement stmt = connection.createStatement();
-            ResultSet rset = stmt.executeQuery("select\n" +
+            ResultSet resultSet = stmt.executeQuery("select\n" +
                     "       u.PATIENT_ID,\n" +
                     "       p.NAME,\n" +
                     "       p.LAST_NAME\n" +
                     "from USER_APP u\n" +
                     "join PATIENT P on u.PATIENT_ID = P.PATIENT_ID\n" +
                     "where u.EMAIL = '" + email + "'");
-            rset.next();
-            return new Patient(rset.getInt(1), rset.getString(2), rset.getString(3), false);
+            resultSet.next();
+            return new Patient(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), false);
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         }

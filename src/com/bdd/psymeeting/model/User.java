@@ -32,10 +32,10 @@ public class User {
         if (this.username.equals("admin")) {
             try (Connection connection = Main.database.getConnection()) {
                 Statement stmt = connection.createStatement();
-                ResultSet rset = stmt.executeQuery("select NAME, LAST_NAME from ADMINISTRATOR");
-                rset.next();
-                this.name = rset.getString(1);
-                this.last_name = rset.getString(2);
+                ResultSet resultSet = stmt.executeQuery("select NAME, LAST_NAME from ADMINISTRATOR");
+                resultSet.next();
+                this.name = resultSet.getString(1);
+                this.last_name = resultSet.getString(2);
                 System.out.println("User: " + this.name + " " + this.last_name);
 
             } catch (SQLException ex) {
@@ -97,9 +97,9 @@ public class User {
     public static int getLastUserId() {
         try (Connection connection = Main.database.getConnection()) {
             Statement stmt = connection.createStatement();
-            ResultSet rset = stmt.executeQuery("select max(USER_ID) from USER_APP");
-            rset.next();
-            return rset.getInt(1);
+            ResultSet resultSet = stmt.executeQuery("select max(USER_ID) from USER_APP");
+            resultSet.next();
+            return resultSet.getInt(1);
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         }
@@ -109,12 +109,12 @@ public class User {
     public static int getPatientIdByEmail(String email) {
         try (Connection connection = Main.database.getConnection()) {
             Statement stmt = connection.createStatement();
-            ResultSet rset = stmt.executeQuery("select\n" +
+            ResultSet resultSet = stmt.executeQuery("select\n" +
                     "       u.PATIENT_ID\n" +
                     "from USER_APP u\n" +
                     "where u.EMAIL = '" + email + "'");
-            rset.next();
-            return rset.getInt(1);
+            resultSet.next();
+            return resultSet.getInt(1);
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         }
@@ -126,9 +126,9 @@ public class User {
         if (username.equals("admin")) {
             try (Connection connection = Main.database.getConnection()) {
                 Statement stmt = connection.createStatement();
-                ResultSet rset = stmt.executeQuery("select NAME, LAST_NAME from ADMINISTRATOR");
-                rset.next();
-                return rset.getString(1) + " " + rset.getString(2);
+                ResultSet resultSet = stmt.executeQuery("select NAME, LAST_NAME from ADMINISTRATOR");
+                resultSet.next();
+                return resultSet.getString(1) + " " + resultSet.getString(2);
 
 
             } catch (SQLException ex) {

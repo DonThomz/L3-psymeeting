@@ -175,9 +175,9 @@ public class AddConsultationController implements Initializable {
         try (Connection connection = Main.database.getConnection()) {
             Statement stmt = connection.createStatement();
 
-            ResultSet rset = stmt.executeQuery("select email from USER_APP");
-            while (rset.next()) {
-                if (rset.getString(1).equals(email_field.getText())) {
+            ResultSet resultSet = stmt.executeQuery("select email from USER_APP");
+            while (resultSet.next()) {
+                if (resultSet.getString(1).equals(email_field.getText())) {
                     return true;
                 }
             }
@@ -209,7 +209,7 @@ public class AddConsultationController implements Initializable {
                 + info));
 
         JFXDialog dialog = new JFXDialog(stackPane, content, JFXDialog.DialogTransition.CENTER);
-        JFXButton submit = new JFXButton("Confimer & Envoyer");
+        JFXButton submit = new JFXButton("Confirmer & Envoyer");
         JFXButton cancel = new JFXButton("Annuler");
         submit.setOnAction(event -> {
             confirmation = true;

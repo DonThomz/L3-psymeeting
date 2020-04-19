@@ -26,7 +26,7 @@
   -jfx-disable-visual-focus: true;
 }
 
-.warring_label {
+.warning_label {
   -fx-text-fill: red;
   -fx-padding: 20 20 20 20;
 }

@@ -145,7 +145,7 @@ public class Consultation {
         this.patients = patients;
     }
 
-// --------------------
+    // --------------------
     //   Statement methods
     // --------------------
 
