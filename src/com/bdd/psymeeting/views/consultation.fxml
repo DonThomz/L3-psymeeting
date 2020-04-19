@@ -18,8 +18,8 @@
     <children>
         <AnchorPane prefHeight="800.0">
             <stylesheets>
-                <URL value="@../stylesheets/consultation.css"/>
-                <URL value="@../stylesheets/app.css"/>
+                <URL value="@stylesheets/consultation.css"/>
+                <URL value="@stylesheets/app.css"/>
             </stylesheets>
             <children>
                 <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"

@@ -52,7 +52,7 @@ public class PatientsController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         profilesButtonsHashMap = new HashMap<>();
-        patient_list_box.setSpacing(20);
+        patient_list_box.setSpacing(10);
 
         // execute sql request in another thread
         if (loadPatients.getState() == Task.State.READY)
@@ -69,7 +69,6 @@ public class PatientsController implements Initializable {
     }
 
     public void setupListPatients(ArrayList<Patient> patientArrayList) {
-
         int ID = 0;
         list_patients = patientArrayList;
         for (Patient p : list_patients
@@ -100,7 +99,7 @@ public class PatientsController implements Initializable {
             System.out.println("load patient " + ID);
             profilePane.getChildren().clear();
             current_patient_id = ID;
-            profilePane.getChildren().add(FXMLLoader.load(getClass().getResource("../fxml/profile_patient.fxml")));
+            profilePane.getChildren().add(FXMLLoader.load(getClass().getResource("../views/profile_patient.fxml")));
         } catch (IOException ex) {
             ex.printStackTrace();
         }
