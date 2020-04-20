@@ -5,11 +5,9 @@
 package com.bdd.psymeeting.model;
 
 import com.bdd.psymeeting.Main;
+import oracle.jdbc.proxy.annotation.Pre;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class User {
 
@@ -54,7 +52,7 @@ public class User {
     public User(int user_id, String email, int patient_id, boolean new_user) {
         this.user_id = user_id;
         this.email = email;
-        this.password = "tmp_password";
+        if(new_user) this.password = "tmp_password";
         this.patient_id = patient_id;
         this.new_user = new_user;
     }
@@ -148,7 +146,7 @@ public class User {
     /**
      * Check if a user exists with its email.
      * @param email: the mail for which you want to check if a user exist
-     * @return
+     * @return true if exist or false if not
      */
     public static boolean userExist(String email) {
         try (Connection connection = Main.database.getConnection()) {
@@ -165,6 +163,22 @@ public class User {
         }
         return false;
     }
+
+    public static User getUserByEmail(String email){
+        try (Connection connection = Main.database.getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement("select USER_ID, EMAIL, PATIENT_ID from USER_APP where EMAIL = ?");
+            preparedStatement.setString(1, email);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+            // return user who already exist in database
+            return new User(resultSet.getInt(1), resultSet.getString(2), resultSet.getInt(3), false);
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+            return null;
+        }
+    }
+
+
 
 
 }
