@@ -8,6 +8,7 @@ import com.bdd.psymeeting.model.Consultation;
 import com.bdd.psymeeting.model.Patient;
 import com.bdd.psymeeting.model.User;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
+import sun.security.krb5.internal.PAData;
 
 import java.beans.PropertyVetoException;
 import java.sql.*;
@@ -98,30 +99,40 @@ public class OracleDB {
     // --------------------
 
     public boolean updateNewConsultation(ArrayList<Patient> patients, ArrayList<User> users, Timestamp consultationDate) {
+        System.out.println(users);
         int consultationID = Consultation.getLastPrimaryKeyId();
+        int lastPatientID = Patient.getLastPrimaryKeyId();
         if (consultationID != -1) {
-            return updatePatientTable(patients) && updateUserTable(users) && updateConsultationTable(consultationDate, consultationID) && updateCarryOutTable(patients, consultationID);
+            return updatePatientTable(patients, lastPatientID) && updateUserTable(users) && updateConsultationTable(consultationDate, consultationID) && updateCarryOutTable(patients, consultationID, lastPatientID);
         } else return false;
     }
 
-    public boolean updatePatientTable(ArrayList<Patient> patients) {
+    public boolean updatePatientTable(ArrayList<Patient> patients, int lastPatientID) {
         try (Connection connection = this.getConnection()) {
 
+            int tmpLastPatientID = lastPatientID;
             // the insert statement
             String query = " insert into patient (patient_id, name, last_name)"
                     + " values (?, ?, ?)";
             PreparedStatement preparedStmt = connection.prepareStatement(query);
             // create the insert preparedStatement
-            for (Patient p : patients // for each patients saved in tmp_patients
-            ) {
-                if (p.isNew_patient()) { // if patient does not exist in database
+            if (tmpLastPatientID != -1) {
+                for (Patient p : patients // for each patients saved in tmp_patients
+                ) {
+                    if (p.isNew_patient()) { // if patient does not exist in database
 
-                    // config parameters
-                    preparedStmt.setInt(1, p.getPatient_id());
-                    preparedStmt.setString(2, p.getName());
-                    preparedStmt.setString(3, p.getLast_name());
-                    // execute the preparedStatement
-                    preparedStmt.execute();
+                        // config parameters//
+                        // patient already exist
+                        if (p.getPatient_id() <= lastPatientID) preparedStmt.setInt(1, p.getPatient_id());
+                        else {
+                            tmpLastPatientID++;
+                            preparedStmt.setInt(1, tmpLastPatientID);
+                        }
+                        preparedStmt.setString(2, p.getName());
+                        preparedStmt.setString(3, p.getLast_name());
+                        // execute the preparedStatement
+                        preparedStmt.execute();
+                    }
                 }
             }
             return true;
@@ -142,21 +153,25 @@ public class OracleDB {
 
             PreparedStatement preparedStmt = connection.prepareStatement(query);
 
+            int lastUserId = User.getLastUserId();
             // create the insert preparedStatement
-            for (User u : users // for each patients saved in tmp_patients
-            ) {
-                if (u.isNew_user()) { // if patient does not exist in database
+            if (lastUserId != -1) {
+                for (User u : users // for each patients saved in tmp_patients
+                ) {
+                    if (u.isNew_user()) { // if patient does not exist in database
 
-                    // config parameters
-                    preparedStmt.setInt(1, u.getUser_id());
-                    preparedStmt.setString(2, u.getEmail());
-                    preparedStmt.setString(3, u.getPassword());
-                    preparedStmt.setInt(4, u.getPatient_id());
-                    // execute the preparedStatement
-                    preparedStmt.execute();
+                        // config parameters
+                        lastUserId++;
+                        preparedStmt.setInt(1, lastUserId);
+                        preparedStmt.setString(2, u.getEmail());
+                        preparedStmt.setString(3, u.getPassword());
+                        preparedStmt.setInt(4, u.getPatient_id());
+                        // execute the preparedStatement
+                        preparedStmt.execute();
+                    }
                 }
-            }
-            return true;
+                return true;
+            } else return false;
         } catch (SQLException ex) {
             System.err.println("Got an exception!");
             System.err.println(ex.getMessage());
@@ -190,20 +205,27 @@ public class OracleDB {
         }
     }
 
-    public boolean updateCarryOutTable(ArrayList<Patient> patients, int consultationID) {
+    public boolean updateCarryOutTable(ArrayList<Patient> patients, int consultationID, int lastPatientID) {
 
         try (Connection connection = this.getConnection()) {
 
+            int tmpLastPatientID = lastPatientID;
             // the insert statement
             String query = " insert into CONSULTATION_CARRYOUT (PATIENT_ID, CONSULTATION_ID)"
                     + " values (?, ?)";
 
             PreparedStatement preparedStmt = connection.prepareStatement(query);
             // create each carryout for each patients
+
             for (Patient p : patients
             ) {
                 // config parameters
-                preparedStmt.setInt(1, p.getPatient_id());
+                if (p.getPatient_id() <= lastPatientID) preparedStmt.setInt(1, p.getPatient_id());
+                else {
+                    tmpLastPatientID++;
+                    preparedStmt.setInt(1, tmpLastPatientID);
+                }
+
                 preparedStmt.setInt(2, consultationID + 1);
 
                 // execute the preparedStatement

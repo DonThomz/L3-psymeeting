@@ -14,5 +14,13 @@
 
  */
 
+.patient_cell {
+  -fx-min-width: 200;
+  -fx-padding: 0 10 0 10;
+  -fx-font-size: 14;
+  -jfx-button-type: RAISED;
+  -fx-background-color: #fafafa;
+}
+
 
 
