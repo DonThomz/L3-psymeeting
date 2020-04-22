@@ -252,6 +252,8 @@ public class Main extends Application {
                 screen_index = i;
         }
         return screen_index;
+
+
     }
 
     /**
@@ -291,6 +293,31 @@ public class Main extends Application {
         String[] dates = new String[2];
         dates[0] = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Timestamp.valueOf(date.atTime(LocalTime.MIDNIGHT)));
         dates[1] = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Timestamp.valueOf(date.atTime(LocalTime.MAX)));
+        return dates;
+    }
+
+    public static String[] getDatesOfWeek() {
+        String[] dates = new String[2];
+        // TODO: Consider time zones, calendars etc
+        Calendar date1 = Calendar.getInstance();
+        Calendar date2 = Calendar.getInstance();
+
+        date1.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY); // Monday 8h00 AM
+        date1.set(Calendar.HOUR_OF_DAY, 8);
+        date1.set(Calendar.MINUTE, 0);
+        date1.set(Calendar.SECOND, 0);
+
+        date2.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY); // Saturday 8h00 PM
+        date2.set(Calendar.HOUR, 8);
+        date2.set(Calendar.MINUTE, 0);
+        date2.set(Calendar.SECOND, 0);
+
+        dates[0] = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date1.getTime());
+        dates[1] = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date2.getTime());
+
+        System.out.println("Date " + dates[0]);
+        System.out.println("Date " + dates[1]);
+
         return dates;
     }
 
