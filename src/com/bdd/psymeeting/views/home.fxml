@@ -7,6 +7,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
 <!--
@@ -18,39 +19,44 @@
         <URL value="@stylesheets/home.css" />
         <URL value="@stylesheets/app.css" />
     </stylesheets>
-    <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-        <top>
-            <fx:include source="top_bar.fxml" />
-        </top>
-        <center>
-            <AnchorPane BorderPane.alignment="CENTER">
-            <children>
-               <VBox alignment="CENTER" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0">
+   <StackPane fx:id="stackPane" layoutX="-9.0" layoutY="-9.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <children>
+          <BorderPane>
+              <top>
+                  <fx:include source="top_bar.fxml" />
+              </top>
+              <center>
+                  <AnchorPane BorderPane.alignment="CENTER">
                   <children>
-                     <GridPane fx:id="gridColumnNames">
-                        <effect>
-                           <DropShadow color="#000000b6" />
-                        </effect>
-                     </GridPane>
-                     <ScrollPane fx:id="scrollPane" hbarPolicy="NEVER" vbarPolicy="NEVER" VBox.vgrow="ALWAYS">
-                        <content>
-                           <GridPane fx:id="scheduleGrid">
+                     <VBox alignment="CENTER" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0">
+                        <children>
+                           <GridPane fx:id="gridColumnNames">
                               <effect>
                                  <DropShadow color="#000000b6" />
                               </effect>
                            </GridPane>
-                        </content>
-                     </ScrollPane>
-                     <Region VBox.vgrow="ALWAYS" />
+                           <ScrollPane fx:id="scrollPane" hbarPolicy="ALWAYS" VBox.vgrow="ALWAYS">
+                              <content>
+                                 <GridPane fx:id="scheduleGrid">
+                                    <effect>
+                                       <DropShadow color="#000000b6" />
+                                    </effect>
+                                 </GridPane>
+                              </content>
+                           </ScrollPane>
+                           <Region VBox.vgrow="ALWAYS" />
+                        </children>
+                     </VBox>
                   </children>
-               </VBox>
-            </children></AnchorPane>
-        </center>
-      <left>
-         <Region prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
-      </left>
-      <right>
-         <Region prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
-      </right>
-    </BorderPane>
+               </AnchorPane>
+              </center>
+            <left>
+               <Region prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+            </left>
+            <right>
+               <Region prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+            </right>
+          </BorderPane>
+      </children>
+   </StackPane>
 </AnchorPane>

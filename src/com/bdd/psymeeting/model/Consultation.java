@@ -34,7 +34,6 @@ public class Consultation extends RecursiveTreeObject<Consultation> {
     protected float price;
     protected String payMode;
     protected HashMap<Integer, String[]> patients;
-    protected StringProperty consultationProperty;
     // Feedback
     protected Feedback feedback;
 
@@ -131,17 +130,6 @@ public class Consultation extends RecursiveTreeObject<Consultation> {
         return patients;
     }
 
-    public StringProperty getConsultationProperty() {
-        StringBuilder content = new StringBuilder();
-        content.append(this.getDateString()).append("\n");
-
-        this.getPatients().forEach((id, fullName) -> {
-            content.append(fullName[0]).append(" ").append(fullName[1]).append("\n");
-        });
-
-        consultationProperty = new SimpleStringProperty(content.toString());
-        return consultationProperty;
-    }
 
     // --------------------
     //   Set methods
