@@ -6,36 +6,42 @@ package com.bdd.psymeeting.model;
 
 import com.bdd.psymeeting.Main;
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.scene.control.TextArea;
+import oracle.sql.TIMESTAMP;
 
 import java.sql.*;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 
-public class Consultation {
+public class Consultation extends RecursiveTreeObject<Consultation> {
 
     // --------------------
     //   Attributes
     // --------------------
 
     // Consultation attributes from table CONSULTATION
-    private final int consultationID; //primary key
-    private Calendar date;
-    private float price;
-    private String payMode;
-    private HashMap<Integer, String[]> patients;
-
+    protected final int consultationID; //primary key
+    protected Calendar date;
+    protected float price;
+    protected String payMode;
+    protected HashMap<Integer, String[]> patients;
+    protected StringProperty consultationProperty;
     // Feedback
-    private Feedback feedback;
+    protected Feedback feedback;
 
 
     // Graphic attributes
-    private TextArea full_infos;
-    private JFXButton consultation_button;
+    protected TextArea full_infos;
+    protected JFXButton consultation_button;
 
     // --------------------
     //   Constructors
@@ -97,6 +103,10 @@ public class Consultation {
         return date;
     }
 
+    public String getDateString() {
+        return this.date.getTime() + " " + this.getDate().get(Calendar.HOUR) + ":" + this.getDate().get(Calendar.MINUTE);
+    }
+
     public JFXButton getConsultation_button() {
         return consultation_button;
     }
@@ -119,6 +129,18 @@ public class Consultation {
 
     public HashMap<Integer, String[]> getPatients() {
         return patients;
+    }
+
+    public StringProperty getConsultationProperty() {
+        StringBuilder content = new StringBuilder();
+        content.append(this.getDateString()).append("\n");
+
+        this.getPatients().forEach((id, fullName) -> {
+            content.append(fullName[0]).append(" ").append(fullName[1]).append("\n");
+        });
+
+        consultationProperty = new SimpleStringProperty(content.toString());
+        return consultationProperty;
     }
 
     // --------------------
@@ -152,6 +174,7 @@ public class Consultation {
     public void setPatients(HashMap<Integer, String[]> patients) {
         this.patients = patients;
     }
+
 
     // --------------------
     //   Statement methods
@@ -202,7 +225,6 @@ public class Consultation {
             ArrayList<Timestamp> timeSlotsBlocked = new ArrayList<>();
 
             String[] dates = Main.getDatesOfDay(dateField);
-            System.out.println(dates[0] + " " + dates[1]);
 
             String query = "select CONSULTATION_DATE\n" +
                     "from CONSULTATION\n" +
@@ -271,6 +293,41 @@ public class Consultation {
         return timeSlots;
     }
 
+    /**
+     * Get week consultations
+     *
+     * @return ArrayList<Consultation>
+     */
+    public static ArrayList<Consultation> getConsultationWeek() {
+
+
+        try (Connection connection = Main.database.getConnection()) {
+
+            String[] dates = Main.getDatesOfWeek();
+            ArrayList<Consultation> consultations = new ArrayList<>();
+
+            String query = "select CONSULTATION_ID\n" +
+                    "from CONSULTATION\n" +
+                    "where CONSULTATION_DATE between TO_DATE('" + dates[0] + "', 'yyyy-mm-dd HH24:mi:ss') "
+                    + "and TO_DATE('" + dates[1] + "', 'yyyy-mm-dd HH24:mi:ss')";
+
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            ResultSet result = preparedStatement.executeQuery();
+            // Check all time slots
+            while (result.next()) {
+                consultations.add(new Consultation(result.getInt(1)));
+            }
+
+            return consultations;
+
+        } catch (SQLException ex) {
+            System.out.println("Error loading consultations of the week");
+            System.out.println(ex.getMessage());
+            return null;
+        }
+
+    }
+
     @Override
     public String toString() {
         return "Consultation{" +
@@ -284,4 +341,16 @@ public class Consultation {
                 ", consultation_button=" + consultation_button +
                 '}';
     }
+
+    // --------------------
+    //   Inner class
+    // --------------------
+    public class ConsultationSlot {
+
+        ConsultationSlot() {
+
+        }
+
+    }
+
 }

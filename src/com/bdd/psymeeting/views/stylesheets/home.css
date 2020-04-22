@@ -7,3 +7,13 @@
     version: 1.0
     author: Thomas Guillaume
  */
+
+.scheduleGrid{
+  -fx-background-color: fafafa;
+  -fx-grid-lines-visible: true;
+}
+
+.scheduleGrid Line {
+  -fx-stroke   : #eceff1;
+}
+
