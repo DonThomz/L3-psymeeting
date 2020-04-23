@@ -164,6 +164,20 @@ public class Consultation extends RecursiveTreeObject<Consultation> {
     }
 
 
+    @Override
+    public String toString() {
+        return "Consultation{" +
+                "consultationID=" + consultationID +
+                ", date=" + date +
+                ", price=" + price +
+                ", payMode='" + payMode + '\'' +
+                ", patients=" + patients +
+                ", feedback=" + feedback +
+                ", full_infos=" + full_infos +
+                ", consultation_button=" + consultation_button +
+                '}';
+    }
+
     // --------------------
     //   Statement methods
     // --------------------
@@ -316,29 +330,82 @@ public class Consultation extends RecursiveTreeObject<Consultation> {
 
     }
 
-    @Override
-    public String toString() {
-        return "Consultation{" +
-                "consultationID=" + consultationID +
-                ", date=" + date +
-                ", price=" + price +
-                ", payMode='" + payMode + '\'' +
-                ", patients=" + patients +
-                ", feedback=" + feedback +
-                ", full_infos=" + full_infos +
-                ", consultation_button=" + consultation_button +
-                '}';
-    }
+    /**
+     * Insert into consultation table new consultation
+     * @param consultationDate date of consultation
+     * @param consultationID consultation id
+     * @return true if succeeded
+     */
+    public static boolean insertIntoConsultationTable(Timestamp consultationDate, int consultationID) {
+        try (Connection connection = Main.database.getConnection()) {
 
-    // --------------------
-    //   Inner class
-    // --------------------
-    public class ConsultationSlot {
+            // the insert statement
+            String query = " insert into CONSULTATION (CONSULTATION_ID, CONSULTATION_DATE)"
+                    + " values (?, ?)";
+            // create the insert preparedStatement
+            PreparedStatement preparedStmt = connection.prepareStatement(query);
 
-        ConsultationSlot() {
+            // config parameters
+            preparedStmt.setInt(1, consultationID + 1);
+            preparedStmt.setTimestamp(2, consultationDate);
 
+            // execute the preparedStatement
+            preparedStmt.execute();
+            return true;
+
+        } catch (SQLException ex) {
+            System.err.println("Got an exception!");
+            System.err.println(ex.getMessage());
+            ex.printStackTrace();
+            return false;
         }
-
     }
+
+    /**
+     * Insert into consultation_carryout table new consultation
+     * @param patients list of patients to add
+     * @param consultationID ID of current consultation
+     * @param lastPatientID last Patient ID
+     * @return true if succeeded
+     */
+    public static boolean insertIntoConsultationCarryOutTable(ArrayList<Patient> patients, int consultationID, int lastPatientID) {
+
+        try (Connection connection = Main.database.getConnection()) {
+
+            int tmpLastPatientID = lastPatientID;
+            // the insert statement
+            String query = " insert into CONSULTATION_CARRYOUT (PATIENT_ID, CONSULTATION_ID)"
+                    + " values (?, ?)";
+
+            PreparedStatement preparedStmt = connection.prepareStatement(query);
+            // create each carryout for each patients
+
+            for (Patient p : patients
+            ) {
+                // config parameters
+                // patient already exist
+                if (p.getPatient_id() <= lastPatientID) preparedStmt.setInt(1, p.getPatient_id());
+                else {
+                    tmpLastPatientID++;
+                    preparedStmt.setInt(1, tmpLastPatientID);
+                }
+
+                preparedStmt.setInt(2, consultationID + 1);
+
+                // execute the preparedStatement
+                preparedStmt.execute();
+            }
+            return true;
+            // TODO Multiples connections in same method?
+
+        } catch (SQLException ex) {
+            System.err.println("Got an exception!");
+            System.err.println(ex.getMessage());
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
+
 
 }

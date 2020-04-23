@@ -196,9 +196,14 @@ public class Patient {
         this.discovery_way = discovery_way;
     }
 
+
+    // --------------------
+    //   Statement methods
+    // --------------------
+
     /**
      * Update the Patient in DB with local state.
-     * @return
+     * @return true if succeeded !
      */
     public boolean updatePatient() {
         try (Connection connection = Main.database.getConnection()) {
@@ -224,10 +229,43 @@ public class Patient {
         }
     }
 
+    public static boolean insertIntoPatientTable(ArrayList<Patient> patients, int lastPatientID) {
+        try (Connection connection = Main.database.getConnection()) {
 
-    // --------------------
-    //   Statement methods
-    // --------------------
+            int tmpLastPatientID = lastPatientID;
+            // the insert statement
+            String query = " insert into patient (patient_id, name, last_name)"
+                    + " values (?, ?, ?)";
+            PreparedStatement preparedStmt = connection.prepareStatement(query);
+            // create the insert preparedStatement
+            if (tmpLastPatientID != -1) {
+                for (Patient p : patients // for each patients saved in tmp_patients
+                ) {
+                    if (p.isNew_patient()) { // if patient does not exist in database
+
+                        // config parameters//
+                        // patient already exist
+                        if (p.getPatient_id() <= lastPatientID) preparedStmt.setInt(1, p.getPatient_id());
+                        else {
+                            tmpLastPatientID++;
+                            preparedStmt.setInt(1, tmpLastPatientID);
+                        }
+                        preparedStmt.setString(2, p.getName());
+                        preparedStmt.setString(3, p.getLast_name());
+                        // execute the preparedStatement
+                        preparedStmt.execute();
+                    }
+                }
+            }
+            return true;
+        } catch (SQLException ex) {
+            System.err.println("Got an exception!");
+            System.err.println(ex.getMessage());
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
 
     public static int getLastPrimaryKeyId() {
         try (Connection connection = Main.database.getConnection()) {
