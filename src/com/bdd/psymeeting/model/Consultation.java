@@ -332,13 +332,13 @@ public class Consultation extends RecursiveTreeObject<Consultation> {
 
     /**
      * Insert into consultation table new consultation
+     *
      * @param consultationDate date of consultation
-     * @param consultationID consultation id
+     * @param consultationID   consultation id
      * @return true if succeeded
      */
     public static boolean insertIntoConsultationTable(Timestamp consultationDate, int consultationID) {
         try (Connection connection = Main.database.getConnection()) {
-
             // the insert statement
             String query = " insert into CONSULTATION (CONSULTATION_ID, CONSULTATION_DATE)"
                     + " values (?, ?)";
@@ -350,7 +350,7 @@ public class Consultation extends RecursiveTreeObject<Consultation> {
             preparedStmt.setTimestamp(2, consultationDate);
 
             // execute the preparedStatement
-            preparedStmt.execute();
+            preparedStmt.executeUpdate();
             return true;
 
         } catch (SQLException ex) {
@@ -363,15 +363,15 @@ public class Consultation extends RecursiveTreeObject<Consultation> {
 
     /**
      * Insert into consultation_carryout table new consultation
-     * @param patients list of patients to add
+     *
+     * @param patients       list of patients to add
      * @param consultationID ID of current consultation
-     * @param lastPatientID last Patient ID
+     * @param lastPatientID  last Patient ID
      * @return true if succeeded
      */
     public static boolean insertIntoConsultationCarryOutTable(ArrayList<Patient> patients, int consultationID, int lastPatientID) {
 
         try (Connection connection = Main.database.getConnection()) {
-
             int tmpLastPatientID = lastPatientID;
             // the insert statement
             String query = " insert into CONSULTATION_CARRYOUT (PATIENT_ID, CONSULTATION_ID)"
@@ -393,7 +393,7 @@ public class Consultation extends RecursiveTreeObject<Consultation> {
                 preparedStmt.setInt(2, consultationID + 1);
 
                 // execute the preparedStatement
-                preparedStmt.execute();
+                preparedStmt.executeUpdate();
             }
             return true;
             // TODO Multiples connections in same method?
@@ -405,7 +405,6 @@ public class Consultation extends RecursiveTreeObject<Consultation> {
             return false;
         }
     }
-
 
 
 }

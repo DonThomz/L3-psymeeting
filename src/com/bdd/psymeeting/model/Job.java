@@ -33,7 +33,7 @@ public class Job {
         this.job_date = job_date;
     }
 
-    public Job(String job_name, Calendar job_date){
+    public Job(String job_name, Calendar job_date) {
         this.job_name = job_name;
         this.job_date = job_date;
     }
@@ -79,16 +79,18 @@ public class Job {
     // --------------------
 
     /**
-     *  create the Job in DB with local state.
+     * create the Job in DB with local state.
+     *
      * @return true if succeeded
      */
     public static boolean insertJobFromArrayList(ArrayList<Job> jobs) {
         try (Connection connection = Main.database.getConnection()) {
+
             String request = "INSERT INTO JOBS (JOBS_ID, JOB_NAME, JOB_DATE, PATIENT_ID) VALUES (?,?,?,?)";
 
             PreparedStatement preparedStatement = connection.prepareStatement(request);
-            for (Job job: jobs
-                 ) {
+            for (Job job : jobs
+            ) {
                 preparedStatement.setInt(1, job.getJobId());
                 preparedStatement.setString(2, job.getJob_name());
                 preparedStatement.setDate(3, new java.sql.Date(job.getJob_date().getTime().getTime()));

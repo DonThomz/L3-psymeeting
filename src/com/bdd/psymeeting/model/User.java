@@ -182,11 +182,13 @@ public class User {
 
     /**
      * Insert 1 new user to user table
+     *
      * @return true if succeeded
      */
-    public boolean insertNewUser(int patientID) {
+    public boolean insertNewUser() {
 
         try (Connection connection = Main.database.getConnection()) {
+
             // the insert statement
             String query = " insert into USER_APP (USER_ID, EMAIL, PASSWORD, PATIENT_ID)"
                     + " values (?, ?, ?, ?)";
@@ -198,11 +200,11 @@ public class User {
                 preparedStmt.setInt(1, this.getUser_id());
                 preparedStmt.setString(2, this.getEmail());
                 preparedStmt.setString(3, this.getPassword());
-                preparedStmt.setInt(4, patientID);
+                preparedStmt.setInt(4, this.getPatient_id());
                 // execute the preparedStatement
-                preparedStmt.execute();
+                preparedStmt.executeUpdate();
                 return true;
-            }else return false;
+            } else return false;
 
         } catch (SQLException ex) {
             System.err.println("Got an exception!");
@@ -221,6 +223,7 @@ public class User {
     public static boolean insertIntoUserTable(ArrayList<User> users) {
 
         try (Connection connection = Main.database.getConnection()) {
+
             // the insert statement
             String query = " insert into USER_APP (USER_ID, EMAIL, PASSWORD, PATIENT_ID)"
                     + " values (?, ?, ?, ?)";
@@ -241,7 +244,7 @@ public class User {
                         preparedStmt.setString(3, u.getPassword());
                         preparedStmt.setInt(4, u.getPatient_id());
                         // execute the preparedStatement
-                        preparedStmt.execute();
+                        preparedStmt.executeUpdate();
                     }
                 }
                 return true;

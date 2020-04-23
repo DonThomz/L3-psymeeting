@@ -23,10 +23,11 @@ public class PatientsController implements Initializable {
 
     // JavaFX
     public VBox patient_list_box;
-    public HashMap<JFXButton, Boolean> profilesButtonsHashMap;
     public AnchorPane profilePane;
+    public JFXButton addPatientButton;
 
     // Attributes
+    public HashMap<JFXButton, Boolean> profilesButtonsHashMap;
     public static ArrayList<Patient> list_patients;
     public static int current_patient_id;
 
@@ -46,11 +47,17 @@ public class PatientsController implements Initializable {
         }
     };
 
+
     // --------------------
     //   Initialize method
     // --------------------
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        addPatientButton.setOnAction(event -> {
+            loadAddPatientForm();
+        });
+
         profilesButtonsHashMap = new HashMap<>();
         patient_list_box.setSpacing(10);
 
@@ -96,7 +103,6 @@ public class PatientsController implements Initializable {
 
     private void loadPatientInfo(int ID) {
         try {
-            System.out.println("load patient " + ID);
             profilePane.getChildren().clear();
             current_patient_id = ID;
             profilePane.getChildren().add(FXMLLoader.load(getClass().getResource("../views/profile_patient.fxml")));
@@ -115,6 +121,15 @@ public class PatientsController implements Initializable {
                 k.setStyle("-fx-background-color: #fafafa");
             }
         });
+    }
+
+    private void loadAddPatientForm() {
+        try {
+            profilePane.getChildren().clear();
+            profilePane.getChildren().add(FXMLLoader.load(getClass().getResource("../views/patient_form.fxml")));
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
 

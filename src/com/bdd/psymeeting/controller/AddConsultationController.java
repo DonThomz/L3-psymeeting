@@ -249,13 +249,13 @@ public class AddConsultationController implements Initializable {
                 int consultationID = Consultation.getLastPrimaryKeyId();
                 int lastPatientID = Patient.getLastPrimaryKeyId();
                 if (consultationID != -1) {
-                    if(Patient.insertIntoPatientTable(patients, lastPatientID)
+                    if (Patient.insertIntoPatientTable(patients, lastPatientID)
                             && User.insertIntoUserTable(users)
                             && Consultation.insertIntoConsultationTable(date, consultationID)
-                            && Consultation.insertIntoConsultationCarryOutTable(patients, consultationID, lastPatientID)){
+                            && Consultation.insertIntoConsultationCarryOutTable(patients, consultationID, lastPatientID)) {
                         connection.commit();
                         return true;
-                    }else return false;
+                    } else return false;
                 } else return false;
 
             } else return false;
