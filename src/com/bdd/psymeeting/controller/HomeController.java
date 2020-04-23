@@ -70,7 +70,7 @@ public class HomeController extends ConsultationHistoric implements Initializabl
             int minutes = c.getDate().get(Calendar.MINUTE);
             int col = day;
             int row = getRowTimeSlotIndex(hours, minutes);
-            JFXButton consultation = new JFXButton(String.valueOf(c.getConsultationID()));
+            JFXButton consultation = new JFXButton("Consultation");
             AnchorPane cell = new AnchorPane();
             cell.getStyleClass().add("consultationCell");
             cell.getChildren().add(consultation);
