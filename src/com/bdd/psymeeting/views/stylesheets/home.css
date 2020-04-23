@@ -7,3 +7,24 @@
     version: 1.0
     author: Thomas Guillaume
  */
+
+.scheduleGrid{
+  -fx-background-color: fafafa;
+  -fx-grid-lines-visible: true;
+}
+
+.scheduleGrid Line {
+  -fx-stroke   : #b0bec5;
+}
+
+.consultationCell{
+  -fx-border: none;
+  -fx-cursor: pointer;
+  -fx-border-radius: 2px;
+  -fx-background-color: #56c8d8;
+  -fx-text-fill: BLACK;
+  -fx-font-weight: bold;
+  -jfx-disable-visual-focus: true;
+  -jfx-button-type: RAISED;
+}
+
