@@ -13,7 +13,6 @@ import com.jfoenix.controls.*;
 import com.jfoenix.validation.RequiredFieldValidator;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
@@ -26,9 +25,8 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
+
 
 public class AddConsultationController implements Initializable {
 
@@ -39,7 +37,6 @@ public class AddConsultationController implements Initializable {
     // Add patients
     public Label label_patients;
     public JFXButton add_patient_button;
-    private static int nb_patients;
 
     // Fields
     public JFXDatePicker date_field;
@@ -62,7 +59,6 @@ public class AddConsultationController implements Initializable {
 
     private ArrayList<Patient> patients;
     private ArrayList<User> users;
-    private int lastPatientId;
     private boolean confirmation;
 
 
@@ -93,6 +89,17 @@ public class AddConsultationController implements Initializable {
         }
     };
 
+    Service<Boolean> addPatient = new Service<Boolean>() {
+        @Override
+        protected Task<Boolean> createTask() {
+            return new Task<Boolean>() {
+                @Override
+                protected Boolean call() {
+                    return addPatientTask();
+                }
+            };
+        }
+    };
 
     // --------------------
     //   Initialize method
@@ -104,14 +111,12 @@ public class AddConsultationController implements Initializable {
         TransitionEffect.TranslateTransitionY(form_box, 600, 75);
         TransitionEffect.FadeTransition(form_box, 600, 0.2f, 5);
 
-        // init patient label
-        nb_patients = 1;
-        lastPatientId = Patient.getLastPrimaryKeyId();
-        label_patients.setText(label_patients.getText() + " " + nb_patients);
-
         // init ArrayList
         patients = new ArrayList<>();
         users = new ArrayList<>();
+
+        // init patient label
+        label_patients.setText("Patient - " + (patients.size() + 1));
 
         // validation settings
         validator_field = new RequiredFieldValidator();
@@ -130,7 +135,6 @@ public class AddConsultationController implements Initializable {
             setupTimeSlotsField(loadTimeSlots.getValue());
             loadTimeSlots.reset();
         });
-
         loadTimeSlots.setOnFailed(event -> {
             System.out.println("Task failed ! ");
             loadTimeSlots.reset();
@@ -142,11 +146,22 @@ public class AddConsultationController implements Initializable {
             Main.sceneMapping("add_consultation_scene", "add_consultation_scene");
             updateNewConsultation.reset();
         });
-
         updateNewConsultation.setOnFailed(event -> {
             System.out.println("Task new consultation failed !");
             updateNewConsultation.reset();
         });
+
+        addPatient.setOnSucceeded(event -> {
+            System.out.println("Task adding patient succeeded ! ");
+            addPatientSucceeded();
+            addPatient.reset();
+        });
+
+        addPatient.setOnFailed(event -> {
+            System.out.println("Task adding patient failed !");
+            addPatient.reset();
+        });
+
 
         // Init listener
         date_field.valueProperty().addListener(event -> {
@@ -160,38 +175,26 @@ public class AddConsultationController implements Initializable {
 
 
     // --------------------
-    //  Action methods
+    //  Submit consultation
     // --------------------
-    public void submit(ActionEvent actionEvent) { // button "Enregistrer"
+    public void submit() { // button "Enregistrer"
         // disable during the thread
         add_patient_button.setDisable(true);
 
         // check if minimum 1 patient exist in tmp_patients or if fields are not empty
         if (date_field.getValue() != null && hour_field.getValue() != null && (!patients.isEmpty() || validField())) {
+            if (validField()) {
+                if (addPatient.getState() == Task.State.READY) // adding patient
+                    addPatient.start();
+            }
             // open confirmation dialog
             confirmationDialog();
+
         } else { // focus on empty field
             validateTextFieldAction();
             validateDateFieldAction();
         }
 
-    }
-
-    public void add(ActionEvent actionEvent) { // button "Ajouter patient"
-        // field not empty
-        if (validField()) {
-            // create and add patient to ArrayList patients
-            if (addPatient2ArrayList()) {
-                // reset field
-                resetField();
-
-                // add patient to the side right bar
-                attachPatients();
-                // update patient label
-                updatePatientLabel();
-
-            }
-        } else validateTextFieldAction();
     }
 
     public void confirmationDialog() {
@@ -222,15 +225,9 @@ public class AddConsultationController implements Initializable {
 
         submit.setOnAction(event -> {
             confirmation = true;
-            boolean check = true;
-            if (validField())
-                check = addPatient2ArrayList();
-            if (check) {
-                if (updateNewConsultation.getState() == Task.State.READY) // loading update table in Service
-                    updateNewConsultation.start();
-            }
+            if (updateNewConsultation.getState() == Task.State.READY) // loading update table in Service
+                updateNewConsultation.start();
             dialog.close();
-
         });
 
         cancel.setOnAction(event -> {
@@ -242,12 +239,57 @@ public class AddConsultationController implements Initializable {
         dialog.show();
     }
 
+    private boolean updateNewConsultation() {
+        try (Connection connection = Main.database.getConnection()) {
+            if (confirmation) {
+
+                Timestamp date = Timestamp.valueOf(date_field.getValue().toString() + " " + hour_field.getValue() + ":00.0");
+                // enable commit command
+                connection.setAutoCommit(false);
+                if (Main.database.updateNewConsultation(patients, users, date)) {
+                    connection.commit();
+                    return true;
+                } else return false;
+
+            } else return false;
+        } catch (SQLException ex) {
+            System.out.println("Error creation consultation");
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
+    //-----------------
+    // Adding Patient
+    //-----------------
+    public void add() { // button "Ajouter patient"
+        if (addPatient.getState() == Task.State.READY) {
+            addPatient.start();
+        }
+    }
+
+    public boolean addPatientTask() {
+        // field not empty
+        if (validField()) {
+            return addPatient2ArrayList(); // create and add patient to ArrayList patients
+        } else validateTextFieldAction();
+        return false;
+    }
+
+    public void addPatientSucceeded() {
+        // reset field
+        resetField();
+        // add patient to the side right bar
+        attachPatients();
+        // update patient label
+        updatePatientLabel();
+    }
+
 
     // --------------------
     //  Private methods
     // --------------------
     private boolean addPatient2ArrayList() {
-
         if (userExist()) { // check if user exist ==> email exit in database
             // check if name and last name is correct
             Patient tmp_patient = Patient.getPatientByEmail(email_field.getText());
@@ -265,18 +307,19 @@ public class AddConsultationController implements Initializable {
                 return false;
             }
         } else { // create a patient and a user
+            int lastPatientId = Patient.getLastPrimaryKeyId();
             if (lastPatientId != -1) {
                 // @TODO Fix users update
                 Patient tmp_p = new Patient(lastPatientId + 1, name_field.getText(), last_name_field.getText(), true);
                 patients.add(tmp_p); // add new patient
-                users.add(new User(User.getLastUserId() + 1, email_field.getText(), tmp_p.getPatient_id(), true)); // add new user
-                lastPatientId++;
+
+                User tmp_user = new User(User.getLastUserId() + 1, email_field.getText(), tmp_p.getPatient_id(), true);
+                users.add(tmp_user); // add new user
                 return true;
-            }
+            } else return false;
         }
-        return false;
     }
-    // @TODO Fix userExist
+
     private boolean userExist() { // check if user exist in database with email_field
         return User.userExist(email_field.getText());
     }
@@ -284,24 +327,23 @@ public class AddConsultationController implements Initializable {
     private void attachPatients() { // attach patient to the right side
         JFXButton patient_save = new JFXButton();
         patient_save.getStyleClass().add("patient_cell");
-        patient_save.setMaxWidth(250);
-        patient_save.setMaxHeight(100);
 
-        String text = "Patient" + nb_patients
-                + "\n " + patients.get(nb_patients - 1).getName()
-                + " " + patients.get(nb_patients - 1).getName()
-                + "\n\n Email :\n" + users.get(nb_patients - 1).getEmail();
+
+        String text = "Patient"
+                + "\n " + patients.get(patients.size() - 1).getName()
+                + " " + patients.get(patients.size() - 1).getLast_name();
 
         patient_save.setText(text);
-
-        patient_save.setOnAction(event -> confirmationDialogPatient());
+        Patient selectPatient = patients.get(patients.size() - 1);
+        patient_save.setOnAction(event -> confirmationDialogPatient(patient_save, selectPatient));
 
         patients_save.getChildren().add(patient_save);
         patients_save.setSpacing(20);
 
+
     }
 
-    private void confirmationDialogPatient() {
+    private void confirmationDialogPatient(JFXButton patientSlot, Patient patient) {
         // add dialog layout to remove patient
         JFXDialogLayout confirmation_remove = new JFXDialogLayout();
         confirmation_remove.setHeading(new Text("Voulez-vous supprimer le patient ?"));
@@ -311,14 +353,11 @@ public class AddConsultationController implements Initializable {
         JFXButton cancel = new JFXButton("Annuler");
 
         remove.setOnAction(event -> {
-            confirmation = true;
-            dialog_confirmation.close();
             // remove patient
-            patients.remove(nb_patients - 2);
-            patients_save.getChildren().remove(nb_patients - 2);
-            nb_patients--;
-            //updatePatientLabel();
-
+            patients_save.getChildren().remove(patientSlot);
+            patients.remove(patient);
+            updatePatientLabel();
+            dialog_confirmation.close();
         });
         cancel.setOnAction(event -> {
             confirmation = false;
@@ -418,34 +457,13 @@ public class AddConsultationController implements Initializable {
     //  Update methods
     // --------------------
     private void updatePatientLabel() {
-        // update label and button
-        nb_patients++;
-        if (nb_patients <= 3)
-            label_patients.setText("Patient - " + nb_patients);
-        else {
+        if (patients.size() == 3) {
             add_patient_button.setDisable(true);
+        } else {
+            label_patients.setText("Patient - " + (patients.size() + 1));
+            add_patient_button.setDisable(false);
         }
     }
 
 
-    private boolean updateNewConsultation() {
-        try (Connection connection = Main.database.getConnection()) {
-            if (confirmation) {
-
-                Timestamp date = Timestamp.valueOf(date_field.getValue().toString() + " " + hour_field.getValue() + ":00.0");
-                // enable commit command
-                connection.setAutoCommit(false);
-
-                if (Main.database.updateNewConsultation(patients, users, date)) {
-                    connection.commit();
-                    return true;
-                } else return false;
-
-            } else return false;
-        } catch (SQLException ex) {
-            System.out.println("Error creation consultation");
-            ex.printStackTrace();
-            return false;
-        }
-    }
 }
