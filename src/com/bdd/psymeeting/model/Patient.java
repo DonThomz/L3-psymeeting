@@ -23,7 +23,6 @@ public class Patient {
     private boolean new_patient;
 
 
-
     private Date birthday;
     private String gender;
     private String relationship;
@@ -126,30 +125,39 @@ public class Patient {
     public int getPatient_id() {
         return patient_id;
     }
+
     public String getName() {
         return name;
     }
+
     public String getLast_name() {
         return last_name;
     }
+
     public boolean isNew_patient() {
         return new_patient;
     }
+
     public ArrayList<Job> getJobs() {
         return jobs;
     }
+
     public Date getBirthday() {
         return this.birthday;
     }
+
     public String getGender() {
         return this.gender;
     }
+
     public String getDiscovery_way() {
         return this.discovery_way;
     }
+
     public String getRelationship() {
         return this.relationship;
     }
+
     public ArrayList<Consultation> getConsultationHistoric() {
         return consultationHistoric;
     }
@@ -177,9 +185,11 @@ public class Patient {
     public void setGender(String gender) {
         this.gender = gender;
     }
+
     public void setBirthday(Date birthday) {
         this.birthday = birthday;
     }
+
     public void setBirthday(LocalDate birthday) {
         this.birthday = Date.valueOf(birthday);
     }
@@ -192,16 +202,24 @@ public class Patient {
     public void setConsultationHistoric(ArrayList<Consultation> consultationHistoric) {
         this.consultationHistoric = consultationHistoric;
     }
+
     public void setDiscovery_way(String discovery_way) {
         this.discovery_way = discovery_way;
     }
 
+
+    // --------------------
+    //   Statement methods
+    // --------------------
+
     /**
      * Update the Patient in DB with local state.
-     * @return
+     *
+     * @return true if succeeded !
      */
     public boolean updatePatient() {
         try (Connection connection = Main.database.getConnection()) {
+            connection.setAutoCommit(false);
             String request = "UPDATE PATIENT SET NAME = ?, LAST_NAME = ?, BIRTHDAY = ?, GENDER = ?, RELATIONSHIP = ?, DISCOVERY_WAY= ? WHERE PATIENT_ID = ?";
 
             PreparedStatement preparedStatement = connection.prepareStatement(request);
@@ -224,10 +242,70 @@ public class Patient {
         }
     }
 
+    /**
+     * Insert new patient to Patient Table
+     *
+     * @return true if succeeded
+     */
+    public boolean insertPatient() {
+        try (Connection connection = Main.database.getConnection()) {
+            String request = "INSERT INTO PATIENT (PATIENT_ID, NAME, LAST_NAME, BIRTHDAY, GENDER, RELATIONSHIP, DISCOVERY_WAY) VALUES (?,?,?,?,?,?,?)";
 
-    // --------------------
-    //   Statement methods
-    // --------------------
+            PreparedStatement preparedStatement = connection.prepareStatement(request);
+            preparedStatement.setInt(1, this.getPatient_id());
+            preparedStatement.setString(2, this.getName());
+            preparedStatement.setString(3, this.getLast_name());
+            preparedStatement.setDate(4, new java.sql.Date(this.getBirthday().getTime()));
+            preparedStatement.setString(5, this.getGender());
+            preparedStatement.setString(6, this.getRelationship());
+            preparedStatement.setString(7, this.getDiscovery_way());
+
+            preparedStatement.executeUpdate();
+            preparedStatement.close();
+            return true;
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean insertIntoPatientTable(ArrayList<Patient> patients, int lastPatientID) {
+        try (Connection connection = Main.database.getConnection()) {
+            int tmpLastPatientID = lastPatientID;
+            // the insert statement
+            String query = " insert into patient (patient_id, name, last_name)"
+                    + " values (?, ?, ?)";
+            PreparedStatement preparedStmt = connection.prepareStatement(query);
+            // create the insert preparedStatement
+            if (tmpLastPatientID != -1) {
+                for (Patient p : patients // for each patients saved in tmp_patients
+                ) {
+                    if (p.isNew_patient()) { // if patient does not exist in database
+
+                        // config parameters//
+                        // patient already exist
+                        if (p.getPatient_id() <= lastPatientID) preparedStmt.setInt(1, p.getPatient_id());
+                        else {
+                            tmpLastPatientID++;
+                            preparedStmt.setInt(1, tmpLastPatientID);
+                        }
+                        preparedStmt.setString(2, p.getName());
+                        preparedStmt.setString(3, p.getLast_name());
+                        // execute the preparedStatement
+                        preparedStmt.executeUpdate();
+                    }
+                }
+            }
+            return true;
+        } catch (SQLException ex) {
+            System.err.println("Got an exception!");
+            System.err.println(ex.getMessage());
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
 
     public static int getLastPrimaryKeyId() {
         try (Connection connection = Main.database.getConnection()) {
