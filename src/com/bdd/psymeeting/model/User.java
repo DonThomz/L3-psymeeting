@@ -8,6 +8,7 @@ import com.bdd.psymeeting.Main;
 import oracle.jdbc.proxy.annotation.Pre;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public class User {
 
@@ -52,7 +53,7 @@ public class User {
     public User(int user_id, String email, int patient_id, boolean new_user) {
         this.user_id = user_id;
         this.email = email;
-        if(new_user) this.password = "tmp_password";
+        if (new_user) this.password = "tmp_password";
         this.patient_id = patient_id;
         this.new_user = new_user;
     }
@@ -145,6 +146,7 @@ public class User {
 
     /**
      * Check if a user exists with its email.
+     *
      * @param email: the mail for which you want to check if a user exist
      * @return true if exist or false if not
      */
@@ -164,7 +166,7 @@ public class User {
         return false;
     }
 
-    public static User getUserByEmail(String email){
+    public static User getUserByEmail(String email) {
         try (Connection connection = Main.database.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement("select USER_ID, EMAIL, PATIENT_ID from USER_APP where EMAIL = ?");
             preparedStatement.setString(1, email);
@@ -178,7 +180,82 @@ public class User {
         }
     }
 
+    /**
+     * Insert 1 new user to user table
+     *
+     * @return true if succeeded
+     */
+    public boolean insertNewUser() {
 
+        try (Connection connection = Main.database.getConnection()) {
+
+            // the insert statement
+            String query = " insert into USER_APP (USER_ID, EMAIL, PASSWORD, PATIENT_ID)"
+                    + " values (?, ?, ?, ?)";
+
+            PreparedStatement preparedStmt = connection.prepareStatement(query);
+            // create the insert preparedStatement
+            if (this.isNew_user()) { // if patient does not exist in database
+                // config parameters
+                preparedStmt.setInt(1, this.getUser_id());
+                preparedStmt.setString(2, this.getEmail());
+                preparedStmt.setString(3, this.getPassword());
+                preparedStmt.setInt(4, this.getPatient_id());
+                // execute the preparedStatement
+                preparedStmt.executeUpdate();
+                return true;
+            } else return false;
+
+        } catch (SQLException ex) {
+            System.err.println("Got an exception!");
+            System.err.println(ex.getMessage());
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Insert into user table new users
+     *
+     * @param users list of users to add
+     * @return true if succeeded
+     */
+    public static boolean insertIntoUserTable(ArrayList<User> users) {
+
+        try (Connection connection = Main.database.getConnection()) {
+
+            // the insert statement
+            String query = " insert into USER_APP (USER_ID, EMAIL, PASSWORD, PATIENT_ID)"
+                    + " values (?, ?, ?, ?)";
+
+            PreparedStatement preparedStmt = connection.prepareStatement(query);
+
+            int lastUserId = User.getLastUserId();
+            // create the insert preparedStatement
+            if (lastUserId != -1) {
+                for (User u : users // for each patients saved in tmp_patients
+                ) {
+                    if (u.isNew_user()) { // if patient does not exist in database
+
+                        // config parameters
+                        lastUserId++;
+                        preparedStmt.setInt(1, lastUserId);
+                        preparedStmt.setString(2, u.getEmail());
+                        preparedStmt.setString(3, u.getPassword());
+                        preparedStmt.setInt(4, u.getPatient_id());
+                        // execute the preparedStatement
+                        preparedStmt.executeUpdate();
+                    }
+                }
+                return true;
+            } else return false;
+        } catch (SQLException ex) {
+            System.err.println("Got an exception!");
+            System.err.println(ex.getMessage());
+            ex.printStackTrace();
+            return false;
+        }
+    }
 
 
 }

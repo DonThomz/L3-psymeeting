@@ -246,9 +246,16 @@ public class AddConsultationController implements Initializable {
                 Timestamp date = Timestamp.valueOf(date_field.getValue().toString() + " " + hour_field.getValue() + ":00.0");
                 // enable commit command
                 connection.setAutoCommit(false);
-                if (Main.database.updateNewConsultation(patients, users, date)) {
-                    connection.commit();
-                    return true;
+                int consultationID = Consultation.getLastPrimaryKeyId();
+                int lastPatientID = Patient.getLastPrimaryKeyId();
+                if (consultationID != -1) {
+                    if (Patient.insertIntoPatientTable(patients, lastPatientID)
+                            && User.insertIntoUserTable(users)
+                            && Consultation.insertIntoConsultationTable(date, consultationID)
+                            && Consultation.insertIntoConsultationCarryOutTable(patients, consultationID, lastPatientID)) {
+                        connection.commit();
+                        return true;
+                    } else return false;
                 } else return false;
 
             } else return false;
