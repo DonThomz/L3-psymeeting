@@ -32,7 +32,7 @@ public class User {
     // --------------------
     public User(String username) {
         this.username = username;
-        if (this.username.equals("admin")) {
+        /*if (this.username.equals("admin")) {
             try (Connection connection = Main.database.getConnection()) {
                 Statement stmt = connection.createStatement();
                 ResultSet resultSet = stmt.executeQuery("select NAME, LAST_NAME from ADMINISTRATOR");
@@ -45,7 +45,7 @@ public class User {
                 System.out.println("Error add name or last name to the user (1)");
                 System.out.println(ex.getErrorCode() + " : " + ex.getMessage());
             }
-        }
+        }*/
     }
 
 
@@ -135,7 +135,7 @@ public class User {
 
 
             } catch (SQLException ex) {
-                System.out.println("Error add name or last name to the user (2)");
+                System.out.println("Error add name or last name to the user (4)");
                 System.out.println(ex.getErrorCode() + " : " + ex.getMessage());
                 return null;
             }

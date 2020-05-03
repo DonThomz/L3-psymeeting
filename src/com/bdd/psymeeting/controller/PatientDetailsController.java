@@ -72,7 +72,7 @@ public class PatientDetailsController extends ConsultationHistoric implements In
 
         // Setup services
         super.loadConsultations.setOnSucceeded(evt -> {
-            System.out.println("Task succeeded!");
+            System.out.println("Task load consultation succeeded!");
             // run createBoxConsultations
             super.createBoxConsultations("patient_consultation_cell");
         });

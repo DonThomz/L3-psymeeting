@@ -63,12 +63,12 @@ public class LoginController implements Initializable {
 
         // Set actions for success and failed connection to the DB
         loginService.setOnSucceeded(evt -> {
-            System.out.println("Task succeeded!");
+            System.out.println("Task to connection succeeded!");
             loginSucceeded();
             login_button.setDisable(false);
         });
         loginService.setOnFailed(evt -> {
-            System.out.println("Task failed!");
+            System.out.println("Task to connection failed!");
             login_button.setDisable(false);
             loginFailed();
             loginService.reset();

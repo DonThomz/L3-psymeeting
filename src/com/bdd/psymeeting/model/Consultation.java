@@ -10,6 +10,7 @@ import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.TextArea;
+import oracle.jdbc.proxy.annotation.Pre;
 import oracle.sql.TIMESTAMP;
 
 import java.sql.*;
@@ -404,6 +405,46 @@ public class Consultation extends RecursiveTreeObject<Consultation> {
             ex.printStackTrace();
             return false;
         }
+    }
+
+    public static boolean removeConsultation(Consultation consultation) {
+        try (Connection connection = Main.database.getConnection()) {
+            connection.setAutoCommit(false);
+            Savepoint savepoint = connection.setSavepoint("savePoint");
+            try {
+                PreparedStatement preparedStatement;
+                String query;
+
+                // Step 1 remove row in carryOut
+                query = "delete CONSULTATION_CARRYOUT where CONSULTATION_ID = ?";
+                preparedStatement = connection.prepareStatement(query);
+                preparedStatement.setInt(1, consultation.getConsultationID());
+                preparedStatement.executeUpdate();
+
+                // Step 2 remove feedback
+                query = "delete FEEDBACK where CONSULTATION_ID = ?";
+                preparedStatement = connection.prepareStatement(query);
+                preparedStatement.setInt(1, consultation.getConsultationID());
+                preparedStatement.executeUpdate();
+
+                // Step 3 remove consultation
+                query = "delete CONSULTATION where CONSULTATION_ID = ?";
+                preparedStatement = connection.prepareStatement(query);
+                preparedStatement.setInt(1, consultation.getConsultationID());
+                preparedStatement.executeUpdate();
+
+                connection.commit();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                System.out.print("SQL Exception, rollback executing...");
+                connection.rollback(savepoint); // rollback if error
+                return false;
+            }
+        } catch (SQLException thenables) {
+            thenables.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
 

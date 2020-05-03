@@ -5,18 +5,22 @@
 package com.bdd.psymeeting.controller;
 
 import com.bdd.psymeeting.model.Consultation;
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXDialog;
-import com.jfoenix.controls.JFXDialogLayout;
+import com.jfoenix.controls.*;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
+import java.sql.Connection;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
@@ -35,7 +39,9 @@ public class ConsultationHistoric {
     protected int consultation_size;
     protected Calendar date_today;
     protected ArrayList<Consultation> consultationArrayList;
+    protected Consultation consultationToBeRemove;
 
+    protected static boolean refresh = false;
 
     final Service<Boolean> loadConsultations = new Service<Boolean>() {
         @Override
@@ -48,6 +54,42 @@ public class ConsultationHistoric {
             };
         }
     };
+
+    final Service<Boolean> removeConsultationService = new Service<Boolean>() {
+        @Override
+        protected Task<Boolean> createTask() {
+            return new Task<Boolean>() {
+                @Override
+                protected Boolean call() {
+                    return  removeConsultation(consultationToBeRemove);
+                }
+            };
+        }
+    };
+
+
+
+    ConsultationHistoric(){
+        removeConsultationService.setOnSucceeded(event -> {
+            if(removeConsultationService.getValue()) {
+                System.out.print("Task Remove consultation succeeded !");
+                refresh = true;
+
+            }
+            else System.out.print("Task succeeded but remove consultation from database failed !");
+        });
+
+        removeConsultationService.setOnFailed(event -> {
+            System.out.print("Task Remove consultation failed !");
+        });
+
+    }
+
+
+    private boolean removeConsultation(Consultation consultation) {
+        return Consultation.removeConsultation(consultation);
+    }
+
 
     // --------------------
     //  Consultation methods
@@ -122,14 +164,64 @@ public class ConsultationHistoric {
         JFXButton done = new JFXButton("Fermer");
         JFXButton modify = new JFXButton("Modifier");
 
+        // check if consultation is passed
+        LocalDate localDate = LocalDateTime.ofInstant(consultation.getDate().toInstant(), consultation.getDate().getTimeZone().toZoneId()).toLocalDate();
+        JFXButton remove = new JFXButton("Supprimer");
+        if(LocalDate.now().compareTo(localDate) <= 0)
+            content.getActions().add(remove);
+
         done.setOnAction(event -> dialog.close());
 
-        modify.setOnAction(event -> dialog.close());
+        modify.setOnAction(event -> {
+            dialog.close();
+            loadModifyDialogPane(consultation);
+        });
 
-        content.setActions(modify, done);
+        remove.setOnAction(event -> {
+            dialog.close();
+            if(removeConsultationService.getState() == Task.State.READY){
+                consultationToBeRemove = consultation;
+                removeConsultationService.start();
+            }
+        });
+
+        content.getActions().addAll(modify, done);
 
         dialog.show();
     }
+
+    protected void loadModifyDialogPane(Consultation consultation) {
+        // create dialog layout
+        JFXDialogLayout modifyFrom = new JFXDialogLayout();
+
+        // add body
+        VBox consultationVBox = new VBox();
+        consultationVBox.setSpacing(20);
+
+
+        // check if consultation is passed
+        LocalDate localDate = LocalDateTime.ofInstant(consultation.getDate().toInstant(), consultation.getDate().getTimeZone().toZoneId()).toLocalDate();
+        if(LocalDate.now().compareTo(localDate) < 0)
+            consultationVBox.getChildren().add(dateBox(consultation));
+        consultationVBox.getChildren().add(patientsBox(consultation));
+
+
+        modifyFrom.setBody(consultationVBox);
+
+        JFXDialog modifyDialogPane = new JFXDialog(stackPane, modifyFrom, JFXDialog.DialogTransition.CENTER);
+        JFXButton done = new JFXButton("Annuler");
+        JFXButton save = new JFXButton("Sauvegarder");
+
+        done.setOnAction(event -> modifyDialogPane.close());
+
+        save.setOnAction(event -> modifyDialogPane.close());
+
+        modifyFrom.setActions(save, done);
+
+        modifyDialogPane.show();
+
+    }
+
 
     protected TextArea createBody(Consultation consultation) {
 
@@ -166,6 +258,46 @@ public class ConsultationHistoric {
                 Locale.FRANCE).format(date.getTime());
         return new Label("Consultation du " + format_date);
     }
+
+    protected HBox dateBox(Consultation consultation) {
+        // date field
+        HBox consultationDateBox = new HBox();
+        consultationDateBox.setSpacing(20);
+        Label dateLabel = new Label("Date");
+        Region space = new Region();
+        space.setMinWidth(20);
+        JFXDatePicker datePicker = new JFXDatePicker();
+        datePicker.setValue(LocalDateTime.ofInstant(consultation.getDate().toInstant(), consultation.getDate().getTimeZone().toZoneId()).toLocalDate());
+        consultationDateBox.getChildren().addAll(dateLabel, space, datePicker);
+        return consultationDateBox;
+    }
+
+    protected HBox patientsBox(Consultation consultation) {
+
+        VBox consultationPatientListBox = new VBox();
+        consultationPatientListBox.setSpacing(20);
+
+        // find all patients
+        consultation.getPatients().forEach((k, patient) -> {
+            Label patientLabel = new Label(patient[0] + " " + patient[1]);
+            consultationPatientListBox.getChildren().add(patientLabel);
+        });
+
+        HBox consultationPatientBox = new HBox();
+        consultationPatientBox.getChildren().add(consultationPatientListBox);
+
+        return consultationPatientBox;
+
+    }
+
+    protected HBox commentBox(Consultation consultation){
+
+        HBox commentBox = new HBox();
+
+        return commentBox;
+
+    }
+
 
 
 }

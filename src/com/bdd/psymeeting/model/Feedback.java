@@ -46,16 +46,18 @@ public class Feedback {
             PreparedStatement preparedStmt = connection.prepareStatement(query);
             preparedStmt.setInt(1, consultationID);
             ResultSet resultSet = preparedStmt.executeQuery();
-            resultSet.next();
-            this.feedbackID = resultSet.getInt(1);
-            this.commentary = resultSet.getString(2);
-            this.keyword = resultSet.getString(3);
-            this.posture = resultSet.getString(4);
-            this.indicator = resultSet.getInt(5);
-            this.consultation_id = resultSet.getInt(6);
+            while(resultSet.next()) {
+                this.feedbackID = resultSet.getInt(1);
+                this.commentary = resultSet.getString(2);
+                this.keyword = resultSet.getString(3);
+                this.posture = resultSet.getString(4);
+                this.indicator = resultSet.getInt(5);
+                this.consultation_id = resultSet.getInt(6);
+            }
 
         } catch (SQLException ex) {
             System.out.println("Error add name or last name to the user (3)");
+            ex.printStackTrace();
             System.out.println(ex.getErrorCode() + " : " + ex.getMessage());
         }
     }

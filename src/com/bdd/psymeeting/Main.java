@@ -315,9 +315,6 @@ public class Main extends Application {
         dates[0] = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date1.getTime());
         dates[1] = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date2.getTime());
 
-        System.out.println("Date " + dates[0]);
-        System.out.println("Date " + dates[1]);
-
         return dates;
     }
 

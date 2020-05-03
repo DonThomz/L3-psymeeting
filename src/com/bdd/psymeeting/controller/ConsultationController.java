@@ -31,7 +31,6 @@ public class ConsultationController extends ConsultationHistoric implements Init
     // --------------------
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
         // get current date
         super.date_today = Calendar.getInstance();
 
@@ -47,13 +46,15 @@ public class ConsultationController extends ConsultationHistoric implements Init
 
         // Setup services
         super.loadConsultations.setOnSucceeded(evt -> {
-            System.out.println("Task succeeded!");
+            System.out.println("Task load consultation succeeded!");
             // run createBoxConsultations
             super.createBoxConsultations("consultation_cell");
         });
         super.loadConsultations.setOnFailed(evt -> {
-            System.out.println("Task failed!");
+            System.out.println("Task load consultation failed!");
         });
+
+
 
         setupFilterBox();
 

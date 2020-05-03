@@ -58,7 +58,7 @@ public class TopBarController implements Initializable {
         Task<String> fullNameTask = new Task<String>() {
             @Override
             protected String call() throws Exception {
-                System.out.println(Thread.currentThread().getName());
+                //System.out.println(Thread.currentThread().getName());
                 return User.getUserFullName(username);
             }
         };
@@ -119,7 +119,7 @@ public class TopBarController implements Initializable {
         }
     }
 
-    public void add_consultation(ActionEvent actionEvent) throws InterruptedException {
+    public void add_consultation(ActionEvent actionEvent) {
         int[] i = {0};
         new AnimationTimer() {
             public void handle(long currentNanoTime) {
