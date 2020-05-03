@@ -13,7 +13,6 @@ import com.jfoenix.validation.RequiredFieldValidator;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
@@ -152,8 +151,7 @@ public class PatientFormController implements Initializable {
 
         submit.setOnAction(event -> {
             if (validJobField(jobNameField, jobDateField)) {
-                Main.Date2Calendar(Date.valueOf(jobDateField.getValue()));
-                jobs.add(new Job(jobNameField.getText(), Main.Date2Calendar(Date.valueOf(jobDateField.getValue()))));
+                jobs.add(new Job(jobNameField.getText().toUpperCase(), Date.valueOf(jobDateField.getValue())));
                 jobs_list_field.getItems().add(jobs.get(jobs.size() - 1).getJob_name());
                 dialog.close();
             } else validatePriorityJobField(jobNameField, jobDateField);
@@ -231,8 +229,8 @@ public class PatientFormController implements Initializable {
             int lastUserId = User.getLastUserId();
             if (lastPatientID > 0 && lastUserId > 0) {
 
-                Patient newPatient = new Patient(lastPatientID + 1, name_field.getText(), last_name_field.getText(),
-                        Date.valueOf(birthday_field.getValue()), gender_field.getValue(), relation_field.getValue(), discovery_field.getValue());
+                Patient newPatient = new Patient(lastPatientID + 1, name_field.getText().toUpperCase(), last_name_field.getText().toUpperCase(),
+                        Date.valueOf(birthday_field.getValue()), gender_field.getValue().toUpperCase(), relation_field.getValue().toUpperCase(), discovery_field.getValue().toUpperCase());
 
                 User newUser = new User(lastUserId + 1, email_field.getText(), lastPatientID + 1, true);
 
@@ -247,9 +245,10 @@ public class PatientFormController implements Initializable {
                         job.setPatientID(lastPatientID + 1);
                     }
                     boolean resultJob = Job.insertJobFromArrayList(jobs);
-                    System.out.println(resultPatient  + " " + resultUser + resultJob);
-                    if (resultPatient && resultJob && resultUser) {
 
+                    System.out.println(resultPatient + " " + resultUser + resultJob);
+
+                    if (resultPatient && resultJob && resultUser) {
                         connection.commit(); // commit if no SQL error
                         return true;
                     } else {

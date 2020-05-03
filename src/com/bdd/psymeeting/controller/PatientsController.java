@@ -123,8 +123,16 @@ public class PatientsController implements Initializable {
         });
     }
 
+    private void resetButtonStyle() {
+        profilesButtonsHashMap.forEach((k, v) -> {
+            profilesButtonsHashMap.put(k, false);
+            k.setStyle("-fx-background-color: #fafafa");
+        });
+    }
+
     private void loadAddPatientForm() {
         try {
+            resetButtonStyle();
             profilePane.getChildren().clear();
             profilePane.getChildren().add(FXMLLoader.load(getClass().getResource("../views/patient_form.fxml")));
         } catch (IOException ex) {

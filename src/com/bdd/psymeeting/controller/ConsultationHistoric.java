@@ -8,7 +8,6 @@ import com.bdd.psymeeting.model.Consultation;
 import com.jfoenix.controls.*;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
-import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -16,8 +15,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-
-import java.sql.Connection;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -61,22 +58,20 @@ public class ConsultationHistoric {
             return new Task<Boolean>() {
                 @Override
                 protected Boolean call() {
-                    return  removeConsultation(consultationToBeRemove);
+                    return removeConsultation(consultationToBeRemove);
                 }
             };
         }
     };
 
 
-
-    ConsultationHistoric(){
+    ConsultationHistoric() {
         removeConsultationService.setOnSucceeded(event -> {
-            if(removeConsultationService.getValue()) {
+            if (removeConsultationService.getValue()) {
                 System.out.print("Task Remove consultation succeeded !");
                 refresh = true;
 
-            }
-            else System.out.print("Task succeeded but remove consultation from database failed !");
+            } else System.out.print("Task succeeded but remove consultation from database failed !");
         });
 
         removeConsultationService.setOnFailed(event -> {
@@ -167,7 +162,7 @@ public class ConsultationHistoric {
         // check if consultation is passed
         LocalDate localDate = LocalDateTime.ofInstant(consultation.getDate().toInstant(), consultation.getDate().getTimeZone().toZoneId()).toLocalDate();
         JFXButton remove = new JFXButton("Supprimer");
-        if(LocalDate.now().compareTo(localDate) <= 0)
+        if (LocalDate.now().compareTo(localDate) <= 0)
             content.getActions().add(remove);
 
         done.setOnAction(event -> dialog.close());
@@ -179,7 +174,7 @@ public class ConsultationHistoric {
 
         remove.setOnAction(event -> {
             dialog.close();
-            if(removeConsultationService.getState() == Task.State.READY){
+            if (removeConsultationService.getState() == Task.State.READY) {
                 consultationToBeRemove = consultation;
                 removeConsultationService.start();
             }
@@ -201,7 +196,7 @@ public class ConsultationHistoric {
 
         // check if consultation is passed
         LocalDate localDate = LocalDateTime.ofInstant(consultation.getDate().toInstant(), consultation.getDate().getTimeZone().toZoneId()).toLocalDate();
-        if(LocalDate.now().compareTo(localDate) < 0)
+        if (LocalDate.now().compareTo(localDate) < 0)
             consultationVBox.getChildren().add(dateBox(consultation));
         consultationVBox.getChildren().add(patientsBox(consultation));
 
@@ -290,14 +285,13 @@ public class ConsultationHistoric {
 
     }
 
-    protected HBox commentBox(Consultation consultation){
+    protected HBox commentBox(Consultation consultation) {
 
         HBox commentBox = new HBox();
 
         return commentBox;
 
     }
-
 
 
 }

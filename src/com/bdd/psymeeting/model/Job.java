@@ -6,11 +6,9 @@ package com.bdd.psymeeting.model;
 
 import com.bdd.psymeeting.Main;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class Job {
 
@@ -20,20 +18,20 @@ public class Job {
 
     private int jobId;
     private String job_name;
-    private Calendar job_date;
+    private Date job_date;
     private int patientID;
 
     // --------------------
     //   Constructors
     // --------------------
 
-    public Job(int jobId, String job_name, Calendar job_date) {
+    public Job(int jobId, String job_name, Date job_date) {
         this.jobId = jobId;
         this.job_name = job_name;
         this.job_date = job_date;
     }
 
-    public Job(String job_name, Calendar job_date) {
+    public Job(String job_name, Date job_date) {
         this.job_name = job_name;
         this.job_date = job_date;
     }
@@ -46,12 +44,16 @@ public class Job {
         return jobId;
     }
 
-    public Calendar getJob_date() {
+    public Date getJob_date() {
         return job_date;
     }
 
     public String getJob_name() {
         return job_name;
+    }
+
+    public int getPatientID() {
+        return patientID;
     }
 
     // --------------------
@@ -62,8 +64,8 @@ public class Job {
         this.job_name = job_name;
     }
 
-    public void setJob_date(Calendar job_date) {
-        this.job_date = job_date;
+    public void setJob_date(LocalDate job_date) {
+        this.job_date = Date.valueOf(job_date);
     }
 
     public void setJobId(int jobId) {
@@ -78,6 +80,22 @@ public class Job {
     //   Statement methods
     // --------------------
 
+    public boolean isExist() {
+        try (Connection connection = Main.database.getConnection()) {
+
+
+            String query = "select JOBS_ID from JOBS where JOB_NAME = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, this.getJob_name());
+
+            return preparedStatement.execute();
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
     /**
      * create the Job in DB with local state.
      *
@@ -86,20 +104,30 @@ public class Job {
     public static boolean insertJobFromArrayList(ArrayList<Job> jobs) {
         try (Connection connection = Main.database.getConnection()) {
 
-            String request = "INSERT INTO JOBS (JOBS_ID, JOB_NAME, JOB_DATE, PATIENT_ID) VALUES (?,?,?,?)";
+            String request1 = "INSERT INTO JOBS (JOBS_ID, JOB_NAME) VALUES (?,?)";
+            String request2 = "INSERT INTO PATIENTJOB (JOBS_ID, PATIENT_iD, JOB_DATE) VALUES (?, ?, ?)";
+            PreparedStatement preparedStatement = connection.prepareStatement(request1);
+            PreparedStatement preparedStatement1 = connection.prepareStatement(request2);
 
-            PreparedStatement preparedStatement = connection.prepareStatement(request);
             for (Job job : jobs
             ) {
-                preparedStatement.setInt(1, job.getJobId());
-                preparedStatement.setString(2, job.getJob_name());
-                preparedStatement.setDate(3, new java.sql.Date(job.getJob_date().getTime().getTime()));
-                preparedStatement.setInt(4, job.getJobId());
+                if (!job.isExist()) { // if job name doesn't exist in database
+                    preparedStatement.setInt(1, job.getJobId());
+                    preparedStatement.setString(2, job.getJob_name());
+                }
+
+                // update patient-job
+                preparedStatement1.setInt(1, job.getJobId());
+                preparedStatement1.setInt(2, job.getPatientID());
+                preparedStatement1.setDate(3, job.getJob_date());
+
 
                 preparedStatement.executeUpdate();
+                preparedStatement1.executeUpdate();
             }
 
             preparedStatement.close();
+            preparedStatement1.close();
             return true;
 
         } catch (SQLException ex) {
@@ -107,5 +135,6 @@ public class Job {
             return false;
         }
     }
+
 
 }
