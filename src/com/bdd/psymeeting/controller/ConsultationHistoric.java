@@ -4,6 +4,7 @@
 
 package com.bdd.psymeeting.controller;
 
+import com.bdd.psymeeting.Main;
 import com.bdd.psymeeting.model.Consultation;
 import com.jfoenix.controls.*;
 import javafx.concurrent.Service;
@@ -18,10 +19,7 @@ import javafx.scene.layout.VBox;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 public class ConsultationHistoric {
 
@@ -69,7 +67,7 @@ public class ConsultationHistoric {
         removeConsultationService.setOnSucceeded(event -> {
             if (removeConsultationService.getValue()) {
                 System.out.print("Task Remove consultation succeeded !");
-                refresh = true;
+                Main.sceneMapping(Objects.requireNonNull(Main.getCurrentScene()), Main.getCurrentScene());
 
             } else System.out.print("Task succeeded but remove consultation from database failed !");
         });
