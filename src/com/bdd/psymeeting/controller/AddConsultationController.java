@@ -7,6 +7,7 @@ package com.bdd.psymeeting.controller;
 import com.bdd.psymeeting.Main;
 import com.bdd.psymeeting.TransitionEffect;
 import com.bdd.psymeeting.model.Consultation;
+import com.bdd.psymeeting.model.Feedback;
 import com.bdd.psymeeting.model.Patient;
 import com.bdd.psymeeting.model.User;
 import com.jfoenix.controls.*;
@@ -142,6 +143,7 @@ public class AddConsultationController implements Initializable {
 
         updateNewConsultation.setOnSucceeded(event -> {
             System.out.println("Task update new consultation succeeded !");
+
             // reload scene
             Main.sceneMapping("add_consultation_scene", "add_consultation_scene");
             updateNewConsultation.reset();
@@ -153,15 +155,24 @@ public class AddConsultationController implements Initializable {
 
         addPatient.setOnSucceeded(event -> {
             System.out.println("Task adding patient succeeded ! ");
-            addPatientSucceeded();
+            if (addPatient.getValue()) addPatientSucceeded();
+            else {
+                // error user email already exist in database
+                // ex : ubabst1@zdnet.com
+                warring = new Label("L'email renseigné est déjà pris");
+                warring.getStyleClass().add("warring_label");
+                form_box.getChildren().add(2, warring);
+                warringCheck = true;
+                addPatient.reset();
+            }
+
             addPatient.reset();
         });
 
         addPatient.setOnFailed(event -> {
             System.out.println("Task adding patient failed !");
-            addPatient.reset();
-        });
 
+        });
 
         // Init listener
         date_field.valueProperty().addListener(event -> {
@@ -169,7 +180,6 @@ public class AddConsultationController implements Initializable {
             hour_field.getItems().clear();
             System.out.println(Timestamp.valueOf(date_field.getValue().toString() + " 00:00:00.0"));
         });
-
 
     }
 
@@ -179,7 +189,6 @@ public class AddConsultationController implements Initializable {
     // --------------------
     public void submit() { // button "Enregistrer"
         // disable during the thread
-        add_patient_button.setDisable(true);
 
         // check if minimum 1 patient exist in tmp_patients or if fields are not empty
         if (date_field.getValue() != null && hour_field.getValue() != null && (!patients.isEmpty() || validField())) {
@@ -194,6 +203,7 @@ public class AddConsultationController implements Initializable {
             validateTextFieldAction();
             validateDateFieldAction();
         }
+
 
     }
 
@@ -251,8 +261,9 @@ public class AddConsultationController implements Initializable {
                 if (consultationID != -1) {
                     if (Patient.insertIntoPatientTable(patients, lastPatientID)
                             && User.insertIntoUserTable(users)
-                            && Consultation.insertIntoConsultationTable(date, consultationID)
-                            && Consultation.insertIntoConsultationCarryOutTable(patients, consultationID, lastPatientID)) {
+                            && Consultation.insertIntoConsultationTable(date, consultationID, anxiety_checkbox.isSelected())
+                            && Consultation.insertIntoConsultationCarryOutTable(patients, consultationID, lastPatientID)
+                            && Feedback.insertFeedback(consultationID)) {
                         connection.commit();
                         return true;
                     } else return false;
@@ -301,16 +312,12 @@ public class AddConsultationController implements Initializable {
             // check if name and last name is correct
             Patient tmp_patient = Patient.getPatientByEmail(email_field.getText());
             assert tmp_patient != null;
-            if (tmp_patient.getName().equals(name_field.getText()) && tmp_patient.getLast_name().equals(last_name_field.getText())) {
+            if (tmp_patient.getName().equals(name_field.getText().toUpperCase()) && tmp_patient.getLast_name().equals(last_name_field.getText().toUpperCase())) {
                 patients.add(tmp_patient);
                 return true;
             } else {
-                // error user email already exist in database
-                // ex : ubabst1@zdnet.com
-                warring = new Label("L'email renseigné est déjà pris");
-                warring.getStyleClass().add("warring_label");
-                form_box.getChildren().add(2, warring);
-                warringCheck = true;
+
+
                 return false;
             }
         } else { // create a patient and a user

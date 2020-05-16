@@ -5,8 +5,6 @@
 package com.bdd.psymeeting.model;
 
 import com.bdd.psymeeting.Main;
-import oracle.jdbc.proxy.annotation.Pre;
-
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -127,9 +125,10 @@ public class User {
     public static String getUserFullName(String username) throws SQLException {
         // get name
         if (username.equals("admin")) {
-            try (Connection connection = Main.database.getConnection()) {
+            return "Olivia Pope";
+            /*try (Connection connection = Main.database.getConnection()) {
                 Statement stmt = connection.createStatement();
-                ResultSet resultSet = stmt.executeQuery("select NAME, LAST_NAME from ADMINISTRATOR");
+                ResultSet resultSet = stmt.executeQuery("select NAME, LAST_NAME from USER_APP");
                 resultSet.next();
                 return resultSet.getString(1) + " " + resultSet.getString(2);
 
@@ -138,7 +137,7 @@ public class User {
                 System.out.println("Error add name or last name to the user (4)");
                 System.out.println(ex.getErrorCode() + " : " + ex.getMessage());
                 return null;
-            }
+            }*/
         } else {
             return "Invité";
         }

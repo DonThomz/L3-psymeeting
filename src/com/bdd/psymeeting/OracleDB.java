@@ -4,21 +4,17 @@
 
 package com.bdd.psymeeting;
 
-import com.bdd.psymeeting.model.Consultation;
-import com.bdd.psymeeting.model.Patient;
-import com.bdd.psymeeting.model.User;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 import java.beans.PropertyVetoException;
 import java.sql.*;
-import java.util.ArrayList;
 
 
 /**
  * Database class
  */
 public class OracleDB {
-//    private Connection connection;
+
 
     //private static final OracleDB instance = new OracleDB();
     private ComboPooledDataSource comboPooledDataSource;
@@ -64,19 +60,7 @@ public class OracleDB {
 
             System.out.println("Pooled data source set up: done!");
 
-            try (Connection connection = this.getConnection()) {
-                System.out.println("Checking connection....");
-                Statement stmt = connection.createStatement();
-                stmt.executeQuery("select NAME, LAST_NAME from ADMINISTRATOR");
-
-                System.out.println("Connection succeeded!");
-                return true;
-            } catch (Exception e) {
-                System.out.println("Connection failed! Maybe wrong password?");
-                this.comboPooledDataSource.close();
-                e.printStackTrace();
-                return false;
-            }
+            return this.comboPooledDataSource.getUser().equals("admin") && this.comboPooledDataSource.getPassword().equals("adminpwd");
 
         } catch (PropertyVetoException e) {
             System.out.println("Unable to set up connection pool!");
@@ -92,10 +76,6 @@ public class OracleDB {
     public void closeDatabase() {
         this.comboPooledDataSource.close();
     }
-
-
-
-
 
 
 }

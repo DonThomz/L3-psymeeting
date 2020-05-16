@@ -9,7 +9,6 @@ import com.bdd.psymeeting.Main;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class Patient {
 
@@ -72,16 +71,16 @@ public class Patient {
 
             // JOBS
             this.jobs = new ArrayList<>();
-            query = "select JOBS_ID, JOB_NAME, JOB_DATE " +
-                    "from JOBS " +
+            query = "select JOB_NAME, JOB_DATE\n" +
+                    "from JOBS J\n" +
+                    "join PATIENTJOB P on J.JOBS_ID = P.JOBS_ID\n" +
                     "where PATIENT_ID = ?";
             preparedStatement = connection.prepareStatement(query);
 
             preparedStatement.setInt(1, this.patient_id);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                Calendar tmp_date_job = Main.Date2Calendar(resultSet.getDate(3));
-                this.jobs.add(new Job(resultSet.getInt(1), resultSet.getString(2), tmp_date_job));
+                this.jobs.add(new Job(resultSet.getString(1), resultSet.getDate(2)));
             }
 
         } catch (SQLException ex) {
@@ -253,12 +252,12 @@ public class Patient {
 
             PreparedStatement preparedStatement = connection.prepareStatement(request);
             preparedStatement.setInt(1, this.getPatient_id());
-            preparedStatement.setString(2, this.getName());
-            preparedStatement.setString(3, this.getLast_name());
+            preparedStatement.setString(2, this.getName().toUpperCase());
+            preparedStatement.setString(3, this.getLast_name().toUpperCase());
             preparedStatement.setDate(4, new java.sql.Date(this.getBirthday().getTime()));
-            preparedStatement.setString(5, this.getGender());
-            preparedStatement.setString(6, this.getRelationship());
-            preparedStatement.setString(7, this.getDiscovery_way());
+            preparedStatement.setString(5, this.getGender().toUpperCase());
+            preparedStatement.setString(6, this.getRelationship().toUpperCase());
+            preparedStatement.setString(7, this.getDiscovery_way().toUpperCase());
 
             preparedStatement.executeUpdate();
             preparedStatement.close();
@@ -290,8 +289,8 @@ public class Patient {
                             tmpLastPatientID++;
                             preparedStmt.setInt(1, tmpLastPatientID);
                         }
-                        preparedStmt.setString(2, p.getName());
-                        preparedStmt.setString(3, p.getLast_name());
+                        preparedStmt.setString(2, p.getName().toUpperCase());
+                        preparedStmt.setString(3, p.getLast_name().toUpperCase());
                         // execute the preparedStatement
                         preparedStmt.executeUpdate();
                     }
@@ -372,16 +371,16 @@ public class Patient {
                 ResultSet resultSet;
 
                 // JOBS
-                query = "select JOBS_ID, JOB_NAME, JOB_DATE " +
-                        "from JOBS " +
+                query = "select JOB_NAME, JOB_DATE\n" +
+                        "from JOBS J\n" +
+                        "join PATIENTJOB P on J.JOBS_ID = P.JOBS_ID\n" +
                         "where PATIENT_ID = ?";
                 preparedStatement = connection.prepareStatement(query);
 
                 preparedStatement.setInt(1, p.getPatient_id());
                 resultSet = preparedStatement.executeQuery();
                 while (resultSet.next()) {
-                    Calendar tmp_date_job = Main.Date2Calendar(resultSet.getDate(3));
-                    p.getJobs().add(new Job(resultSet.getInt(1), resultSet.getString(2), tmp_date_job));
+                    p.getJobs().add(new Job(resultSet.getString(1), resultSet.getDate(2)));
                 }
 
                 // CONSULTATIONS HISTORIC

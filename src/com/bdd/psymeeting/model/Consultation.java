@@ -7,20 +7,14 @@ package com.bdd.psymeeting.model;
 import com.bdd.psymeeting.Main;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.scene.control.TextArea;
-import oracle.jdbc.proxy.annotation.Pre;
-import oracle.sql.TIMESTAMP;
 
 import java.sql.*;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 
 public class Consultation extends RecursiveTreeObject<Consultation> {
@@ -338,17 +332,20 @@ public class Consultation extends RecursiveTreeObject<Consultation> {
      * @param consultationID   consultation id
      * @return true if succeeded
      */
-    public static boolean insertIntoConsultationTable(Timestamp consultationDate, int consultationID) {
+    public static boolean insertIntoConsultationTable(Timestamp consultationDate, int consultationID, boolean anxietyValue) {
         try (Connection connection = Main.database.getConnection()) {
             // the insert statement
-            String query = " insert into CONSULTATION (CONSULTATION_ID, CONSULTATION_DATE)"
-                    + " values (?, ?)";
+            String query = " insert into CONSULTATION (CONSULTATION_ID, CONSULTATION_DATE, ANXIETY)"
+                    + " values (?, ?, ?)";
             // create the insert preparedStatement
             PreparedStatement preparedStmt = connection.prepareStatement(query);
 
             // config parameters
             preparedStmt.setInt(1, consultationID + 1);
             preparedStmt.setTimestamp(2, consultationDate);
+
+            if (anxietyValue) preparedStmt.setInt(3, 1);
+            else preparedStmt.setInt(3, 0);
 
             // execute the preparedStatement
             preparedStmt.executeUpdate();
