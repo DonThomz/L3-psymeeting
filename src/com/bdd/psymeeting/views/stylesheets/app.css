@@ -39,3 +39,13 @@
   -fx-font-weight: bold;
   -fx-font-style: italic;
 }
+
+.paginationButton {
+  -fx-background-radius: 30px;
+  -fx-background-color: #008ba3;
+}
+
+.labelWeek{
+  -fx-font-weight: bold;
+  -fx-padding: 20 20 20 20;
+}

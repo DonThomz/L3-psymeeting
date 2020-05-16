@@ -15,6 +15,7 @@ import com.jfoenix.validation.RequiredFieldValidator;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.fxml.Initializable;
+import javafx.scene.control.DateCell;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -25,6 +26,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -107,6 +109,15 @@ public class AddConsultationController implements Initializable {
     // --------------------
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
+        // custom datePicker
+        date_field.setDayCellFactory(picker -> new DateCell() {
+            @Override
+            public void updateItem(LocalDate date, boolean empty) {
+                super.updateItem(date, empty);
+                setDisable(empty || date.getDayOfWeek() == DayOfWeek.SUNDAY);
+            }
+        });
 
         // add transition effects to the form
         TransitionEffect.TranslateTransitionY(form_box, 600, 75);

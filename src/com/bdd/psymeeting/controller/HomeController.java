@@ -5,24 +5,34 @@
 package com.bdd.psymeeting.controller;
 
 
+import com.bdd.psymeeting.Main;
 import com.bdd.psymeeting.model.Consultation;
 import com.jfoenix.controls.JFXButton;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 
+import java.lang.reflect.Field;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class HomeController extends ConsultationHistoric implements Initializable {
 
     public ScrollPane scrollPane;
     public GridPane gridColumnNames;
-    private int columns = 7;
 
+    public Button previousPagination;
+    public Button nextPagination;
+
+    public Label weekLabel;
+
+    private int indexWeek;
 
     public GridPane scheduleGrid;
     Service<ArrayList<Consultation>> loadConsultationsWeek = new Service<ArrayList<Consultation>>() {
@@ -31,7 +41,7 @@ public class HomeController extends ConsultationHistoric implements Initializabl
             return new Task<ArrayList<Consultation>>() {
                 @Override
                 protected ArrayList<Consultation> call() throws Exception {
-                    return Consultation.getConsultationWeek();
+                    return Consultation.getConsultationWeek(indexWeek);
                 }
             };
         }
@@ -40,6 +50,8 @@ public class HomeController extends ConsultationHistoric implements Initializabl
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
+        indexWeek = 0;
 
         buildGripPane();
 
@@ -57,15 +69,31 @@ public class HomeController extends ConsultationHistoric implements Initializabl
             loadConsultationsWeek.start();
     }
 
+    @Override
+    protected void refresh() {
+        System.out.println(scheduleGrid.getChildren().removeIf(node -> node.getClass().getName().contains("AnchorPane")));
+
+        //scheduleGrid.getChildren().clear();
+        //buildGripPane();
+        if (loadConsultationsWeek.getState() == Task.State.READY)
+            loadConsultationsWeek.start();
+    }
 
     protected void fillGridPane(ArrayList<Consultation> consultations) {
+
+        // update week label
+        Calendar[] calendars = Main.getCalendarOfWeek(indexWeek);
+        String[] dates = new String[2];
+        dates[0] = new SimpleDateFormat("dd-MM-yyyy").format(calendars[0].getTime());
+        dates[1] = new SimpleDateFormat("dd-MM-yyyy").format(calendars[1].getTime());
+        weekLabel.getStyleClass().add("labelWeek");
+        weekLabel.setText("Semaine du " + dates[0] + " au " + dates[1]);
 
         for (Consultation c : consultations
         ) {
             int day = c.getDate().get(Calendar.DAY_OF_WEEK) - 1;
             int hours = c.getDate().get(Calendar.HOUR_OF_DAY);
             int minutes = c.getDate().get(Calendar.MINUTE);
-            int col = day;
             int row = getRowTimeSlotIndex(hours, minutes);
             JFXButton consultation = new JFXButton("Consultation");
             AnchorPane cell = new AnchorPane();
@@ -75,7 +103,7 @@ public class HomeController extends ConsultationHistoric implements Initializabl
             AnchorPane.setRightAnchor(consultation, 0.0);
             AnchorPane.setTopAnchor(consultation, 0.0);
             AnchorPane.setBottomAnchor(consultation, 0.0);
-            scheduleGrid.add(cell, col, row);
+            scheduleGrid.add(cell, day, row);
 
             //add event to button
             consultation.setOnAction(event -> {
@@ -90,6 +118,7 @@ public class HomeController extends ConsultationHistoric implements Initializabl
         scheduleGrid.getStyleClass().add("scheduleGrid");
 
         // build columns
+        int columns = 7;
         for (int i = 0; i < columns; i++) {
 
             ColumnConstraints columnConstraints = new ColumnConstraints();
@@ -140,7 +169,6 @@ public class HomeController extends ConsultationHistoric implements Initializabl
         }
     }
 
-
     private int getRowTimeSlotIndex(int hours, int minutes) {
         TimeSlots timeSlots = new TimeSlots();
         for (int i = 0; i < timeSlots.getTimeSlots().length; i++) {
@@ -149,6 +177,15 @@ public class HomeController extends ConsultationHistoric implements Initializabl
         }
         return 0;
     }
+
+    public void pagination(ActionEvent actionEvent) throws NoSuchFieldException {
+        if (actionEvent.getSource().equals(previousPagination)) indexWeek--;
+        else indexWeek++;
+        // refresh home page
+        refresh();
+
+    }
+
 
     protected enum Days {
         Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi

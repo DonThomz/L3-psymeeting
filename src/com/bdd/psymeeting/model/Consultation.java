@@ -290,17 +290,18 @@ public class Consultation extends RecursiveTreeObject<Consultation> {
         return timeSlots;
     }
 
+
     /**
      * Get week consultations
      *
      * @return ArrayList<Consultation>
      */
-    public static ArrayList<Consultation> getConsultationWeek() {
+    public static ArrayList<Consultation> getConsultationWeek(int indexWeek) {
 
 
         try (Connection connection = Main.database.getConnection()) {
 
-            String[] dates = Main.getDatesOfWeek();
+            String[] dates = Main.getDatesOfWeek(indexWeek);
             ArrayList<Consultation> consultations = new ArrayList<>();
 
             String query = "select CONSULTATION_ID\n" +

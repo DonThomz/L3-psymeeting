@@ -16,6 +16,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -67,7 +68,8 @@ public class ConsultationHistoric {
         removeConsultationService.setOnSucceeded(event -> {
             if (removeConsultationService.getValue()) {
                 System.out.print("Task Remove consultation succeeded !");
-                Main.sceneMapping(Objects.requireNonNull(Main.getCurrentScene()), Main.getCurrentScene());
+                refresh();
+                //Main.sceneMapping(Objects.requireNonNull(Main.getCurrentScene()), Main.getCurrentScene());
 
             } else System.out.print("Task succeeded but remove consultation from database failed !");
         });
@@ -76,6 +78,12 @@ public class ConsultationHistoric {
             System.out.print("Task Remove consultation failed !");
         });
 
+    }
+
+    /**
+     * method call when we need to refresh scene
+     */
+    protected void refresh() {
     }
 
 

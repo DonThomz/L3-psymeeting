@@ -31,6 +31,10 @@ public class ConsultationController extends ConsultationHistoric implements Init
     // --------------------
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        setupController();
+    }
+
+    private void setupController() {
         // get current date
         super.date_today = Calendar.getInstance();
 
@@ -54,10 +58,15 @@ public class ConsultationController extends ConsultationHistoric implements Init
             System.out.println("Task load consultation failed!");
         });
 
-
-
         setupFilterBox();
+    }
 
+
+    @Override
+    public void refresh() {
+        consultationArrayList.clear();
+        box_consultations.getChildren().clear();
+        setupController();
     }
 
     @Override

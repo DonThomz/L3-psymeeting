@@ -43,7 +43,7 @@ public class Main extends Application {
     public static Stage window;
     public static double[] current_resolution;
     public static final double[] login_resolution = {420, 580};
-    public static final double[] app_default_resolution = {1200, 800};
+    public static final double[] app_default_resolution = {1280, 920};
     public static final int time_transition = 10;
 
     //---------------------------------
@@ -296,7 +296,8 @@ public class Main extends Application {
         return dates;
     }
 
-    public static String[] getDatesOfWeek() {
+
+    public static String[] getDatesOfWeek(int indexWeek) {
         String[] dates = new String[2];
         // TODO: Consider time zones, calendars etc
         Calendar date1 = Calendar.getInstance();
@@ -312,10 +313,38 @@ public class Main extends Application {
         date2.set(Calendar.MINUTE, 0);
         date2.set(Calendar.SECOND, 0);
 
+        // Update date with the correct week index
+        date1.add(Calendar.WEEK_OF_YEAR, indexWeek);
+        date2.add(Calendar.WEEK_OF_YEAR, indexWeek);
+
+
         dates[0] = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date1.getTime());
         dates[1] = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date2.getTime());
-
+        System.out.println(dates[0]);
+        System.out.println(dates[1]);
         return dates;
+    }
+
+    public static Calendar[] getCalendarOfWeek(int indexWeek) {
+        // TODO: Consider time zones, calendars etc
+        Calendar date1 = Calendar.getInstance();
+        Calendar date2 = Calendar.getInstance();
+
+        date1.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY); // Monday 8h00 AM
+        date1.set(Calendar.HOUR_OF_DAY, 8);
+        date1.set(Calendar.MINUTE, 0);
+        date1.set(Calendar.SECOND, 0);
+
+        date2.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY); // Saturday 8h00 PM
+        date2.set(Calendar.HOUR, 8);
+        date2.set(Calendar.MINUTE, 0);
+        date2.set(Calendar.SECOND, 0);
+
+        // Update date with the correct week index
+        date1.add(Calendar.WEEK_OF_YEAR, indexWeek);
+        date2.add(Calendar.WEEK_OF_YEAR, indexWeek);
+
+        return new Calendar[]{date1, date2};
     }
 
 
