@@ -17,7 +17,7 @@
   ~ Copyright (c) 2020. Thomas GUILLAUME & Gabriel DUGNY
   -->
 
-<AnchorPane prefHeight="570.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bdd.psymeeting.controller.PatientsController">
+<AnchorPane prefHeight="570.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.241" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bdd.psymeeting.controller.PatientsController">
     <stylesheets>
         <URL value="@stylesheets/patients.css" />
         <URL value="@stylesheets/app.css" />

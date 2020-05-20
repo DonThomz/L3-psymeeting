@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<StackPane fx:id="stackPane" alignment="TOP_CENTER" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bdd.psymeeting.controller.PatientFormController">
+<StackPane fx:id="stackPane" alignment="TOP_CENTER" xmlns="http://javafx.com/javafx/8.0.241" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bdd.psymeeting.controller.PatientFormController">
    <stylesheets>
       <URL value="@stylesheets/patients.css" />
       <URL value="@stylesheets/app.css" />

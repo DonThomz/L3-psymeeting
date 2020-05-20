@@ -5,6 +5,7 @@
 package com.bdd.psymeeting.controller;
 
 import com.bdd.psymeeting.model.Patient;
+import com.bdd.psymeeting.model.User;
 import com.jfoenix.controls.JFXButton;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -14,6 +15,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;

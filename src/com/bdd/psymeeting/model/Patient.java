@@ -27,6 +27,7 @@ public class Patient {
     private String relationship;
     private String discovery_way;
 
+    private User user;
     private ArrayList<Job> jobs;
     private ArrayList<Consultation> consultationHistoric;
 
@@ -161,6 +162,10 @@ public class Patient {
         return consultationHistoric;
     }
 
+    public User getUser() {
+        return user;
+    }
+
     // --------------------
     //   Set methods
     // --------------------
@@ -193,7 +198,6 @@ public class Patient {
         this.birthday = Date.valueOf(birthday);
     }
 
-
     public void setRelationship(String relationshipStatus) {
         this.relationship = relationshipStatus;
     }
@@ -206,6 +210,9 @@ public class Patient {
         this.discovery_way = discovery_way;
     }
 
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     // --------------------
     //   Statement methods
@@ -225,14 +232,15 @@ public class Patient {
             preparedStatement.setString(1, this.getName());
             preparedStatement.setString(2, this.getLast_name());
             preparedStatement.setDate(3, new java.sql.Date(this.getBirthday().getTime()));
-            preparedStatement.setString(4, this.getGender());
-            preparedStatement.setString(5, this.getRelationship());
-            preparedStatement.setString(6, this.getDiscovery_way());
+            preparedStatement.setString(4, this.getGender().toUpperCase());
+            preparedStatement.setString(5, this.getRelationship().toUpperCase());
+            preparedStatement.setString(6, this.getDiscovery_way().toUpperCase());
             preparedStatement.setInt(7, this.getPatient_id());
 
             preparedStatement.executeUpdate();
 
             preparedStatement.close();
+            connection.commit();
             return true;
 
         } catch (SQLException ex) {
@@ -356,47 +364,20 @@ public class Patient {
                         result.getString(7)));
             }
 
+            for (Patient patient : list_patients) {
+
+                // adding jobs
+                patient.setJobs(Job.getJobByPatientID(patient.getPatient_id()));
+
+                // adding consultation historic
+                patient.setConsultationHistoric(Consultation.getConsultationsByPatientID(patient.getPatient_id()));
+
+                // adding user info
+                patient.setUser(User.getUserByPatientID(patient.getPatient_id()));
+            }
+
         } catch (SQLException ex) {
             ex.printStackTrace();
-        }
-
-        // adding jobs & consultations to each patients
-        for (Patient p : list_patients
-        ) {
-
-            try (Connection connection = Main.database.getConnection()) {
-
-                String query;
-                PreparedStatement preparedStatement;
-                ResultSet resultSet;
-
-                // JOBS
-                query = "select JOB_NAME, JOB_DATE\n" +
-                        "from JOBS J\n" +
-                        "join PATIENTJOB P on J.JOBS_ID = P.JOBS_ID\n" +
-                        "where PATIENT_ID = ?";
-                preparedStatement = connection.prepareStatement(query);
-
-                preparedStatement.setInt(1, p.getPatient_id());
-                resultSet = preparedStatement.executeQuery();
-                while (resultSet.next()) {
-                    p.getJobs().add(new Job(resultSet.getString(1), resultSet.getDate(2)));
-                }
-
-                // CONSULTATIONS HISTORIC
-                query = "select CC.CONSULTATION_ID from CONSULTATION\n" +
-                        "join CONSULTATION_CARRYOUT CC on CONSULTATION.CONSULTATION_ID = CC.CONSULTATION_ID\n" +
-                        "where PATIENT_ID = ?";
-                preparedStatement = connection.prepareStatement(query);
-                preparedStatement.setInt(1, p.getPatient_id());
-                resultSet = preparedStatement.executeQuery();
-                while (resultSet.next()) {
-                    p.getConsultationHistoric().add(new Consultation(resultSet.getInt(1)));
-                }
-
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
         }
 
         return list_patients;
@@ -406,12 +387,17 @@ public class Patient {
     // --------------------
     //   Override methods
     // --------------------
+
     @Override
     public String toString() {
         return "Patient{" +
                 "patient_id=" + patient_id +
                 ", name='" + name + '\'' +
                 ", last_name='" + last_name + '\'' +
+                ", birthday=" + birthday +
+                ", gender='" + gender + '\'' +
+                ", relationship='" + relationship + '\'' +
+                ", discovery_way='" + discovery_way + '\'' +
                 '}';
     }
 }

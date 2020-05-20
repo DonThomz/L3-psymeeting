@@ -208,6 +208,35 @@ public class Consultation extends RecursiveTreeObject<Consultation> {
         return null;
     }
 
+    public static ArrayList<Consultation> getConsultationsByPatientID(int patientID){
+
+        try (Connection connection = Main.database.getConnection()) {
+
+            ArrayList<Consultation> consultations = new ArrayList<>();
+
+            String query;
+            PreparedStatement preparedStatement;
+            ResultSet resultSet;
+
+            // CONSULTATIONS HISTORIC
+            query = "select CC.CONSULTATION_ID from CONSULTATION\n" +
+                    "join CONSULTATION_CARRYOUT CC on CONSULTATION.CONSULTATION_ID = CC.CONSULTATION_ID\n" +
+                    "where PATIENT_ID = ?";
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, patientID);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                consultations.add(new Consultation(resultSet.getInt(1)));
+            }
+
+            return consultations;
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return null;
+        }
+    }
+
     /**
      * PreparedStatement to get all time slots free
      *
@@ -444,6 +473,9 @@ public class Consultation extends RecursiveTreeObject<Consultation> {
         }
         return true;
     }
+
+
+
 
 
 }

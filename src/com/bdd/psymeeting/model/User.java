@@ -5,6 +5,8 @@
 package com.bdd.psymeeting.model;
 
 import com.bdd.psymeeting.Main;
+import oracle.jdbc.proxy.annotation.Pre;
+
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -17,10 +19,10 @@ public class User {
     private int user_id;
     private int patient_id;
     private String username;
-    private String name;
-    private String last_name;
     private String email;
     private String password;
+    private String name;
+    private String lastName;
 
     private boolean new_user;
 
@@ -64,14 +66,6 @@ public class User {
         return username;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getLast_name() {
-        return last_name;
-    }
-
     public int getUser_id() {
         return user_id;
     }
@@ -82,6 +76,14 @@ public class User {
 
     public String getPassword() {
         return password;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getLastName() {
+        return lastName;
     }
 
     public int getPatient_id() {
@@ -122,7 +124,7 @@ public class User {
         return -1;
     }
 
-    public static String getUserFullName(String username) throws SQLException {
+    public static String getUserFullName(String username) {
         // get name
         if (username.equals("admin")) {
             return "Olivia Pope";
@@ -141,6 +143,24 @@ public class User {
         } else {
             return "Invité";
         }
+    }
+
+    public static User getUserByPatientID(int patientID) {
+
+        try (Connection connection = Main.database.getConnection()) {
+
+            String query = "select USER_ID, EMAIL from USER_APP where PATIENT_ID = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, patientID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return new User(resultSet.getInt(1), resultSet.getString(2), patientID, false);
+            } else return null;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+
     }
 
     /**

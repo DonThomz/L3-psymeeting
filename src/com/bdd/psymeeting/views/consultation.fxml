@@ -13,7 +13,7 @@
   ~ Copyright (c) 2020. Thomas GUILLAUME & Gabriel DUGNY
   -->
 
-<StackPane fx:id="stackPane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+<StackPane fx:id="stackPane" xmlns="http://javafx.com/javafx/8.0.241" xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="com.bdd.psymeeting.controller.ConsultationController">
     <children>
         <AnchorPane prefHeight="800.0">

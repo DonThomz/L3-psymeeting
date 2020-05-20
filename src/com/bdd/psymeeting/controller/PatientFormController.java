@@ -12,7 +12,9 @@ import com.jfoenix.controls.*;
 import com.jfoenix.validation.RequiredFieldValidator;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import javafx.concurrent.Worker;
 import javafx.fxml.Initializable;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
@@ -25,6 +27,7 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class PatientFormController implements Initializable {
@@ -47,15 +50,13 @@ public class PatientFormController implements Initializable {
     private RequiredFieldValidator validator_field;
 
     private ArrayList<Job> jobs;
-    private boolean warringCheck;
-
 
     Service<Boolean> addingPatientService = new Service<Boolean>() {
         @Override
         protected Task<Boolean> createTask() {
             return new Task<Boolean>() {
                 @Override
-                protected Boolean call() throws Exception {
+                protected Boolean call() {
                     return submitPatient();
                 }
             };
@@ -97,24 +98,25 @@ public class PatientFormController implements Initializable {
         // Service settings
         addingPatientService.setOnSucceeded(event -> {
             System.out.println("Task adding patient to DataBase succeeded !");
+            System.out.println(addingPatientService.getValue());
             Main.sceneMapping("patients_scene", "patients_scene");
             addingPatientService.reset();
         });
 
         addingPatientService.setOnFailed(event -> {
-            warring = new Label("L'email renseigné est déjà pris");
+            /*warring = new Label("L'email renseigné est déjà pris");
             warring.getStyleClass().add("warring_label");
-            stackPane.getChildren().add(stackPane.getChildren().size() - 2, warring);
+            stackPane.getChildren().add(stackPane.getChildren().size() - 2, warring);*/
             System.out.println("Task adding patient to DataBase failed !");
             addingPatientService.reset();
         });
+
 
     }
 
     private void loadJobForm() {
         // create dialog layout
         JFXDialogLayout content = new JFXDialogLayout();
-
         // add heading
         content.setHeading(new Label("Ajout d'un métier"));
 
@@ -125,11 +127,12 @@ public class PatientFormController implements Initializable {
         HBox jobNameBox = new HBox();
         jobNameBox.setSpacing(20);
         Label jobName = new Label("Nom du métier");
+
         Region space = new Region();
         space.setMinWidth(20);
         JFXTextField jobNameField = new JFXTextField();
-        jobNameBox.getChildren().addAll(jobName, space, jobNameField);
 
+        jobNameBox.getChildren().addAll(jobName, jobNameField);
 
         HBox jobDateBox = new HBox();
         jobDateBox.setSpacing(20);
@@ -225,12 +228,17 @@ public class PatientFormController implements Initializable {
             /*
              *  Create patient, user and jobs => add to Database
              */
+            System.out.println(gender_field.getValue());
             int lastPatientID = Patient.getLastPrimaryKeyId();
             int lastUserId = User.getLastUserId();
-            if (lastPatientID > 0 && lastUserId > 0) {
-
-                Patient newPatient = new Patient(lastPatientID + 1, name_field.getText().toUpperCase(), last_name_field.getText().toUpperCase(),
-                        Date.valueOf(birthday_field.getValue()), gender_field.getValue().toUpperCase(), relation_field.getValue().toUpperCase(), discovery_field.getValue().toUpperCase());
+            if (lastPatientID >= 0 && lastUserId >= 0) {
+                Patient newPatient = new Patient(lastPatientID + 1,
+                        name_field.getText().toUpperCase(),
+                        last_name_field.getText().toUpperCase(),
+                        Date.valueOf(birthday_field.getValue()),
+                        gender_field.getValue() == null ? "" : gender_field.getValue().toUpperCase(),
+                        relation_field.getValue() == null ? "" : relation_field.getValue().toUpperCase(),
+                        discovery_field.getValue() == null ? "" : discovery_field.getValue().toUpperCase());
 
                 User newUser = new User(lastUserId + 1, email_field.getText(), lastPatientID + 1, true);
 
@@ -252,7 +260,7 @@ public class PatientFormController implements Initializable {
                         connection.commit(); // commit if no SQL error
                         return true;
                     } else {
-                        connection.rollback(savePoint);
+                        connection.rollback();
                         return false;
                     }
                 } catch (SQLException ex) {

@@ -23,7 +23,7 @@
   ~ Copyright (c) 2020. Thomas GUILLAUME & Gabriel DUGNY
   -->
 
-<AnchorPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bdd.psymeeting.controller.AddConsultationController">
+<AnchorPane xmlns="http://javafx.com/javafx/8.0.241" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bdd.psymeeting.controller.AddConsultationController">
     <stylesheets>
         <URL value="@stylesheets/add_consultation.css" />
         <URL value="@stylesheets/app.css" />

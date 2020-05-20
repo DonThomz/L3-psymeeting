@@ -37,7 +37,7 @@ public class TopBarController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        user_menu.setText(Main.current_user.getName() + " " + Main.current_user.getLast_name());
+        user_menu.setText(Main.current_user.getName() + " " + Main.current_user.getLastName());
 
         // Initialize new Thread
         exec = Executors.newCachedThreadPool(runnable -> {
