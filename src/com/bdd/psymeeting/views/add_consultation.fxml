@@ -23,7 +23,7 @@
   ~ Copyright (c) 2020. Thomas GUILLAUME & Gabriel DUGNY
   -->
 
-<AnchorPane xmlns="http://javafx.com/javafx/8.0.241" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bdd.psymeeting.controller.AddConsultationController">
+<AnchorPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bdd.psymeeting.controller.AddConsultationController">
     <stylesheets>
         <URL value="@stylesheets/add_consultation.css" />
         <URL value="@stylesheets/app.css" />
@@ -110,6 +110,23 @@
                                                                         <Insets bottom="20.0" />
                                                                     </VBox.margin>
                                                                 </Label>
+                                                <HBox alignment="CENTER">
+                                                   <children>
+                                                      <Label text="Liste des patients pré-enregistrée">
+                                                         <HBox.margin>
+                                                            <Insets left="20.0" right="20.0" />
+                                                         </HBox.margin>
+                                                      </Label>
+                                                      <JFXComboBox fx:id="preloadPatientsComboBox" prefHeight="26.0" prefWidth="240.0">
+                                                         <HBox.margin>
+                                                            <Insets left="20.0" right="20.0" />
+                                                         </HBox.margin>
+                                                      </JFXComboBox>
+                                                   </children>
+                                                   <VBox.margin>
+                                                      <Insets bottom="10.0" top="10.0" />
+                                                   </VBox.margin>
+                                                </HBox>
                                                                 <HBox alignment="CENTER" prefWidth="719.0">
                                                                     <children>
                                                                         <HBox alignment="CENTER" style="-fx-border-color: black;" HBox.hgrow="NEVER">
@@ -182,7 +199,7 @@
                                                                 </HBox>
                                                             </children>
                                                         </VBox>
-                                          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                                          <HBox alignment="CENTER" prefHeight="50.0" prefWidth="200.0">
                                              <children>
                                                 <VBox alignment="CENTER" prefHeight="60.0" prefWidth="176.0">
                                                    <children>
@@ -200,7 +217,7 @@
                                                    <children>
                                                                             <JFXCheckBox fx:id="anxiety_checkbox">
                                                                                 <VBox.margin>
-                                                                                    <Insets top="20.0" />
+                                                                                    <Insets />
                                                                                 </VBox.margin>
                                                                             </JFXCheckBox>
                                                    </children>
@@ -210,7 +227,35 @@
                                                 </VBox>
                                              </children>
                                           </HBox>
-                                                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                                          <HBox fx:id="coupleBox" alignment="CENTER" prefHeight="50.0" prefWidth="200.0">
+                                             <children>
+                                                <VBox alignment="CENTER" prefHeight="60.0" prefWidth="176.0">
+                                                   <children>
+                                                      <Label text="En couple ?">
+                                                         <font>
+                                                            <Font name="System Bold" size="14.0" />
+                                                         </font>
+                                                      </Label>
+                                                   </children>
+                                                   <HBox.margin>
+                                                      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                                   </HBox.margin>
+                                                </VBox>
+                                                <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
+                                                   <children>
+                                                      <JFXCheckBox fx:id="coupleCheckBox">
+                                                         <VBox.margin>
+                                                            <Insets />
+                                                         </VBox.margin>
+                                                      </JFXCheckBox>
+                                                   </children>
+                                                   <HBox.margin>
+                                                      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                                   </HBox.margin>
+                                                </VBox>
+                                             </children>
+                                          </HBox>
+                                                        <HBox alignment="CENTER" prefHeight="50.0" prefWidth="200.0">
                                                             <children>
                                                                 <JFXButton fx:id="add_patient_button" buttonType="RAISED" onAction="#add" styleClass="button-raised" text="Ajouter patient">
                                                                     <HBox.margin>

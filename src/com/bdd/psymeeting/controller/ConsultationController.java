@@ -53,9 +53,11 @@ public class ConsultationController extends ConsultationHistoric implements Init
             System.out.println("Task load consultation succeeded!");
             // run createBoxConsultations
             super.createBoxConsultations("consultation_cell");
+            loadConsultations.reset();
         });
         super.loadConsultations.setOnFailed(evt -> {
             System.out.println("Task load consultation failed!");
+            loadConsultations.reset();
         });
 
         setupFilterBox();
@@ -74,12 +76,13 @@ public class ConsultationController extends ConsultationHistoric implements Init
         box_consultations.setSpacing(20);
 
         // request SQL
-        consultation_size = Consultation.getLastPrimaryKeyId();
-        if (consultation_size != 0) {
-            for (int i = 1; i <= consultation_size; i++) {
+        ArrayList<Integer> IdConsultationsList = Consultation.countConsultations();
+        if (IdConsultationsList != null) {
+            for (Integer consultationID : IdConsultationsList
+            ) {
                 // request SQL
-                consultationArrayList.add(buildConsultationButton(new Consultation(i)));
-                if (consultationArrayList.get(i - 1) == null) return false; // if error
+                consultationArrayList.add(buildConsultationButton(new Consultation(consultationID)));
+                if (consultationArrayList.get(consultationArrayList.size() - 1) == null) return false; // if error
             }
         } else return false; // no consultation in DB
 

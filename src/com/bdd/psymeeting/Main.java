@@ -309,7 +309,7 @@ public class Main extends Application {
         date1.set(Calendar.SECOND, 0);
 
         date2.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY); // Saturday 8h00 PM
-        date2.set(Calendar.HOUR, 8);
+        date2.set(Calendar.HOUR, 20);
         date2.set(Calendar.MINUTE, 0);
         date2.set(Calendar.SECOND, 0);
 
@@ -320,8 +320,6 @@ public class Main extends Application {
 
         dates[0] = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date1.getTime());
         dates[1] = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date2.getTime());
-        System.out.println(dates[0]);
-        System.out.println(dates[1]);
         return dates;
     }
 

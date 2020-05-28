@@ -10,12 +10,15 @@ import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import javafx.scene.control.TextArea;
 
 import java.sql.*;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class Consultation extends RecursiveTreeObject<Consultation> {
 
@@ -28,10 +31,19 @@ public class Consultation extends RecursiveTreeObject<Consultation> {
     protected Calendar date;
     protected float price;
     protected String payMode;
-    protected HashMap<Integer, String[]> patients;
+    protected boolean inRelation;
+    /*
+        map of patients infos
+        - in ArrayList:
+            0 - first name
+            1 - last name
+            2 - birthDay
+            3 - relationship
+            4 - category
+     */
+    protected HashMap<Integer, ArrayList<String>> patients;
     // Feedback
     protected Feedback feedback;
-
 
     // Graphic attributes
     protected TextArea full_infos;
@@ -54,7 +66,7 @@ public class Consultation extends RecursiveTreeObject<Consultation> {
             ResultSet resultSet;
 
             // get consultation info (date, price, pay mode)
-            query = "select CONSULTATION_DATE, PRICE, PAY_MODE from CONSULTATION where CONSULTATION_ID = ?";
+            query = "select CONSULTATION_DATE, PRICE, PAY_MODE, COUPLE from CONSULTATION where CONSULTATION_ID = ?";
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, this.consultationID);
             resultSet = preparedStatement.executeQuery();
@@ -64,9 +76,9 @@ public class Consultation extends RecursiveTreeObject<Consultation> {
             this.date = Main.Timestamp2Calendar(resultSet.getTimestamp(1));
             this.price = resultSet.getFloat(2);
             this.payMode = resultSet.getString(3);
-
+            this.inRelation = resultSet.getBoolean(4);
             // get patients list from consultations
-            query = "select P.PATIENT_ID, P.NAME, P.LAST_NAME " +
+            query = "select P.PATIENT_ID, P.NAME, P.LAST_NAME, P.BIRTHDAY, P.RELATIONSHIP " +
                     "from PATIENT P " +
                     "join CONSULTATION_CARRYOUT CC on P.PATIENT_ID = CC.PATIENT_ID " +
                     "where CC.CONSULTATION_ID = ?";
@@ -76,11 +88,25 @@ public class Consultation extends RecursiveTreeObject<Consultation> {
 
             patients = new HashMap<>();
             while (resultSet.next()) {
-                String[] fullName = {resultSet.getString(2), resultSet.getString(3)};
-                patients.put(resultSet.getInt(1), fullName);
+
+                ArrayList<String> infoPatient = new ArrayList<>(Arrays.asList(
+                        resultSet.getString(2),
+                        resultSet.getString(3),
+                        "",
+                        resultSet.getString(5),
+                        ""
+                ));
+                String date;
+                if (resultSet.getDate(4) != null) {
+                    date = new SimpleDateFormat("yyyy-MM-dd").format(resultSet.getDate(4));
+                    infoPatient.add(2, date);
+                    infoPatient.add(3, getPatientCategory(this.date, resultSet.getDate(4)));
+                }
+                patients.put(resultSet.getInt(1), infoPatient);
             }
 
         } catch (SQLException ex) {
+            System.out.println("error");
             ex.printStackTrace();
         }
     }
@@ -121,10 +147,13 @@ public class Consultation extends RecursiveTreeObject<Consultation> {
         return feedback;
     }
 
-    public HashMap<Integer, String[]> getPatients() {
+    public HashMap<Integer, ArrayList<String>> getPatients() {
         return patients;
     }
 
+    public boolean isInRelation() {
+        return inRelation;
+    }
 
     // --------------------
     //   Set methods
@@ -154,10 +183,21 @@ public class Consultation extends RecursiveTreeObject<Consultation> {
         this.feedback = feedback;
     }
 
-    public void setPatients(HashMap<Integer, String[]> patients) {
+    public void setPatients(HashMap<Integer, ArrayList<String>> patients) {
         this.patients = patients;
     }
 
+    // --------------------
+    //  Methods
+    // --------------------
+    public String getPatientCategory(Calendar dateConsultation, Date dateBirthDay) {
+        Calendar birthDay = Calendar.getInstance();
+        birthDay.setTime(dateBirthDay);
+        int years = this.getDate().get(Calendar.YEAR) - birthDay.get(Calendar.YEAR);
+        if (years <= Patient.KID_AGE_LIMIT) return "Enfant";
+        else if (years <= Patient.TEEN_AGE_LIMIT) return "Adolescent";
+        else return "Adulte";
+    }
 
     @Override
     public String toString() {
@@ -189,6 +229,22 @@ public class Consultation extends RecursiveTreeObject<Consultation> {
         return -1;
     }
 
+    public static ArrayList<Integer> countConsultations() {
+        try (Connection connection = Main.database.getConnection()) {
+            ArrayList<Integer> IdConsultationsList = new ArrayList<>();
+            Statement stmt = connection.createStatement();
+            ResultSet result = stmt.executeQuery("select CONSULTATION_ID from CONSULTATION");
+            while (result.next()) {
+                IdConsultationsList.add(result.getInt(1));
+            }
+            return IdConsultationsList;
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+            return null;
+        }
+
+    }
+
     public static Calendar getDateById(int consultation_id) {
         // TODO Fix this, as the connection can't be checked out
         try (Connection connection = Main.database.getConnection()) {
@@ -208,7 +264,7 @@ public class Consultation extends RecursiveTreeObject<Consultation> {
         return null;
     }
 
-    public static ArrayList<Consultation> getConsultationsByPatientID(int patientID){
+    public static ArrayList<Consultation> getConsultationsByPatientID(int patientID) {
 
         try (Connection connection = Main.database.getConnection()) {
 
@@ -272,14 +328,6 @@ public class Consultation extends RecursiveTreeObject<Consultation> {
             }
 
             return timeSlots;
-            /*timeSlots.forEach((k, v) -> {
-                Timestamp tmp = new Timestamp(System.currentTimeMillis());
-                if (!v && k.compareTo(tmp) >= 0) {
-                    String hours_date = new SimpleDateFormat("HH:mm").format(k.getTime());
-                    //System.out.println(hours_date);
-                    hour_field.getItems().add(hours_date);
-                }
-            });*/
         } catch (SQLException ex) {
             System.out.println("Error loading date");
             ex.printStackTrace();
@@ -332,7 +380,7 @@ public class Consultation extends RecursiveTreeObject<Consultation> {
 
             String[] dates = Main.getDatesOfWeek(indexWeek);
             ArrayList<Consultation> consultations = new ArrayList<>();
-
+            System.out.println(dates[1]);
             String query = "select CONSULTATION_ID\n" +
                     "from CONSULTATION\n" +
                     "where CONSULTATION_DATE between TO_DATE('" + dates[0] + "', 'yyyy-mm-dd HH24:mi:ss') "
@@ -344,7 +392,7 @@ public class Consultation extends RecursiveTreeObject<Consultation> {
             while (result.next()) {
                 consultations.add(new Consultation(result.getInt(1)));
             }
-
+            System.out.println(consultations.size());
             return consultations;
 
         } catch (SQLException ex) {
@@ -362,11 +410,11 @@ public class Consultation extends RecursiveTreeObject<Consultation> {
      * @param consultationID   consultation id
      * @return true if succeeded
      */
-    public static boolean insertIntoConsultationTable(Timestamp consultationDate, int consultationID, boolean anxietyValue) {
+    public static boolean insertIntoConsultationTable(Timestamp consultationDate, int consultationID, boolean anxietyValue, boolean coupleValue) {
         try (Connection connection = Main.database.getConnection()) {
             // the insert statement
-            String query = " insert into CONSULTATION (CONSULTATION_ID, CONSULTATION_DATE, ANXIETY)"
-                    + " values (?, ?, ?)";
+            String query = " insert into CONSULTATION (CONSULTATION_ID, CONSULTATION_DATE, ANXIETY, COUPLE)"
+                    + " values (?, ?, ?, ?)";
             // create the insert preparedStatement
             PreparedStatement preparedStmt = connection.prepareStatement(query);
 
@@ -376,6 +424,9 @@ public class Consultation extends RecursiveTreeObject<Consultation> {
 
             if (anxietyValue) preparedStmt.setInt(3, 1);
             else preparedStmt.setInt(3, 0);
+
+            if (coupleValue) preparedStmt.setInt(4, 1);
+            else preparedStmt.setInt(4, 0);
 
             // execute the preparedStatement
             preparedStmt.executeUpdate();
@@ -473,9 +524,6 @@ public class Consultation extends RecursiveTreeObject<Consultation> {
         }
         return true;
     }
-
-
-
 
 
 }

@@ -12,11 +12,13 @@ import com.bdd.psymeeting.model.Patient;
 import com.bdd.psymeeting.model.User;
 import com.jfoenix.controls.*;
 import com.jfoenix.validation.RequiredFieldValidator;
+import javafx.collections.FXCollections;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.fxml.Initializable;
 import javafx.scene.control.DateCell;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -29,9 +31,12 @@ import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class AddConsultationController implements Initializable {
+
+    // TODO mettre la checkbox "Couple"
 
     // --------------------
     //   Attributes
@@ -49,21 +54,27 @@ public class AddConsultationController implements Initializable {
     public JFXTextField email_field;
     public JFXCheckBox anxiety_checkbox;
     public JFXButton submit_button;
+    public JFXCheckBox coupleCheckBox;
+    public JFXComboBox<Patient> preloadPatientsComboBox;
     private RequiredFieldValidator validator_field;
 
     // Box
     public StackPane stackPane;
     public VBox form_box;
     public VBox patients_save;
+    public HBox coupleBox;
 
     // Warring
     public Label warring;
     private boolean warringCheck;
 
+    private ArrayList<Patient> preLoadPatients;
     private ArrayList<Patient> patients;
     private ArrayList<User> users;
     private boolean confirmation;
 
+    private int lastIDPatient;
+    private int lastIDUser;
 
     // --------------------
     //   Services
@@ -104,11 +115,29 @@ public class AddConsultationController implements Initializable {
         }
     };
 
+    Service<ArrayList<Patient>> loadPrePatients = new Service<ArrayList<Patient>>() {
+        @Override
+        protected Task<ArrayList<Patient>> createTask() {
+            return new Task<ArrayList<Patient>>() {
+                @Override
+                protected ArrayList<Patient> call() throws Exception {
+                    return Patient.getSimplyPatientsProfiles();
+                }
+            };
+        }
+    };
+
     // --------------------
     //   Initialize method
     // --------------------
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
+        coupleBox.setVisible(false); // hide couple box
+
+        // init ID patient and user
+        lastIDPatient = 1;
+        lastIDUser = 1;
 
         // custom datePicker
         date_field.setDayCellFactory(picker -> new DateCell() {
@@ -134,13 +163,20 @@ public class AddConsultationController implements Initializable {
         validator_field = new RequiredFieldValidator();
         validator_field.setMessage("Le champs est obligatoire");
 
-        // add validation for all fields
-        addListenerValidationField(name_field);
-        addListenerValidationField(last_name_field);
-        addListenerValidationField(email_field);
-        addListenerValidationField(date_field);
-        addListenerValidationField(hour_field);
+        // Init listener
+        initListeners();
 
+        // Init service
+        initServices();
+
+        if (loadPrePatients.getState() == Task.State.READY) {
+            loadPrePatients.start();
+        }
+
+
+    }
+
+    private void initServices() {
         // Init service
         loadTimeSlots.setOnSucceeded(event -> {
             System.out.println("Task loading time slots succeeded !");
@@ -180,10 +216,23 @@ public class AddConsultationController implements Initializable {
             addPatient.reset();
         });
 
-        addPatient.setOnFailed(event -> {
-            System.out.println("Task adding patient failed !");
+        addPatient.setOnFailed(event -> System.out.println("Task adding patient failed !"));
 
+        loadPrePatients.setOnSucceeded(event -> {
+            preloadPatientsComboBox.setItems(FXCollections.observableArrayList(loadPrePatients.getValue()));
         });
+
+
+    }
+
+    private void initListeners() {
+
+        // add validation for all fields
+        addListenerValidationField(name_field);
+        addListenerValidationField(last_name_field);
+        addListenerValidationField(email_field);
+        addListenerValidationField(date_field);
+        addListenerValidationField(hour_field);
 
         // Init listener
         date_field.valueProperty().addListener(event -> {
@@ -191,9 +240,7 @@ public class AddConsultationController implements Initializable {
             hour_field.getItems().clear();
             System.out.println(Timestamp.valueOf(date_field.getValue().toString() + " 00:00:00.0"));
         });
-
     }
-
 
     // --------------------
     //  Submit consultation
@@ -272,7 +319,7 @@ public class AddConsultationController implements Initializable {
                 if (consultationID != -1) {
                     if (Patient.insertIntoPatientTable(patients, lastPatientID)
                             && User.insertIntoUserTable(users)
-                            && Consultation.insertIntoConsultationTable(date, consultationID, anxiety_checkbox.isSelected())
+                            && Consultation.insertIntoConsultationTable(date, consultationID, anxiety_checkbox.isSelected(), coupleCheckBox.isSelected())
                             && Consultation.insertIntoConsultationCarryOutTable(patients, consultationID, lastPatientID)
                             && Feedback.insertFeedback(consultationID)) {
                         connection.commit();
@@ -319,7 +366,7 @@ public class AddConsultationController implements Initializable {
     //  Private methods
     // --------------------
     private boolean addPatient2ArrayList() {
-        if (userExist()) { // check if user exist ==> email exit in database
+        if (userExist()) { // check if user exist <==> email exit in database
             // check if name and last name is correct
             Patient tmp_patient = Patient.getPatientByEmail(email_field.getText());
             assert tmp_patient != null;
@@ -332,14 +379,20 @@ public class AddConsultationController implements Initializable {
                 return false;
             }
         } else { // create a patient and a user
-            int lastPatientId = Patient.getLastPrimaryKeyId();
-            if (lastPatientId != -1) {
+            int lastPrimaryKeyPatient = Patient.getLastPrimaryKeyId();
+            int lastPrimaryKeyUser = User.getLastUserId();
+            if (lastPrimaryKeyPatient != -1 && lastPrimaryKeyUser != -1) {
                 // @TODO Fix users update
-                Patient tmp_p = new Patient(lastPatientId + 1, name_field.getText(), last_name_field.getText(), true);
+                Patient tmp_p = new Patient(lastPrimaryKeyPatient + lastIDPatient, name_field.getText(), last_name_field.getText(), true);
                 patients.add(tmp_p); // add new patient
 
-                User tmp_user = new User(User.getLastUserId() + 1, email_field.getText(), tmp_p.getPatient_id(), true);
+                User tmp_user = new User(lastPrimaryKeyUser + lastIDUser, email_field.getText(), tmp_p.getPatient_id(), true);
                 users.add(tmp_user); // add new user
+
+                // update last id
+                lastIDPatient++;
+                lastIDUser++;
+
                 return true;
             } else return false;
         }
@@ -482,6 +535,8 @@ public class AddConsultationController implements Initializable {
     //  Update methods
     // --------------------
     private void updatePatientLabel() {
+        if (patients.size() >= 2) coupleBox.setVisible(true);
+        else coupleBox.setVisible(false);
         if (patients.size() == 3) {
             add_patient_button.setDisable(true);
         } else {

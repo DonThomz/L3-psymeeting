@@ -98,7 +98,7 @@ public class Job {
         }
     }
 
-    public int getJobDatabaseID(){
+    public int getJobDatabaseID() {
         try (Connection connection = Main.database.getConnection()) {
 
             String query = "select JOBS_ID from JOBS where JOB_NAME = ?";
@@ -114,12 +114,12 @@ public class Job {
         }
     }
 
-    public static int getLastPrimaryKeyID(){
+    public static int getLastPrimaryKeyID() {
         try (Connection connection = Main.database.getConnection()) {
             Statement stmt = connection.createStatement();
 
             ResultSet resultSet = stmt.executeQuery("select max(JOBS_ID) from JOBS");
-            if(resultSet.next()) return resultSet.getInt(1);
+            if (resultSet.next()) return resultSet.getInt(1);
             else return 0;
 
         } catch (SQLException throwable) {
@@ -141,13 +141,12 @@ public class Job {
             PreparedStatement preparedStatement = connection.prepareStatement(request1);
             PreparedStatement preparedStatement1 = connection.prepareStatement(request2);
             int lastID = Job.getLastPrimaryKeyID();
-            if(lastID != -1) {
+            if (lastID != -1) {
 
                 // insert each job
                 for (Job job : jobs
                 ) {
                     if (!job.isExist()) { // if job name doesn't exist in database
-                        System.out.println(job.getJob_name());
                         // update new id
                         job.setJobId(lastID + 1);
                         preparedStatement.setInt(1, job.getJobId());
@@ -172,7 +171,7 @@ public class Job {
                 preparedStatement1.close();
                 return true;
 
-            }else return false;
+            } else return false;
 
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -203,15 +202,15 @@ public class Job {
         }
     }
 
-    public static ArrayList<Job> getJobByPatientID(int patientID){
-        try(Connection connection = Main.database.getConnection()){
+    public static ArrayList<Job> getJobByPatientID(int patientID) {
+        try (Connection connection = Main.database.getConnection()) {
 
             ArrayList<Job> listJob = new ArrayList<>();
             String query = "select JOBS.JOBS_ID, JOB_NAME, JOB_DATE from JOBS join PATIENTJOB P on JOBS.JOBS_ID = P.JOBS_ID where PATIENT_ID = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, patientID);
             ResultSet resultSet = preparedStatement.executeQuery();
-            while(resultSet.next()){
+            while (resultSet.next()) {
 
                 listJob.add(new Job(
                         resultSet.getInt(1),
@@ -219,10 +218,9 @@ public class Job {
                         resultSet.getDate(3)));
             }
             preparedStatement.close();
-            listJob.forEach(j -> System.out.println(j.getJob_name()));
             return listJob;
 
-        }catch (SQLException ex){
+        } catch (SQLException ex) {
             ex.printStackTrace();
             return null;
         }
