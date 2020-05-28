@@ -43,7 +43,7 @@ public class OracleDB {
         try {
             this.comboPooledDataSource = new ComboPooledDataSource();
             this.comboPooledDataSource.setDriverClass("oracle.jdbc.driver.OracleDriver");
-            this.comboPooledDataSource.setJdbcUrl("jdbc:oracle:thin:@localhost:51521:xe");
+            this.comboPooledDataSource.setJdbcUrl("jdbc:oracle:thin:@localhost:1521:xe");
             this.comboPooledDataSource.setUser(username);
             this.comboPooledDataSource.setPassword(password);
 
