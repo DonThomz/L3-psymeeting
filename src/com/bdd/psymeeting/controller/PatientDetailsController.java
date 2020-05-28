@@ -18,6 +18,7 @@ import javafx.concurrent.Task;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.TextAlignment;
 
 
 import java.net.URL;
@@ -33,7 +34,7 @@ public class PatientDetailsController extends ConsultationHistoric implements In
     public JFXDatePicker birthday_field;
     public JFXComboBox<String> gender_field;
     public JFXComboBox<String> relation_field;
-    public JFXTextField discovery_field;
+    public JFXComboBox<String> discovery_field;
     public JFXComboBox<String> jobs_list_field;
     public JFXButton edit_button;
     public VBox box_consultations;
@@ -60,6 +61,8 @@ public class PatientDetailsController extends ConsultationHistoric implements In
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+        infoEditLabel.setTextAlignment(TextAlignment.CENTER);
+
         super.date_today = Calendar.getInstance();
         super.consultationArrayList = new ArrayList<>();
 
@@ -77,13 +80,14 @@ public class PatientDetailsController extends ConsultationHistoric implements In
         }
 
         // TODO Improvement: add the value as choice if it's not in the choices.
-        gender_field.getItems().addAll("HOMME", "FEMME", "NON BINAIRE");
         gender_field.setValue(patient.getGender());
+        gender_field.getItems().addAll("Homme", "Femme", "Non défini", "Autre");
 
-        relation_field.getItems().addAll("CÉLIBATAIRE", "COUPLE", "AUTRE");
         relation_field.setValue(patient.getRelationship());
+        relation_field.getItems().addAll("Célibataire", "Couple", "Autre");
 
         discovery_field.setPromptText(patient.getDiscovery_way());
+        discovery_field.getItems().addAll("Autre patient", "Pages jaunes", "Internet", "Autres");
 
         // jobs list
         ObservableList<String> jobsList = patient.getJobs().stream().map(Job::getJob_name).collect(Collectors.toCollection(FXCollections::observableArrayList));
@@ -100,10 +104,7 @@ public class PatientDetailsController extends ConsultationHistoric implements In
             // run createBoxConsultations
             super.createBoxConsultations("patient_consultation_cell");
         });
-        super.loadConsultations.setOnFailed(evt -> {
-            evt.getSource();
-            System.out.println("Task failed! Could not show consultations!");
-        });
+        super.loadConsultations.setOnFailed(evt -> System.out.println("Task failed! Could not show consultations!"));
 
         /*
          * Update Patient, then send it to DB
@@ -118,13 +119,22 @@ public class PatientDetailsController extends ConsultationHistoric implements In
                 infoEditLabel.setStyle("-fx-text-fill: #b42727");
                 infoEditLabel.setText("Échec de la modification du profil ");
             }
+            updateUserDetails.reset();
+        });
+
+        updateUserDetails.setOnFailed(event -> {
+            System.out.println("Task editing profil failed");
+            infoEditLabel.setStyle("-fx-text-fill: #b42727");
+
+            infoEditLabel.setText("Échec de la modification du profil,\nvérifier si la date de naissance est attribuée");
+            updateUserDetails.reset();
         });
 
 
         edit_button.setOnAction(event -> {
             patient.setRelationship(relation_field.getValue());
             patient.setGender(gender_field.getValue());
-            patient.setDiscovery_way(discovery_field.getText());
+            patient.setDiscovery_way(discovery_field.getValue());
             if (birthday_field.getValue() != null) {
                 patient.setBirthday(birthday_field.getValue());
             }
@@ -132,6 +142,14 @@ public class PatientDetailsController extends ConsultationHistoric implements In
                 updateUserDetails.start();
         });
 
+    }
+
+    @Override
+    public void refresh() {
+        patient.getConsultationHistoric().remove(consultationToBeRemove);
+        consultationArrayList.clear();
+        box_consultations.getChildren().clear();
+        setupBoxConsultations();
     }
 
     protected boolean setupBoxConsultations() {

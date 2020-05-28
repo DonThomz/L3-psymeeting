@@ -240,7 +240,7 @@ public class User {
      * @return true if succeeded
      */
     public static boolean insertIntoUserTable(ArrayList<User> users) {
-
+        users.forEach(System.out::println);
         try (Connection connection = Main.database.getConnection()) {
 
             // the insert statement
@@ -250,6 +250,7 @@ public class User {
             PreparedStatement preparedStmt = connection.prepareStatement(query);
 
             int lastUserId = User.getLastUserId();
+
             // create the insert preparedStatement
             if (lastUserId != -1) {
                 for (User u : users // for each patients saved in tmp_patients
@@ -257,8 +258,8 @@ public class User {
                     if (u.isNew_user()) { // if patient does not exist in database
 
                         // config parameters
-                        lastUserId++;
-                        preparedStmt.setInt(1, lastUserId);
+                        //lastUserId++;
+                        preparedStmt.setInt(1, u.getUser_id());
                         preparedStmt.setString(2, u.getEmail());
                         preparedStmt.setString(3, u.getPassword());
                         preparedStmt.setInt(4, u.getPatient_id());

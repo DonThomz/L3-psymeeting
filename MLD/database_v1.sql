@@ -39,6 +39,7 @@ CREATE TABLE consultation(
                              price              FLOAT   ,
                              pay_mode           VARCHAR2 (20)  ,
                              anxiety            NUMBER (1) NOT NULL  ,
+                             couple             NUMBER (1) NOT NULL  ,
                              CONSTRAINT consultation_PK PRIMARY KEY (consultation_id),
                              CONSTRAINT CHK_BOOLEAN_anxiety CHECK (anxiety IN (0,1))
 );

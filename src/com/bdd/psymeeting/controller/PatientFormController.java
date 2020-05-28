@@ -78,7 +78,7 @@ public class PatientFormController implements Initializable {
         addListenerValidationField(email_field);
         addListenerValidationField(birthday_field);
 
-        gender_field.getItems().addAll("Homme", "Femme", "Non binaire", "Autre");
+        gender_field.getItems().addAll("Homme", "Femme", "Non défini", "Autre");
         relation_field.getItems().addAll("Célibataire", "Couple", "Autre");
         discovery_field.getItems().addAll("autre patient", "pages jaunes", "internet", "autres");
 
@@ -98,7 +98,6 @@ public class PatientFormController implements Initializable {
         // Service settings
         addingPatientService.setOnSucceeded(event -> {
             System.out.println("Task adding patient to DataBase succeeded !");
-            System.out.println(addingPatientService.getValue());
             Main.sceneMapping("patients_scene", "patients_scene");
             addingPatientService.reset();
         });
@@ -228,7 +227,6 @@ public class PatientFormController implements Initializable {
             /*
              *  Create patient, user and jobs => add to Database
              */
-            System.out.println(gender_field.getValue());
             int lastPatientID = Patient.getLastPrimaryKeyId();
             int lastUserId = User.getLastUserId();
             if (lastPatientID >= 0 && lastUserId >= 0) {

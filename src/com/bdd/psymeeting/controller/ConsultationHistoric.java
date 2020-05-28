@@ -6,6 +6,7 @@ package com.bdd.psymeeting.controller;
 
 import com.bdd.psymeeting.Main;
 import com.bdd.psymeeting.model.Consultation;
+import com.bdd.psymeeting.model.Patient;
 import com.jfoenix.controls.*;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -69,13 +70,13 @@ public class ConsultationHistoric {
             if (removeConsultationService.getValue()) {
                 System.out.print("Task Remove consultation succeeded !");
                 refresh();
-                //Main.sceneMapping(Objects.requireNonNull(Main.getCurrentScene()), Main.getCurrentScene());
-
             } else System.out.print("Task succeeded but remove consultation from database failed !");
+            removeConsultationService.reset();
         });
 
         removeConsultationService.setOnFailed(event -> {
             System.out.print("Task Remove consultation failed !");
+            removeConsultationService.reset();
         });
 
     }
@@ -134,7 +135,7 @@ public class ConsultationHistoric {
         Label patient_list = new Label();
         patient_list.getStyleClass().add("content_text");
         StringBuilder content = new StringBuilder();
-        consultation.getPatients().forEach((id, fullName) -> content.append("| ").append(fullName[0]).append(" ").append(fullName[1]).append("\n"));
+        consultation.getPatients().forEach((id, fullName) -> content.append("| ").append(fullName.get(0)).append(" ").append(fullName.get(1)).append("\n"));
         patient_list.setText(String.valueOf(content));
         box.getChildren().add(patient_list);
 
@@ -226,10 +227,19 @@ public class ConsultationHistoric {
 
     protected TextArea createBody(Consultation consultation) {
 
+        // print age
+
+
         // get Patients Info
         StringBuilder patientsInfo = new StringBuilder();
 
-        consultation.getPatients().forEach((id, fullName) -> patientsInfo.append("| ").append(fullName[0]).append(" ").append(fullName[1]));
+        consultation.getPatients().forEach((id, patient_info) -> {
+            patientsInfo.append("| ")
+                    .append(patient_info.get(0)).append(" ")
+                    .append(patient_info.get(1)).append(" ")
+                    .append(patient_info.get(4)).append("\n");
+        });
+        if (consultation.isInRelation()) patientsInfo.append("Les patients sont venues en couple");
 
         // get Feedback Info
         StringBuilder feedbackInfo = new StringBuilder();
@@ -251,6 +261,7 @@ public class ConsultationHistoric {
                 + feedbackInfo + "\n"
         );
         textArea.setWrapText(true);
+        textArea.setEditable(false);
         return textArea;
     }
 
@@ -280,7 +291,7 @@ public class ConsultationHistoric {
 
         // find all patients
         consultation.getPatients().forEach((k, patient) -> {
-            Label patientLabel = new Label(patient[0] + " " + patient[1]);
+            Label patientLabel = new Label(patient.get(0) + " " + patient.get(1));
             consultationPatientListBox.getChildren().add(patientLabel);
         });
 

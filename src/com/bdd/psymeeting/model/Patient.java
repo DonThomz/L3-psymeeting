@@ -20,7 +20,7 @@ public class Patient {
     private String name;
     private String last_name;
     private boolean new_patient;
-
+    private String email;
 
     private Date birthday;
     private String gender;
@@ -30,6 +30,9 @@ public class Patient {
     private User user;
     private ArrayList<Job> jobs;
     private ArrayList<Consultation> consultationHistoric;
+
+    protected static int KID_AGE_LIMIT = 12;
+    protected static int TEEN_AGE_LIMIT = 18;
 
     // --------------------
     //   Constructors
@@ -105,6 +108,13 @@ public class Patient {
         this.last_name = last_name;
     }
 
+    public Patient(int patient_id, String name, String last_name, String email) {
+        this.patient_id = patient_id;
+        this.name = name;
+        this.last_name = last_name;
+        this.email = email;
+    }
+
     public Patient(int patient_id, String name, String last_name, Date birthday, String gender, String relationship, String discovery_way) {
         this.patient_id = patient_id;
         this.name = name;
@@ -170,6 +180,10 @@ public class Patient {
     //   Set methods
     // --------------------
 
+    public void setPatient_id(int patient_id) {
+        this.patient_id = patient_id;
+    }
+
     public void setNew_patient(boolean new_patient) {
         this.new_patient = new_patient;
     }
@@ -215,6 +229,11 @@ public class Patient {
     }
 
     // --------------------
+    //  Methods
+    // --------------------
+
+
+    // --------------------
     //   Statement methods
     // --------------------
 
@@ -224,17 +243,18 @@ public class Patient {
      * @return true if succeeded !
      */
     public boolean updatePatient() {
+        System.out.println(this);
         try (Connection connection = Main.database.getConnection()) {
             connection.setAutoCommit(false);
             String request = "UPDATE PATIENT SET NAME = ?, LAST_NAME = ?, BIRTHDAY = ?, GENDER = ?, RELATIONSHIP = ?, DISCOVERY_WAY= ? WHERE PATIENT_ID = ?";
 
             PreparedStatement preparedStatement = connection.prepareStatement(request);
-            preparedStatement.setString(1, this.getName());
-            preparedStatement.setString(2, this.getLast_name());
+            preparedStatement.setString(1, this.getName().toUpperCase());
+            preparedStatement.setString(2, this.getLast_name().toUpperCase());
             preparedStatement.setDate(3, new java.sql.Date(this.getBirthday().getTime()));
-            preparedStatement.setString(4, this.getGender().toUpperCase());
-            preparedStatement.setString(5, this.getRelationship().toUpperCase());
-            preparedStatement.setString(6, this.getDiscovery_way().toUpperCase());
+            preparedStatement.setString(4, this.getGender() != null ? this.getGender() : "");
+            preparedStatement.setString(5, this.getRelationship() != null ? this.getRelationship() : "");
+            preparedStatement.setString(6, this.getDiscovery_way() != null ? this.getDiscovery_way() : "");
             preparedStatement.setInt(7, this.getPatient_id());
 
             preparedStatement.executeUpdate();
@@ -279,24 +299,24 @@ public class Patient {
 
     public static boolean insertIntoPatientTable(ArrayList<Patient> patients, int lastPatientID) {
         try (Connection connection = Main.database.getConnection()) {
-            int tmpLastPatientID = lastPatientID;
             // the insert statement
             String query = " insert into patient (patient_id, name, last_name)"
                     + " values (?, ?, ?)";
             PreparedStatement preparedStmt = connection.prepareStatement(query);
             // create the insert preparedStatement
-            if (tmpLastPatientID != -1) {
+            if (lastPatientID != -1) {
                 for (Patient p : patients // for each patients saved in tmp_patients
                 ) {
                     if (p.isNew_patient()) { // if patient does not exist in database
 
                         // config parameters//
                         // patient already exist
-                        if (p.getPatient_id() <= lastPatientID) preparedStmt.setInt(1, p.getPatient_id());
+                        /*if (p.getPatient_id() <= lastPatientID) preparedStmt.setInt(1, p.getPatient_id());
                         else {
                             tmpLastPatientID++;
                             preparedStmt.setInt(1, tmpLastPatientID);
-                        }
+                        }*/
+                        preparedStmt.setInt(1, p.getPatient_id());
                         preparedStmt.setString(2, p.getName().toUpperCase());
                         preparedStmt.setString(3, p.getLast_name().toUpperCase());
                         // execute the preparedStatement
@@ -312,7 +332,6 @@ public class Patient {
             return false;
         }
     }
-
 
     public static int getLastPrimaryKeyId() {
         try (Connection connection = Main.database.getConnection()) {
@@ -345,8 +364,7 @@ public class Patient {
         return null;
     }
 
-
-    public static ArrayList<Patient> getAllPatientsProfiles() {
+    public static ArrayList<Patient> getAllFullPatientsProfiles() {
 
         ArrayList<Patient> list_patients = new ArrayList<>();
 
@@ -383,21 +401,33 @@ public class Patient {
         return list_patients;
     }
 
+    public static ArrayList<Patient> getSimplyPatientsProfiles() {
+        ArrayList<Patient> list_patients = new ArrayList<>();
 
+        // adding patients to list_patients
+        try (Connection connection = Main.database.getConnection()) {
+            Statement stmt = connection.createStatement();
+            ResultSet result = stmt.executeQuery("select PATIENT.PATIENT_ID, NAME, LAST_NAME, EMAIL from PATIENT join USER_APP UA on PATIENT.PATIENT_ID = UA.PATIENT_ID");
+            while (result.next()) {
+                list_patients.add(new Patient(result.getInt(1),
+                        result.getString(2),
+                        result.getString(3),
+                        result.getString(4)));
+            }
+
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return list_patients;
+    }
     // --------------------
     //   Override methods
     // --------------------
 
     @Override
     public String toString() {
-        return "Patient{" +
-                "patient_id=" + patient_id +
-                ", name='" + name + '\'' +
-                ", last_name='" + last_name + '\'' +
-                ", birthday=" + birthday +
-                ", gender='" + gender + '\'' +
-                ", relationship='" + relationship + '\'' +
-                ", discovery_way='" + discovery_way + '\'' +
-                '}';
+        return this.getName() + " " + this.getLast_name() + (this.email != null ? " : " + this.email : "");
     }
 }
