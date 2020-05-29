@@ -176,7 +176,6 @@ public class Patient {
     }
 
 
-
     // --------------------
     //   Set methods
     // --------------------
@@ -259,6 +258,7 @@ public class Patient {
             preparedStatement.setInt(7, this.getPatient_id());
 
             preparedStatement.executeUpdate();
+
 
             preparedStatement.close();
             connection.commit();

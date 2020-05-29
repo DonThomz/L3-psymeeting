@@ -17,14 +17,14 @@
   ~ Copyright (c) 2020. Thomas GUILLAUME & Gabriel DUGNY
   -->
 
-<AnchorPane prefHeight="570.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.241" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bdd.psymeeting.controller.PatientsController">
+<AnchorPane prefHeight="570.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.241" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bdd.psymeeting.controller.patients.PatientsController">
     <stylesheets>
-        <URL value="@stylesheets/patients.css" />
-        <URL value="@stylesheets/app.css" />
+        <URL value="@../stylesheets/patients.css" />
+        <URL value="@../stylesheets/app.css" />
     </stylesheets>
     <BorderPane prefWidth="1200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <top>
-            <fx:include source="top_bar.fxml" />
+            <fx:include source="../others/top_bar.fxml" />
         </top>
         <right>
             <Region prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER" />

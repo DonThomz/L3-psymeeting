@@ -2,10 +2,11 @@
  * Copyright (c) 2020. Thomas GUILLAUME & Gabriel DUGNY
  */
 
-package com.bdd.psymeeting.controller;
+package com.bdd.psymeeting.controller.login;
 
 import com.bdd.psymeeting.Main;
 import com.bdd.psymeeting.OracleDB;
+import com.bdd.psymeeting.controller.InitController;
 import com.bdd.psymeeting.model.User;
 import javafx.animation.AnimationTimer;
 import javafx.concurrent.Service;
@@ -28,7 +29,7 @@ import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 
 
-public class LoginController implements Initializable {
+public class LoginController implements Initializable, InitController {
 
     @FXML
     private AnchorPane login_pane;
@@ -44,36 +45,6 @@ public class LoginController implements Initializable {
     private CheckBox save_pwd_checkbox;
     private Label incorrect_text;
     private ExecutorService exec;
-
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-
-        // init database
-        Main.database = new OracleDB();
-        Main.patients = new ArrayList<>();
-        Main.connection_active = false;
-
-        // fill field text and checkbox
-        File tmpSaveFile = new File("save_pwd.txt");
-        fillField(tmpSaveFile.exists());
-
-
-        incorrect_text = new Label("Identifiant ou mot de passe incorrect !");
-        incorrect_text.getStyleClass().add("warring_label");
-
-        // Set actions for success and failed connection to the DB
-        loginService.setOnSucceeded(evt -> {
-            System.out.println("Task to connection succeeded!");
-            loginSucceeded();
-            login_button.setDisable(false);
-        });
-        loginService.setOnFailed(evt -> {
-            System.out.println("Task to connection failed!");
-            login_button.setDisable(false);
-            loginFailed();
-            loginService.reset();
-        });
-    }
 
     /**
      * Service that allows us to connect to DB in another Thread (≠ JavaFX UI Thread)
@@ -95,6 +66,49 @@ public class LoginController implements Initializable {
             };
         }
     };
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+
+        // init database
+        Main.database = new OracleDB();
+        Main.patients = new ArrayList<>();
+        Main.connection_active = false;
+
+        // fill field text and checkbox
+        File tmpSaveFile = new File("save_pwd.txt");
+        fillField(tmpSaveFile.exists());
+
+        initServices();
+
+        incorrect_text = new Label("Identifiant ou mot de passe incorrect !");
+        incorrect_text.getStyleClass().add("warring_label");
+
+
+    }
+
+
+    @Override
+    public void initServices() {
+        // Set actions for success and failed connection to the DB
+        loginService.setOnSucceeded(evt -> {
+            System.out.println("Task to connection succeeded!");
+            loginSucceeded();
+            login_button.setDisable(false);
+        });
+        loginService.setOnFailed(evt -> {
+            System.out.println("Task to connection failed!");
+            login_button.setDisable(false);
+            loginFailed();
+            loginService.reset();
+        });
+    }
+
+    @Override
+    public void initListeners() {
+
+    }
+
 
     public void login(ActionEvent actionEvent) {
         int[] i = {0};
@@ -208,4 +222,6 @@ public class LoginController implements Initializable {
             save_pwd_checkbox.setSelected(true);
         }
     }
+
+
 }

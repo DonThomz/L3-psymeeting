@@ -2,8 +2,10 @@
  * Copyright (c) 2020. Thomas GUILLAUME & Gabriel DUGNY
  */
 
-package com.bdd.psymeeting.controller;
+package com.bdd.psymeeting.controller.patients;
 
+import com.bdd.psymeeting.Main;
+import com.bdd.psymeeting.controller.InitController;
 import com.bdd.psymeeting.model.Patient;
 import com.jfoenix.controls.JFXButton;
 import javafx.concurrent.Service;
@@ -19,7 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 
-public class PatientsController implements Initializable {
+public class PatientsController implements Initializable, InitController {
 
     // JavaFX
     public VBox patient_list_box;
@@ -61,6 +63,13 @@ public class PatientsController implements Initializable {
         profilesButtonsHashMap = new HashMap<>();
         patient_list_box.setSpacing(10);
 
+        initServices();
+
+    }
+
+    @Override
+    public void initServices() {
+
         // execute sql request in another thread
         if (loadPatients.getState() == Task.State.READY)
             loadPatients.start();
@@ -73,6 +82,11 @@ public class PatientsController implements Initializable {
         loadPatients.setOnFailed(event -> System.out.println("Task failed -> error loading patients informations"));
 
         loadPatients.setOnRunning(event -> System.out.println("Loading..."));
+    }
+
+    @Override
+    public void initListeners() {
+
     }
 
     public void setupListPatients(ArrayList<Patient> patientArrayList) {
@@ -105,7 +119,7 @@ public class PatientsController implements Initializable {
         try {
             profilePane.getChildren().clear();
             current_patient_id = ID;
-            profilePane.getChildren().add(FXMLLoader.load(getClass().getResource("../views/profile_patient.fxml")));
+            profilePane.getChildren().add(FXMLLoader.load(Main.class.getResource("views/patients/profile_patient.fxml")));
         } catch (IOException ex) {
             ex.printStackTrace();
         }

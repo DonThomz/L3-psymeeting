@@ -2,10 +2,11 @@
  * Copyright (c) 2020. Thomas GUILLAUME & Gabriel DUGNY
  */
 
-package com.bdd.psymeeting.controller;
+package com.bdd.psymeeting.controller.consultations;
 
 import com.bdd.psymeeting.Main;
 import com.bdd.psymeeting.TransitionEffect;
+import com.bdd.psymeeting.controller.InitController;
 import com.bdd.psymeeting.model.Consultation;
 import com.bdd.psymeeting.model.Feedback;
 import com.bdd.psymeeting.model.Patient;
@@ -38,7 +39,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 
-public class AddConsultationController implements Initializable {
+public class AddConsultationController implements Initializable, InitController {
 
     // TODO mettre la checkbox "Couple"
 
@@ -180,7 +181,8 @@ public class AddConsultationController implements Initializable {
 
     }
 
-    private void initServices() {
+    @Override
+    public void initServices() {
         // Init service
         loadTimeSlots.setOnSucceeded(event -> {
             System.out.println("Task loading time slots succeeded !");
@@ -229,7 +231,8 @@ public class AddConsultationController implements Initializable {
 
     }
 
-    private void initListeners() {
+    @Override
+    public void initListeners() {
 
         // add validation for all fields
         addListenerValidationField(name_field);
@@ -253,7 +256,6 @@ public class AddConsultationController implements Initializable {
 
 
     }
-
 
 
     // --------------------
@@ -348,7 +350,6 @@ public class AddConsultationController implements Initializable {
             return false;
         }
     }
-
 
 
     //-----------------
@@ -483,6 +484,7 @@ public class AddConsultationController implements Initializable {
     }
 
     private void validateTextFieldAction() { // add require validation if fields are empty
+
         if (name_field.getText().isEmpty())
             name_field.validate();
         if (last_name_field.getText().isEmpty())

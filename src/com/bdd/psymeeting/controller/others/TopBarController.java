@@ -2,7 +2,7 @@
  * Copyright (c) 2020. Thomas GUILLAUME & Gabriel DUGNY
  */
 
-package com.bdd.psymeeting.controller;
+package com.bdd.psymeeting.controller.others;
 
 import com.bdd.psymeeting.Main;
 import com.bdd.psymeeting.model.User;

@@ -2,9 +2,10 @@
  * Copyright (c) 2020. Thomas GUILLAUME & Gabriel DUGNY
  */
 
-package com.bdd.psymeeting.controller;
+package com.bdd.psymeeting.controller.patients;
 
 import com.bdd.psymeeting.Main;
+import com.bdd.psymeeting.controller.InitController;
 import com.bdd.psymeeting.model.Job;
 import com.bdd.psymeeting.model.Patient;
 import com.bdd.psymeeting.model.User;
@@ -12,9 +13,7 @@ import com.jfoenix.controls.*;
 import com.jfoenix.validation.RequiredFieldValidator;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
-import javafx.concurrent.Worker;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
@@ -27,10 +26,9 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
-public class PatientFormController implements Initializable {
+public class PatientFormController implements Initializable, InitController {
 
     // Element javaFX
     public JFXTextField last_name_field;
@@ -69,6 +67,32 @@ public class PatientFormController implements Initializable {
 
         jobs = new ArrayList<>();
 
+        initListeners();
+
+        initServices();
+
+    }
+
+    @Override
+    public void initServices() {
+        // Service settings
+        addingPatientService.setOnSucceeded(event -> {
+            System.out.println("Task adding patient to DataBase succeeded !");
+            Main.sceneMapping("patients_scene", "patients_scene");
+            addingPatientService.reset();
+        });
+
+        addingPatientService.setOnFailed(event -> {
+            /*warring = new Label("L'email renseigné est déjà pris");
+            warring.getStyleClass().add("warring_label");
+            stackPane.getChildren().add(stackPane.getChildren().size() - 2, warring);*/
+            System.out.println("Task adding patient to DataBase failed !");
+            addingPatientService.reset();
+        });
+    }
+
+    @Override
+    public void initListeners() {
         // validation settings
         validator_field = new RequiredFieldValidator();
         validator_field.setMessage("Le champs est obligatoire");
@@ -93,24 +117,6 @@ public class PatientFormController implements Initializable {
         });
 
         jobs_button.setOnAction(event -> loadJobForm());
-
-
-        // Service settings
-        addingPatientService.setOnSucceeded(event -> {
-            System.out.println("Task adding patient to DataBase succeeded !");
-            Main.sceneMapping("patients_scene", "patients_scene");
-            addingPatientService.reset();
-        });
-
-        addingPatientService.setOnFailed(event -> {
-            /*warring = new Label("L'email renseigné est déjà pris");
-            warring.getStyleClass().add("warring_label");
-            stackPane.getChildren().add(stackPane.getChildren().size() - 2, warring);*/
-            System.out.println("Task adding patient to DataBase failed !");
-            addingPatientService.reset();
-        });
-
-
     }
 
     private void loadJobForm() {

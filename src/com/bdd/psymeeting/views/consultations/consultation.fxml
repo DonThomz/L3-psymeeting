@@ -14,18 +14,18 @@
   -->
 
 <StackPane fx:id="stackPane" xmlns="http://javafx.com/javafx/8.0.241" xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="com.bdd.psymeeting.controller.ConsultationController">
+           fx:controller="com.bdd.psymeeting.controller.consultations.ConsultationController">
     <children>
         <AnchorPane prefHeight="800.0">
             <stylesheets>
-                <URL value="@stylesheets/consultation.css"/>
-                <URL value="@stylesheets/app.css"/>
+                <URL value="@../stylesheets/consultation.css"/>
+                <URL value="@../stylesheets/app.css"/>
             </stylesheets>
             <children>
                 <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
                             AnchorPane.topAnchor="0.0">
                     <top>
-                        <fx:include source="top_bar.fxml"/>
+                        <fx:include source="../others/top_bar.fxml"/>
                     </top>
                     <right>
                         <Region prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER"/>

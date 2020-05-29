@@ -2,9 +2,10 @@
  * Copyright (c) 2020. Thomas GUILLAUME & Gabriel DUGNY
  */
 
-package com.bdd.psymeeting.controller;
+package com.bdd.psymeeting.controller.consultations;
 
 import com.bdd.psymeeting.TransitionEffect;
+import com.bdd.psymeeting.controller.InitController;
 import com.bdd.psymeeting.model.Consultation;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
@@ -16,7 +17,7 @@ import javafx.scene.layout.VBox;
 import java.net.URL;
 import java.util.*;
 
-public class ConsultationController extends ConsultationHistoric implements Initializable {
+public class ConsultationController extends ConsultationHistoric implements Initializable, InitController {
 
     // Fields
     public JFXTextField searchField;
@@ -43,6 +44,14 @@ public class ConsultationController extends ConsultationHistoric implements Init
         TransitionEffect.TranslateTransitionY(box_consultations, 600, 75);
         TransitionEffect.FadeTransition(box_consultations, 600, 0.2f, 5);
 
+        initServices();
+
+
+        setupFilterBox();
+    }
+
+    @Override
+    public void initServices() {
         // start loadConsultations service
         if (super.loadConsultations.getState() == Task.State.READY) {
             super.loadConsultations.start();
@@ -59,10 +68,12 @@ public class ConsultationController extends ConsultationHistoric implements Init
             System.out.println("Task load consultation failed!");
             loadConsultations.reset();
         });
-
-        setupFilterBox();
     }
 
+    @Override
+    public void initListeners() {
+
+    }
 
     @Override
     public void refresh() {

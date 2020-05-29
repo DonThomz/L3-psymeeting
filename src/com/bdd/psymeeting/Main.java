@@ -98,7 +98,7 @@ public class Main extends Application {
 
 
         // Init FXML login file
-        root_login = FXMLLoader.load(getClass().getResource("views/login.fxml"));
+        root_login = FXMLLoader.load(getClass().getResource("views/login/login.fxml"));
 
 
         // Load login scene
@@ -157,35 +157,35 @@ public class Main extends Application {
             // Change scene
             switch (target_scene) {
                 case "home_scene":
-                    root_home = FXMLLoader.load(Main.class.getResource("views/home.fxml")); // launch initialize methods
+                    root_home = FXMLLoader.load(Main.class.getResource("views/home/home.fxml")); // launch initialize methods
                     home_scene = new Scene((Parent) root_home, current_resolution[0], current_resolution[1]);
                     window.setScene(home_scene);
                     window.setResizable(true);
                     window.setTitle("PsyMeeting - Home");
                     break;
                 case "consultation_scene":
-                    root_consultation = FXMLLoader.load(Main.class.getResource("views/consultation.fxml")); // launch initialize methods
+                    root_consultation = FXMLLoader.load(Main.class.getResource("views/consultations/consultation.fxml")); // launch initialize methods
                     consultation_scene = new Scene((Parent) root_consultation, current_resolution[0], current_resolution[1]);
                     window.setScene(consultation_scene);
                     window.setResizable(true);
                     window.setTitle("PsyMeeting - Consultation");
                     break;
                 case "patients_scene":
-                    root_patients = FXMLLoader.load(Main.class.getResource("views/patients.fxml")); // launch initialize methods
+                    root_patients = FXMLLoader.load(Main.class.getResource("views/patients/patients.fxml")); // launch initialize methods
                     patients_scene = new Scene((Parent) root_patients, current_resolution[0], current_resolution[1]);
                     window.setScene(patients_scene);
                     window.setResizable(true);
                     window.setTitle("PsyMeeting - Patients");
                     break;
                 case "add_consultation_scene":
-                    root_add_consultation = FXMLLoader.load(Main.class.getResource("views/add_consultation.fxml")); // launch initialize methods
+                    root_add_consultation = FXMLLoader.load(Main.class.getResource("views/consultations/add_consultation.fxml")); // launch initialize methods
                     add_consultation_scene = new Scene((Parent) root_add_consultation, current_resolution[0], current_resolution[1]);
                     window.setScene(add_consultation_scene);
                     window.setResizable(true);
                     window.setTitle("PsyMeeting - Consultations");
                     break;
                 case "login_scene":
-                    root_login = FXMLLoader.load(Main.class.getResource("views/login.fxml")); // launch initialize methods
+                    root_login = FXMLLoader.load(Main.class.getResource("views/login/login.fxml")); // launch initialize methods
                     login_scene = new Scene((Parent) root_login, login_resolution[0], login_resolution[1]);
                     window.close();
                     // Open a fresh window

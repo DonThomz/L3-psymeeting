@@ -14,10 +14,14 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<StackPane fx:id="stackPane" alignment="TOP_CENTER" xmlns="http://javafx.com/javafx/8.0.241" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bdd.psymeeting.controller.PatientFormController">
+<!--
+  ~ Copyright (c) 2020. Thomas GUILLAUME & Gabriel DUGNY
+  -->
+
+<StackPane fx:id="stackPane" alignment="TOP_CENTER" xmlns="http://javafx.com/javafx/8.0.241" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bdd.psymeeting.controller.patients.PatientFormController">
    <stylesheets>
-      <URL value="@stylesheets/patients.css" />
-      <URL value="@stylesheets/app.css" />
+      <URL value="@../stylesheets/patients.css" />
+      <URL value="@../stylesheets/app.css" />
    </stylesheets>
    <children>
       <ScrollPane>
