@@ -6,18 +6,22 @@ package com.bdd.psymeeting.controller.consultations;
 
 import com.bdd.psymeeting.Main;
 import com.bdd.psymeeting.model.Consultation;
+import com.bdd.psymeeting.model.Feedback;
 import com.bdd.psymeeting.model.Patient;
 import com.jfoenix.controls.*;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -34,6 +38,7 @@ public class ConsultationHistoric {
     protected Calendar date_today;
     protected ArrayList<Consultation> consultationArrayList;
     protected Consultation consultationToBeRemove;
+    protected static Consultation consultationModified;
 
     protected final Service<Boolean> loadConsultations = new Service<Boolean>() {
         @Override
@@ -58,6 +63,7 @@ public class ConsultationHistoric {
             };
         }
     };
+
 
 
     protected ConsultationHistoric() {
@@ -192,34 +198,44 @@ public class ConsultationHistoric {
      * @param consultation selected by the user
      */
     protected void loadModifyDialogPane(Consultation consultation) {
-        // create dialog layout
-        JFXDialogLayout modifyFrom = new JFXDialogLayout();
 
-        // add body
-        VBox consultationVBox = new VBox();
-        consultationVBox.setSpacing(20);
-
+        consultationModified = consultation;
 
         // check if consultation is passed
-        LocalDate localDate = LocalDateTime.ofInstant(consultation.getDate().toInstant(), consultation.getDate().getTimeZone().toZoneId()).toLocalDate();
+        /*LocalDate localDate = LocalDateTime.ofInstant(consultation.getDate().toInstant(), consultation.getDate().getTimeZone().toZoneId()).toLocalDate();
         if (LocalDate.now().compareTo(localDate) < 0)
             consultationVBox.getChildren().add(dateBox(consultation));
-        consultationVBox.getChildren().add(patientsBox(consultation));
+        consultationVBox.getChildren().add(patientsBox(consultation));*/
 
+        //modifyFrom.setBody(consultationVBox);
 
-        modifyFrom.setBody(consultationVBox);
+        JFXDialogLayout dialogLayout = new JFXDialogLayout();
+        try {
+            StackPane object = FXMLLoader.load(Main.class.getResource("views/consultations/modification_consultation_form.fxml"));
 
-        JFXDialog modifyDialogPane = new JFXDialog(stackPane, modifyFrom, JFXDialog.DialogTransition.CENTER);
+            dialogLayout.setBody(object);
+        }catch (IOException ioException){
+            ioException.printStackTrace();
+        }
+
+        JFXDialog dialog = new JFXDialog(stackPane, dialogLayout, JFXDialog.DialogTransition.CENTER);
+
         JFXButton done = new JFXButton("Annuler");
         JFXButton save = new JFXButton("Sauvegarder");
 
-        done.setOnAction(event -> modifyDialogPane.close());
+        dialog.setOnDialogClosed(event -> dialog.close());
 
-        save.setOnAction(event -> modifyDialogPane.close());
+        done.setOnAction(event -> dialog.close());
 
-        modifyFrom.setActions(save, done);
+        save.setOnAction(event ->{
+            System.out.println(ModifConsultationController.commentaryAreaStatic);
+            dialog.close();
+        });
 
-        modifyDialogPane.show();
+        dialogLayout.setActions(save, done);
+
+        dialog.show();
+
 
     }
 
