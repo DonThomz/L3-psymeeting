@@ -122,8 +122,12 @@ public class PatientDetailsController extends ConsultationHistoric implements In
             System.out.println("Task load consultation succeeded!");
             // run createBoxConsultations
             super.createBoxConsultations("patient_consultation_cell");
+            loadConsultations.reset();
         });
-        super.loadConsultations.setOnFailed(evt -> System.out.println("Task failed! Could not show consultations!"));
+        super.loadConsultations.setOnFailed(evt ->{
+            System.out.println("Task failed! Could not show consultations!");
+            loadConsultations.reset();
+        });
 
         /*
          * Update Patient, then send it to DB
@@ -177,6 +181,17 @@ public class PatientDetailsController extends ConsultationHistoric implements In
         });
 
         jobs_button.setOnAction(event -> loadJobForm());
+    }
+
+    @Override
+    public void refresh() {
+        patient.getConsultationHistoric().remove(consultationToBeRemove);
+        consultationArrayList.clear();
+        box_consultations.getChildren().clear();
+        // start loadConsultations service
+        if (super.loadConsultations.getState() == Task.State.READY) {
+            super.loadConsultations.start();
+        }
     }
 
     private void loadJobForm() {
@@ -282,13 +297,7 @@ public class PatientDetailsController extends ConsultationHistoric implements In
 
     }
 
-    @Override
-    public void refresh() {
-        patient.getConsultationHistoric().remove(consultationToBeRemove);
-        consultationArrayList.clear();
-        box_consultations.getChildren().clear();
-        setupBoxConsultations();
-    }
+
 
     protected boolean setupBoxConsultations() {
         box_consultations.setSpacing(20);

@@ -31,14 +31,9 @@ public class ConsultationHistoric {
     @FXML
     public VBox box_consultations;
 
-    // Attributes
-    protected Map<Calendar, JFXButton> consultations_map;
-    protected int consultation_size;
     protected Calendar date_today;
     protected ArrayList<Consultation> consultationArrayList;
     protected Consultation consultationToBeRemove;
-
-    protected static boolean refresh = false;
 
     protected final Service<Boolean> loadConsultations = new Service<Boolean>() {
         @Override
