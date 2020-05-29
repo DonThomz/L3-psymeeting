@@ -187,6 +187,10 @@ public class ConsultationHistoric {
         dialog.show();
     }
 
+    /**
+     * create the dialog pane to modify a consultation
+     * @param consultation selected by the user
+     */
     protected void loadModifyDialogPane(Consultation consultation) {
         // create dialog layout
         JFXDialogLayout modifyFrom = new JFXDialogLayout();
