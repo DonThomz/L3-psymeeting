@@ -148,7 +148,7 @@ public class PatientsController implements Initializable, InitController {
         try {
             resetButtonStyle();
             profilePane.getChildren().clear();
-            profilePane.getChildren().add(FXMLLoader.load(getClass().getResource("../views/patient_form.fxml")));
+            profilePane.getChildren().add(FXMLLoader.load(Main.class.getResource("views/patients/patient_form.fxml")));
         } catch (IOException ex) {
             ex.printStackTrace();
         }

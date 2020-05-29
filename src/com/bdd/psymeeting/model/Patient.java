@@ -284,9 +284,9 @@ public class Patient {
             preparedStatement.setString(2, this.getName().toUpperCase());
             preparedStatement.setString(3, this.getLast_name().toUpperCase());
             preparedStatement.setDate(4, new java.sql.Date(this.getBirthday().getTime()));
-            preparedStatement.setString(5, this.getGender().toUpperCase());
-            preparedStatement.setString(6, this.getRelationship().toUpperCase());
-            preparedStatement.setString(7, this.getDiscovery_way().toUpperCase());
+            preparedStatement.setString(5, this.getGender());
+            preparedStatement.setString(6, this.getRelationship());
+            preparedStatement.setString(7, this.getDiscovery_way());
 
             preparedStatement.executeUpdate();
             preparedStatement.close();

@@ -17,7 +17,7 @@
   ~ Copyright (c) 2020. Thomas GUILLAUME & Gabriel DUGNY
   -->
 
-<AnchorPane prefHeight="570.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.241" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bdd.psymeeting.controller.patients.PatientsController">
+<AnchorPane prefHeight="570.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bdd.psymeeting.controller.patients.PatientsController">
     <stylesheets>
         <URL value="@../stylesheets/patients.css" />
         <URL value="@../stylesheets/app.css" />
@@ -26,17 +26,18 @@
         <top>
             <fx:include source="../others/top_bar.fxml" />
         </top>
-        <right>
-            <Region prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER" />
-        </right>
         <center>
             <AnchorPane BorderPane.alignment="CENTER">
                 <BorderPane.margin>
                     <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                 </BorderPane.margin>
-                <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
-                    <AnchorPane fx:id="profilePane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
-                </HBox>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <Region prefHeight="445.0" prefWidth="142.0" HBox.hgrow="ALWAYS" />
+                       <AnchorPane fx:id="profilePane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
+                  <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
             </AnchorPane>
         </center>
         <left>

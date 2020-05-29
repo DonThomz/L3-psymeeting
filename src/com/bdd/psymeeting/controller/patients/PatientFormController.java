@@ -104,7 +104,7 @@ public class PatientFormController implements Initializable, InitController {
 
         gender_field.getItems().addAll("Homme", "Femme", "Non défini", "Autre");
         relation_field.getItems().addAll("Célibataire", "Couple", "Autre");
-        discovery_field.getItems().addAll("autre patient", "pages jaunes", "internet", "autres");
+        discovery_field.getItems().addAll("Autre patient", "Pages Jaunes", "Internet", "Autres");
 
         // submit patient to database
         addPatientButtonForm.setOnAction(event -> {
@@ -240,9 +240,9 @@ public class PatientFormController implements Initializable, InitController {
                         name_field.getText().toUpperCase(),
                         last_name_field.getText().toUpperCase(),
                         Date.valueOf(birthday_field.getValue()),
-                        gender_field.getValue() == null ? "" : gender_field.getValue().toUpperCase(),
-                        relation_field.getValue() == null ? "" : relation_field.getValue().toUpperCase(),
-                        discovery_field.getValue() == null ? "" : discovery_field.getValue().toUpperCase());
+                        gender_field.getValue() == null ? "" : gender_field.getValue(),
+                        relation_field.getValue() == null ? "" : relation_field.getValue(),
+                        discovery_field.getValue() == null ? "" : discovery_field.getValue());
 
                 User newUser = new User(lastUserId + 1, email_field.getText(), lastPatientID + 1, true);
 
