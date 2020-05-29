@@ -18,11 +18,15 @@ import javafx.concurrent.Task;
 import javafx.fxml.Initializable;
 import javafx.scene.control.DateCell;
 import javafx.scene.control.Label;
+import javafx.scene.input.InputMethodEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
+import javax.swing.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -240,7 +244,17 @@ public class AddConsultationController implements Initializable {
             hour_field.getItems().clear();
             System.out.println(Timestamp.valueOf(date_field.getValue().toString() + " 00:00:00.0"));
         });
+
+        preloadPatientsComboBox.setOnAction(event -> {
+            name_field.setText(preloadPatientsComboBox.getValue().getName());
+            last_name_field.setText(preloadPatientsComboBox.getValue().getLast_name());
+            email_field.setText(preloadPatientsComboBox.getValue().getUser().getEmail());
+        });
+
+
     }
+
+
 
     // --------------------
     //  Submit consultation
@@ -334,6 +348,8 @@ public class AddConsultationController implements Initializable {
             return false;
         }
     }
+
+
 
     //-----------------
     // Adding Patient
