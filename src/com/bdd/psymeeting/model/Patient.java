@@ -20,7 +20,6 @@ public class Patient {
     private String name;
     private String last_name;
     private boolean new_patient;
-    private String email;
 
     private Date birthday;
     private String gender;
@@ -112,7 +111,7 @@ public class Patient {
         this.patient_id = patient_id;
         this.name = name;
         this.last_name = last_name;
-        this.email = email;
+        this.user = User.getUserByEmail(email);
     }
 
     public Patient(int patient_id, String name, String last_name, Date birthday, String gender, String relationship, String discovery_way) {
@@ -175,6 +174,7 @@ public class Patient {
     public User getUser() {
         return user;
     }
+
 
     // --------------------
     //   Set methods
@@ -258,6 +258,7 @@ public class Patient {
             preparedStatement.setInt(7, this.getPatient_id());
 
             preparedStatement.executeUpdate();
+
 
             preparedStatement.close();
             connection.commit();
@@ -428,6 +429,6 @@ public class Patient {
 
     @Override
     public String toString() {
-        return this.getName() + " " + this.getLast_name() + (this.email != null ? " : " + this.email : "");
+        return this.getName() + " " + this.getLast_name() + (this.user.getEmail() != null ? " : " + this.user.getEmail() : "");
     }
 }

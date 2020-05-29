@@ -15,10 +15,10 @@
   -->
 
 <AnchorPane fx:id="login_pane" xmlns="http://javafx.com/javafx/8.0.241" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.bdd.psymeeting.controller.LoginController">
+            fx:controller="com.bdd.psymeeting.controller.login.LoginController">
     <stylesheets>
-        <URL value="@stylesheets/login.css"/>
-        <URL value="@stylesheets/app.css"/>
+        <URL value="@../stylesheets/login.css"/>
+        <URL value="@../stylesheets/app.css"/>
     </stylesheets>
     <children>
         <VBox fx:id="box_login" alignment="CENTER" prefHeight="600.0" prefWidth="450.0" AnchorPane.bottomAnchor="0.0"

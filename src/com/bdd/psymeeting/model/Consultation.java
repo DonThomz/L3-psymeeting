@@ -100,7 +100,7 @@ public class Consultation extends RecursiveTreeObject<Consultation> {
                 if (resultSet.getDate(4) != null) {
                     date = new SimpleDateFormat("yyyy-MM-dd").format(resultSet.getDate(4));
                     infoPatient.add(2, date);
-                    infoPatient.add(3, getPatientCategory(this.date, resultSet.getDate(4)));
+                    infoPatient.add(4, getPatientCategory(resultSet.getDate(4)));
                 }
                 patients.put(resultSet.getInt(1), infoPatient);
             }
@@ -190,7 +190,7 @@ public class Consultation extends RecursiveTreeObject<Consultation> {
     // --------------------
     //  Methods
     // --------------------
-    public String getPatientCategory(Calendar dateConsultation, Date dateBirthDay) {
+    public String getPatientCategory(Date dateBirthDay) {
         Calendar birthDay = Calendar.getInstance();
         birthDay.setTime(dateBirthDay);
         int years = this.getDate().get(Calendar.YEAR) - birthDay.get(Calendar.YEAR);

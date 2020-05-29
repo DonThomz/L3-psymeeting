@@ -2,30 +2,33 @@
  * Copyright (c) 2020. Thomas GUILLAUME & Gabriel DUGNY
  */
 
-package com.bdd.psymeeting.controller;
+package com.bdd.psymeeting.controller.patients;
 
+import com.bdd.psymeeting.controller.InitController;
+import com.bdd.psymeeting.controller.consultations.ConsultationHistoric;
 import com.bdd.psymeeting.model.Consultation;
 import com.bdd.psymeeting.model.Job;
 import com.bdd.psymeeting.model.Patient;
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXComboBox;
-import com.jfoenix.controls.JFXDatePicker;
-import com.jfoenix.controls.JFXTextField;
+import com.jfoenix.controls.*;
+import com.jfoenix.validation.RequiredFieldValidator;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 
 
 import java.net.URL;
+import java.sql.Date;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class PatientDetailsController extends ConsultationHistoric implements Initializable {
+public class PatientDetailsController extends ConsultationHistoric implements Initializable, InitController {
 
     // Fields
     public JFXTextField name_field;
@@ -36,12 +39,15 @@ public class PatientDetailsController extends ConsultationHistoric implements In
     public JFXComboBox<String> relation_field;
     public JFXComboBox<String> discovery_field;
     public JFXComboBox<String> jobs_list_field;
+    public JFXButton jobs_button;
     public JFXButton edit_button;
     public VBox box_consultations;
     public Label infoEditLabel;
 
+    private RequiredFieldValidator validator_field;
     // Attributes
-    Patient patient;
+    protected Patient patient;
+    private ArrayList<Job> jobs;
 
     Service<Boolean> updateUserDetails = new Service<Boolean>() {
         @Override
@@ -49,7 +55,7 @@ public class PatientDetailsController extends ConsultationHistoric implements In
             return new Task<Boolean>() {
                 @Override
                 protected Boolean call() {
-                    return patient.updatePatient();
+                    return patient.updatePatient() && Job.insertJobFromArrayList(jobs);
                 }
             };
         }
@@ -93,6 +99,19 @@ public class PatientDetailsController extends ConsultationHistoric implements In
         ObservableList<String> jobsList = patient.getJobs().stream().map(Job::getJob_name).collect(Collectors.toCollection(FXCollections::observableArrayList));
         jobs_list_field.setItems(jobsList);
 
+
+        // init Services
+        initServices();
+
+        // init Listeners
+        initListeners();
+    }
+
+    @Override
+    public void initServices() {
+
+        jobs = new ArrayList<>();
+
         // start loadConsultations service
         if (super.loadConsultations.getState() == Task.State.READY) {
             super.loadConsultations.start();
@@ -129,7 +148,21 @@ public class PatientDetailsController extends ConsultationHistoric implements In
             infoEditLabel.setText("Échec de la modification du profil,\nvérifier si la date de naissance est attribuée");
             updateUserDetails.reset();
         });
+    }
 
+    @Override
+    public void initListeners() {
+
+        jobs = new ArrayList<>();
+
+        // validation settings
+        validator_field = new RequiredFieldValidator();
+        validator_field.setMessage("Le champs est obligatoire");
+
+        addListenerValidationField(name_field);
+        addListenerValidationField(last_name_field);
+        addListenerValidationField(email_field);
+        addListenerValidationField(birthday_field);
 
         edit_button.setOnAction(event -> {
             patient.setRelationship(relation_field.getValue());
@@ -138,8 +171,113 @@ public class PatientDetailsController extends ConsultationHistoric implements In
             if (birthday_field.getValue() != null) {
                 patient.setBirthday(birthday_field.getValue());
             }
+            if (jobs.size() > 0) patient.setJobs(jobs);
             if (updateUserDetails.getState() == Task.State.READY) // loading update table in Service
                 updateUserDetails.start();
+        });
+
+        jobs_button.setOnAction(event -> loadJobForm());
+    }
+
+    private void loadJobForm() {
+        // create dialog layout
+        JFXDialogLayout content = new JFXDialogLayout();
+        // add heading
+        content.setHeading(new Label("Ajout d'un métier"));
+
+        // add body
+        VBox jobForm = new VBox();
+        jobForm.setSpacing(20);
+
+        HBox jobNameBox = new HBox();
+        jobNameBox.setSpacing(20);
+        Label jobName = new Label("Nom du métier");
+
+        Region space = new Region();
+        space.setMinWidth(20);
+        JFXTextField jobNameField = new JFXTextField();
+
+        jobNameBox.getChildren().addAll(jobName, jobNameField);
+
+        HBox jobDateBox = new HBox();
+        jobDateBox.setSpacing(20);
+        Label jobDate = new Label("Date");
+        Region space2 = new Region();
+        space.setMinWidth(20);
+        JFXDatePicker jobDateField = new JFXDatePicker();
+        jobDateBox.getChildren().addAll(jobDate, space2, jobDateField);
+
+        addListenerValidationField(jobDateField);
+        addListenerValidationField(jobNameField);
+
+        jobForm.getChildren().addAll(jobNameBox, jobDateBox);
+        content.setBody(jobForm);
+
+        JFXDialog dialog = new JFXDialog(stackPane, content, JFXDialog.DialogTransition.CENTER);
+        JFXButton done = new JFXButton("Fermer");
+        JFXButton submit = new JFXButton("Sauvegarder");
+
+        submit.setOnAction(event -> {
+            if (validJobField(jobNameField, jobDateField)) {
+                jobs.add(new Job(jobNameField.getText().toUpperCase(), Date.valueOf(jobDateField.getValue())));
+                jobs.get(jobs.size() - 1).setPatientID(patient.getPatient_id());
+                jobs_list_field.getItems().add(jobs.get(jobs.size() - 1).getJob_name());
+                dialog.close();
+            } else validatePriorityJobField(jobNameField, jobDateField);
+
+        });
+
+        done.setOnAction(event -> dialog.close());
+
+        content.setActions(submit, done);
+
+        dialog.show();
+    }
+
+    private boolean validField() { // check if fields are not empty
+        return !name_field.getText().isEmpty()
+                && !last_name_field.getText().isEmpty()
+                && !email_field.getText().isEmpty()
+                && birthday_field.getValue() != null;
+    }
+
+    private boolean validJobField(JFXTextField jobNameField, JFXDatePicker jobDateField) {
+        return !jobNameField.getText().isEmpty() && jobDateField.getValue() != null;
+    }
+
+    private void validatePriorityJobField(JFXTextField jobNameField, JFXDatePicker jobDateField) { // add require validation if priority fields are empty
+        if (jobNameField.getText().isEmpty())
+            jobNameField.validate();
+        if (jobDateField.getValue() == null)
+            jobDateField.validate();
+    }
+
+    private void validatePriorityField() { // add require validation if priority fields are empty
+        if (name_field.getText().isEmpty())
+            name_field.validate();
+        if (last_name_field.getText().isEmpty())
+            last_name_field.validate();
+        if (email_field.getText().isEmpty())
+            email_field.validate();
+        if (birthday_field.getValue() == null)
+            birthday_field.validate();
+    }
+
+    private void addListenerValidationField(JFXTextField field) {
+        field.getValidators().add(validator_field);
+        field.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                field.resetValidation();
+            }
+        });
+    }
+
+    private void addListenerValidationField(JFXDatePicker field) {
+        field.getValidators().add(validator_field);
+        field.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                field.resetValidation();
+            }
         });
 
     }

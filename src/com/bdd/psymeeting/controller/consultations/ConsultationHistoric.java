@@ -2,7 +2,7 @@
  * Copyright (c) 2020. Thomas GUILLAUME & Gabriel DUGNY
  */
 
-package com.bdd.psymeeting.controller;
+package com.bdd.psymeeting.controller.consultations;
 
 import com.bdd.psymeeting.Main;
 import com.bdd.psymeeting.model.Consultation;
@@ -40,7 +40,7 @@ public class ConsultationHistoric {
 
     protected static boolean refresh = false;
 
-    final Service<Boolean> loadConsultations = new Service<Boolean>() {
+    protected final Service<Boolean> loadConsultations = new Service<Boolean>() {
         @Override
         protected Task<Boolean> createTask() {
             return new Task<Boolean>() {
@@ -52,7 +52,7 @@ public class ConsultationHistoric {
         }
     };
 
-    final Service<Boolean> removeConsultationService = new Service<Boolean>() {
+    protected final Service<Boolean> removeConsultationService = new Service<Boolean>() {
         @Override
         protected Task<Boolean> createTask() {
             return new Task<Boolean>() {
@@ -65,7 +65,7 @@ public class ConsultationHistoric {
     };
 
 
-    ConsultationHistoric() {
+    protected ConsultationHistoric() {
         removeConsultationService.setOnSucceeded(event -> {
             if (removeConsultationService.getValue()) {
                 System.out.print("Task Remove consultation succeeded !");

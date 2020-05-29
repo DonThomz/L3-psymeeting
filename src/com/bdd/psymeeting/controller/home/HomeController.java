@@ -2,10 +2,12 @@
  * Copyright (c) 2020. Thomas GUILLAUME & Gabriel DUGNY
  */
 
-package com.bdd.psymeeting.controller;
+package com.bdd.psymeeting.controller.home;
 
 
 import com.bdd.psymeeting.Main;
+import com.bdd.psymeeting.controller.InitController;
+import com.bdd.psymeeting.controller.consultations.ConsultationHistoric;
 import com.bdd.psymeeting.model.Consultation;
 import com.jfoenix.controls.JFXButton;
 import javafx.concurrent.Service;
@@ -17,12 +19,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 
-import java.lang.reflect.Field;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class HomeController extends ConsultationHistoric implements Initializable {
+public class HomeController extends ConsultationHistoric implements Initializable, InitController {
 
     public ScrollPane scrollPane;
     public GridPane gridColumnNames;
@@ -40,7 +41,7 @@ public class HomeController extends ConsultationHistoric implements Initializabl
         protected Task<ArrayList<Consultation>> createTask() {
             return new Task<ArrayList<Consultation>>() {
                 @Override
-                protected ArrayList<Consultation> call() throws Exception {
+                protected ArrayList<Consultation> call() {
                     return Consultation.getConsultationWeek(indexWeek);
                 }
             };
@@ -53,8 +54,15 @@ public class HomeController extends ConsultationHistoric implements Initializabl
 
         indexWeek = 0;
 
+        initServices();
+
         buildGripPane();
 
+
+    }
+
+    @Override
+    public void initServices() {
         loadConsultationsWeek.setOnSucceeded(event -> {
             System.out.println("Loading consultations of the week succeeded !");
             fillGridPane(loadConsultationsWeek.getValue());
@@ -70,6 +78,11 @@ public class HomeController extends ConsultationHistoric implements Initializabl
     }
 
     @Override
+    public void initListeners() {
+
+    }
+
+    @Override
     protected void refresh() {
         System.out.println(scheduleGrid.getChildren().removeIf(node -> node.getClass().getName().contains("AnchorPane")));
 
@@ -78,6 +91,7 @@ public class HomeController extends ConsultationHistoric implements Initializabl
         if (loadConsultationsWeek.getState() == Task.State.READY)
             loadConsultationsWeek.start();
     }
+
 
     protected void fillGridPane(ArrayList<Consultation> consultations) {
 
@@ -106,9 +120,7 @@ public class HomeController extends ConsultationHistoric implements Initializabl
             scheduleGrid.add(cell, day, row);
 
             //add event to button
-            consultation.setOnAction(event -> {
-                loadConsultationInfo(c);
-            });
+            consultation.setOnAction(event -> loadConsultationInfo(c));
         }
 
     }
@@ -178,7 +190,7 @@ public class HomeController extends ConsultationHistoric implements Initializabl
         return 0;
     }
 
-    public void pagination(ActionEvent actionEvent) throws NoSuchFieldException {
+    public void pagination(ActionEvent actionEvent) {
         if (actionEvent.getSource().equals(previousPagination)) indexWeek--;
         else indexWeek++;
         // refresh home page
@@ -212,11 +224,6 @@ public class HomeController extends ConsultationHistoric implements Initializabl
             return timeSlots;
         }
 
-        public void display() {
-            for (int i = 0; i < 20; i++) {
-                System.out.println(timeSlots[i]);
-            }
-        }
     }
 
 }
