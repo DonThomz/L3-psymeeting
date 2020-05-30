@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Copyright (c) 2020. Thomas GUILLAUME & Gabriel DUGNY
+  -->
+
+<?import com.jfoenix.controls.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.*?>
+<?import java.net.URL?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1"
+            fx:controller="com.bdd.psymeeting.controller.consultations.AddConsultationController">
+    <stylesheets>
+        <URL value="@../stylesheets/add_consultation.css"/>
+        <URL value="@../stylesheets/app.css"/>
+    </stylesheets>
+    <children>
+        <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                    AnchorPane.topAnchor="0.0">
+            <top>
+                <fx:include source="../others/top_bar.fxml"/>
+            </top>
+            <center>
+                <StackPane fx:id="stackPane" BorderPane.alignment="CENTER">
+                    <children>
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                            <children>
+                                <ScrollPane hbarPolicy="NEVER">
+                                    <content>
+                                        <AnchorPane>
+                                            <children>
+                                                <VBox fx:id="form_box" alignment="CENTER" AnchorPane.bottomAnchor="0.0"
+                                                      AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                                                      AnchorPane.topAnchor="0.0">
+                                                    <children>
+                                                        <Label alignment="CENTER" text="Nouveau rendez vous"
+                                                               textAlignment="CENTER">
+                                                            <font>
+                                                                <Font name="System Bold" size="24.0"/>
+                                                            </font>
+                                                            <VBox.margin>
+                                                                <Insets bottom="50.0" top="50.0"/>
+                                                            </VBox.margin>
+                                                        </Label>
+                                                        <VBox alignment="CENTER">
+                                                            <children>
+                                                                <VBox prefHeight="200.0" prefWidth="100.0">
+                                                                    <children>
+                                                                        <HBox alignment="CENTER" prefHeight="100.0"
+                                                                              prefWidth="200.0">
+                                                                            <children>
+                                                                                <Label text="Date de rendez vous">
+                                                                                    <padding>
+                                                                                        <Insets bottom="10.0"
+                                                                                                left="10.0" right="10.0"
+                                                                                                top="10.0"/>
+                                                                                    </padding>
+                                                                                    <font>
+                                                                                        <Font name="System Bold"
+                                                                                              size="14.0"/>
+                                                                                    </font>
+                                                                                    <HBox.margin>
+                                                                                        <Insets bottom="20.0"
+                                                                                                right="20.0"
+                                                                                                top="20.0"/>
+                                                                                    </HBox.margin>
+                                                                                </Label>
+                                                                                <JFXDatePicker fx:id="date_field">
+                                                                                    <HBox.margin>
+                                                                                        <Insets/>
+                                                                                    </HBox.margin>
+                                                                                </JFXDatePicker>
+                                                                            </children>
+                                                                        </HBox>
+                                                                        <HBox alignment="CENTER" prefHeight="100.0"
+                                                                              prefWidth="200.0">
+                                                                            <children>
+                                                                                <Label text="Heure de rendez vous">
+                                                                                    <padding>
+                                                                                        <Insets bottom="10.0"
+                                                                                                left="10.0" right="10.0"
+                                                                                                top="10.0"/>
+                                                                                    </padding>
+                                                                                    <font>
+                                                                                        <Font name="System Bold"
+                                                                                              size="14.0"/>
+                                                                                    </font>
+                                                                                    <HBox.margin>
+                                                                                        <Insets bottom="20.0"
+                                                                                                right="20.0"
+                                                                                                top="20.0"/>
+                                                                                    </HBox.margin>
+                                                                                </Label>
+                                                                                <JFXComboBox fx:id="hour_field"
+                                                                                             prefHeight="26.0"
+                                                                                             prefWidth="132.0"/>
+                                                                            </children>
+                                                                            <VBox.margin>
+                                                                                <Insets/>
+                                                                            </VBox.margin>
+                                                                        </HBox>
+                                                                    </children>
+                                                                </VBox>
+                                                                <Line endX="-93.62130737304688"
+                                                                      endY="2.6924004554748535" startX="-353.5"
+                                                                      strokeWidth="3.0">
+                                                                    <VBox.margin>
+                                                                        <Insets bottom="25.0" top="20.0"/>
+                                                                    </VBox.margin>
+                                                                </Line>
+                                                                <Label fx:id="label_patients" alignment="CENTER"
+                                                                       text="Patient - ">
+                                                                    <font>
+                                                                        <Font name="System Bold" size="16.0"/>
+                                                                    </font>
+                                                                    <VBox.margin>
+                                                                        <Insets bottom="20.0"/>
+                                                                    </VBox.margin>
+                                                                </Label>
+                                                                <HBox alignment="CENTER">
+                                                                    <children>
+                                                                        <Label text="Liste des patients pré-enregistrée">
+                                                                            <HBox.margin>
+                                                                                <Insets left="20.0" right="20.0"/>
+                                                                            </HBox.margin>
+                                                                        </Label>
+                                                                        <JFXComboBox fx:id="preloadPatientsComboBox"
+                                                                                     prefHeight="26.0"
+                                                                                     prefWidth="240.0">
+                                                                            <HBox.margin>
+                                                                                <Insets left="20.0" right="20.0"/>
+                                                                            </HBox.margin>
+                                                                        </JFXComboBox>
+                                                                    </children>
+                                                                    <VBox.margin>
+                                                                        <Insets bottom="10.0" top="10.0"/>
+                                                                    </VBox.margin>
+                                                                </HBox>
+                                                                <HBox alignment="CENTER" prefWidth="719.0">
+                                                                    <children>
+                                                                        <HBox alignment="CENTER"
+                                                                              style="-fx-border-color: black;"
+                                                                              HBox.hgrow="NEVER">
+                                                                            <children>
+                                                                                <VBox alignment="CENTER"
+                                                                                      prefWidth="200.0">
+                                                                                    <children>
+                                                                                        <Label text="Prénom">
+                                                                                            <padding>
+                                                                                                <Insets bottom="30.0"
+                                                                                                        left="10.0"
+                                                                                                        right="10.0"
+                                                                                                        top="10.0"/>
+                                                                                            </padding>
+                                                                                            <font>
+                                                                                                <Font name="System Bold"
+                                                                                                      size="14.0"/>
+                                                                                            </font>
+                                                                                            <VBox.margin>
+                                                                                                <Insets/>
+                                                                                            </VBox.margin>
+                                                                                        </Label>
+                                                                                        <Label text="Nom">
+                                                                                            <padding>
+                                                                                                <Insets bottom="20.0"
+                                                                                                        left="10.0"
+                                                                                                        right="10.0"
+                                                                                                        top="10.0"/>
+                                                                                            </padding>
+                                                                                            <font>
+                                                                                                <Font name="System Bold"
+                                                                                                      size="14.0"/>
+                                                                                            </font>
+                                                                                        </Label>
+                                                                                        <Label alignment="TOP_CENTER"
+                                                                                               contentDisplay="TOP"
+                                                                                               text="Email">
+                                                                                            <VBox.margin>
+                                                                                                <Insets bottom="20.0"
+                                                                                                        top="10.0"/>
+                                                                                            </VBox.margin>
+                                                                                            <padding>
+                                                                                                <Insets bottom="20.0"
+                                                                                                        left="10.0"
+                                                                                                        right="10.0"
+                                                                                                        top="10.0"/>
+                                                                                            </padding>
+                                                                                            <font>
+                                                                                                <Font name="System Bold"
+                                                                                                      size="14.0"/>
+                                                                                            </font>
+                                                                                        </Label>
+                                                                                    </children>
+                                                                                    <HBox.margin>
+                                                                                        <Insets bottom="10.0"
+                                                                                                left="10.0" right="10.0"
+                                                                                                top="10.0"/>
+                                                                                    </HBox.margin>
+                                                                                </VBox>
+                                                                                <VBox alignment="TOP_CENTER"
+                                                                                      prefWidth="250.0">
+                                                                                    <children>
+                                                                                        <JFXTextField fx:id="name_field"
+                                                                                                      prefHeight="14.0"
+                                                                                                      prefWidth="100.0">
+                                                                                            <VBox.margin>
+                                                                                                <Insets bottom="20.0"
+                                                                                                        top="10.0"/>
+                                                                                            </VBox.margin>
+                                                                                        </JFXTextField>
+                                                                                        <JFXTextField
+                                                                                                fx:id="last_name_field">
+                                                                                            <VBox.margin>
+                                                                                                <Insets bottom="20.0"
+                                                                                                        top="10.0"/>
+                                                                                            </VBox.margin>
+                                                                                        </JFXTextField>
+                                                                                        <JFXTextField
+                                                                                                fx:id="email_field">
+                                                                                            <VBox.margin>
+                                                                                                <Insets bottom="20.0"
+                                                                                                        top="10.0"/>
+                                                                                            </VBox.margin>
+                                                                                        </JFXTextField>
+                                                                                    </children>
+                                                                                    <HBox.margin>
+                                                                                        <Insets bottom="10.0"
+                                                                                                left="10.0" right="10.0"
+                                                                                                top="10.0"/>
+                                                                                    </HBox.margin>
+                                                                                </VBox>
+                                                                            </children>
+                                                                            <padding>
+                                                                                <Insets right="30.0"/>
+                                                                            </padding>
+                                                                        </HBox>
+                                                                    </children>
+                                                                </HBox>
+                                                            </children>
+                                                        </VBox>
+                                                        <HBox alignment="CENTER" prefHeight="50.0" prefWidth="200.0">
+                                                            <children>
+                                                                <VBox alignment="CENTER" prefHeight="60.0"
+                                                                      prefWidth="176.0">
+                                                                    <children>
+                                                                        <Label text="Pour anxiété ?">
+                                                                            <font>
+                                                                                <Font name="System Bold" size="14.0"/>
+                                                                            </font>
+                                                                        </Label>
+                                                                    </children>
+                                                                    <HBox.margin>
+                                                                        <Insets bottom="20.0" left="20.0" right="20.0"
+                                                                                top="20.0"/>
+                                                                    </HBox.margin>
+                                                                </VBox>
+                                                                <VBox alignment="TOP_CENTER" prefHeight="200.0"
+                                                                      prefWidth="100.0">
+                                                                    <children>
+                                                                        <JFXCheckBox fx:id="anxiety_checkbox">
+                                                                            <VBox.margin>
+                                                                                <Insets/>
+                                                                            </VBox.margin>
+                                                                        </JFXCheckBox>
+                                                                    </children>
+                                                                    <HBox.margin>
+                                                                        <Insets bottom="20.0" left="20.0" right="20.0"
+                                                                                top="20.0"/>
+                                                                    </HBox.margin>
+                                                                </VBox>
+                                                            </children>
+                                                        </HBox>
+                                                        <HBox fx:id="coupleBox" alignment="CENTER" prefHeight="50.0"
+                                                              prefWidth="200.0">
+                                                            <children>
+                                                                <VBox alignment="CENTER" prefHeight="60.0"
+                                                                      prefWidth="176.0">
+                                                                    <children>
+                                                                        <Label text="En couple ?">
+                                                                            <font>
+                                                                                <Font name="System Bold" size="14.0"/>
+                                                                            </font>
+                                                                        </Label>
+                                                                    </children>
+                                                                    <HBox.margin>
+                                                                        <Insets bottom="20.0" left="20.0" right="20.0"
+                                                                                top="20.0"/>
+                                                                    </HBox.margin>
+                                                                </VBox>
+                                                                <VBox alignment="TOP_CENTER" prefHeight="200.0"
+                                                                      prefWidth="100.0">
+                                                                    <children>
+                                                                        <JFXCheckBox fx:id="coupleCheckBox">
+                                                                            <VBox.margin>
+                                                                                <Insets/>
+                                                                            </VBox.margin>
+                                                                        </JFXCheckBox>
+                                                                    </children>
+                                                                    <HBox.margin>
+                                                                        <Insets bottom="20.0" left="20.0" right="20.0"
+                                                                                top="20.0"/>
+                                                                    </HBox.margin>
+                                                                </VBox>
+                                                            </children>
+                                                        </HBox>
+                                                        <HBox alignment="CENTER" prefHeight="50.0" prefWidth="200.0">
+                                                            <children>
+                                                                <JFXButton fx:id="add_patient_button"
+                                                                           buttonType="RAISED" onAction="#add"
+                                                                           styleClass="button-raised"
+                                                                           text="Ajouter patient">
+                                                                    <HBox.margin>
+                                                                        <Insets bottom="20.0" left="20.0" right="20.0"
+                                                                                top="20.0"/>
+                                                                    </HBox.margin>
+                                                                    <font>
+                                                                        <Font name="System Bold" size="1.0"/>
+                                                                    </font>
+                                                                </JFXButton>
+                                                                <JFXButton fx:id="submit_button" buttonType="RAISED"
+                                                                           onAction="#submit" styleClass="button-raised"
+                                                                           text="Enregistrer">
+                                                                    <font>
+                                                                        <Font name="System Bold" size="13.0"/>
+                                                                    </font>
+                                                                    <HBox.margin>
+                                                                        <Insets bottom="20.0" left="20.0" right="20.0"
+                                                                                top="20.0"/>
+                                                                    </HBox.margin>
+                                                                </JFXButton>
+                                                            </children>
+                                                            <VBox.margin>
+                                                                <Insets bottom="25.0" top="25.0"/>
+                                                            </VBox.margin>
+                                                        </HBox>
+                                                    </children>
+                                                </VBox>
+                                            </children>
+                                        </AnchorPane>
+                                    </content>
+                                </ScrollPane>
+                            </children>
+                        </HBox>
+                    </children>
+                </StackPane>
+            </center>
+            <left>
+                <Region prefWidth="200.0" BorderPane.alignment="CENTER"/>
+            </left>
+            <right>
+                <AnchorPane BorderPane.alignment="CENTER">
+                    <children>
+                        <VBox fx:id="patients_save" alignment="TOP_CENTER" prefHeight="660.0" prefWidth="271.0"
+                              style="-fx-background-color: fafafa;" AnchorPane.bottomAnchor="20.0"
+                              AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="20.0">
+                            <padding>
+                                <Insets bottom="20.0" top="20.0"/>
+                            </padding>
+                            <effect>
+                                <DropShadow spread="0.06"/>
+                            </effect>
+                        </VBox>
+                    </children>
+                </AnchorPane>
+            </right>
+        </BorderPane>
+    </children>
+</AnchorPane>
